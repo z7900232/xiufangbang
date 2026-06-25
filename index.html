@@ -606,6 +606,7 @@
             </div>
 
             <!-- Recommend Masters -->
+            <div id="masterList" style="margin-bottom:14px;"></div>
             
             <!-- Cases -->
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;" id="caseGrid"></div>
@@ -773,7 +774,108 @@
 
 <script>
     // ===== Mock Data =====
-    const masters = [];
+    const masters = [
+  {id:1,name:'李师傅',role:'水电维修',color:'#2563eb',avatar:'李',tags:['水电','维修','30分钟上门'],rating:4.7,orders:22,distance:'0.3km',price:'¥30-50/㎡',desc:'水电维修·渠县本地·从业7年'},
+  {id:2,name:'张师傅',role:'防水补漏',color:'#ef4444',avatar:'张',tags:['防水','高空作业','质保3年'],rating:4.8,orders:400,distance:'0.3km',price:'¥30-50/㎡',desc:'防水补漏·渠县本地·从业4年'},
+  {id:3,name:'王师傅',role:'墙面修补',color:'#f59e0b',avatar:'王',tags:['墙面','油漆','刮腻子'],rating:4.5,orders:325,distance:'0.3km',price:'¥30-50/㎡',desc:'墙面修补·渠县本地·从业10年'},
+  {id:4,name:'刘阿姨',role:'家电清洗',color:'#10b981',avatar:'刘',tags:['清洗','家电','深度清洁'],rating:5,orders:300,distance:'0.5km',price:'¥30-50/㎡',desc:'家电清洗·渠县本地·从业7年'},
+  {id:5,name:'陈师傅',role:'日常保洁',color:'#06b6d4',avatar:'陈',tags:['保洁','全屋','包月'],rating:4.5,orders:204,distance:'0.5km',price:'¥30-50/㎡',desc:'日常保洁·渠县本地·从业7年'},
+  {id:6,name:'杨师傅',role:'全屋整装',color:'#7c3aed',avatar:'杨',tags:['装修','设计','施工'],rating:4.7,orders:377,distance:'0.5km',price:'¥30-50/㎡',desc:'全屋整装·渠县本地·从业10年'},
+  {id:7,name:'赵师傅',role:'旧房翻新',color:'#ec4899',avatar:'赵',tags:['翻新','改造','局改'],rating:4.7,orders:68,distance:'0.8km',price:'¥30-50/㎡',desc:'旧房翻新·渠县本地·从业6年'},
+  {id:8,name:'黄师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'黄',tags:['瓷砖','美缝','铺贴'],rating:4.8,orders:389,distance:'0.8km',price:'¥30-50/㎡',desc:'瓷砖铺贴·渠县本地·从业14年'},
+  {id:9,name:'周师傅',role:'门窗安装',color:'#d97706',avatar:'周',tags:['门窗','断桥铝','安装'],rating:4.5,orders:206,distance:'0.8km',price:'¥30-50/㎡',desc:'门窗安装·渠县本地·从业17年'},
+  {id:10,name:'吴师傅',role:'打孔疏通',color:'#059669',avatar:'吴',tags:['打孔','疏通','下水道'],rating:4.7,orders:199,distance:'1.0km',price:'¥30-50/㎡',desc:'打孔疏通·渠县本地·从业15年'},
+  {id:11,name:'徐师傅',role:'吊顶安装',color:'#6366f1',avatar:'徐',tags:['吊顶','隔断','集成吊顶'],rating:5,orders:171,distance:'1.0km',price:'¥30-50/㎡',desc:'吊顶安装·渠县本地·从业12年'},
+  {id:12,name:'孙师傅',role:'自建房施工',color:'#dc2626',avatar:'孙',tags:['建房','施工','包工'],rating:4.8,orders:151,distance:'1.0km',price:'¥30-50/㎡',desc:'自建房施工·渠县本地·从业13年'},
+  {id:13,name:'马阿姨',role:'水电维修',color:'#2563eb',avatar:'马',tags:['水电','维修','30分钟上门'],rating:4.6,orders:309,distance:'1.2km',price:'¥50-80/㎡',desc:'水电维修·渠县本地·从业4年'},
+  {id:14,name:'胡师傅',role:'防水补漏',color:'#ef4444',avatar:'胡',tags:['防水','高空作业','质保3年'],rating:4.8,orders:245,distance:'1.2km',price:'¥50-80/㎡',desc:'防水补漏·渠县本地·从业3年'},
+  {id:15,name:'朱师傅',role:'墙面修补',color:'#f59e0b',avatar:'朱',tags:['墙面','油漆','刮腻子'],rating:4.8,orders:150,distance:'1.2km',price:'¥50-80/㎡',desc:'墙面修补·渠县本地·从业12年'},
+  {id:16,name:'郭师傅',role:'家电清洗',color:'#10b981',avatar:'郭',tags:['清洗','家电','深度清洁'],rating:4.7,orders:250,distance:'1.5km',price:'¥50-80/㎡',desc:'家电清洗·渠县本地·从业16年'},
+  {id:17,name:'何师傅',role:'日常保洁',color:'#06b6d4',avatar:'何',tags:['保洁','全屋','包月'],rating:4.5,orders:110,distance:'1.5km',price:'¥50-80/㎡',desc:'日常保洁·渠县本地·从业11年'},
+  {id:18,name:'罗师傅',role:'全屋整装',color:'#7c3aed',avatar:'罗',tags:['装修','设计','施工'],rating:4.7,orders:401,distance:'1.5km',price:'¥50-80/㎡',desc:'全屋整装·渠县本地·从业5年'},
+  {id:19,name:'高师傅',role:'旧房翻新',color:'#ec4899',avatar:'高',tags:['翻新','改造','局改'],rating:4.5,orders:131,distance:'1.8km',price:'¥50-80/㎡',desc:'旧房翻新·渠县本地·从业17年'},
+  {id:20,name:'林师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'林',tags:['瓷砖','美缝','铺贴'],rating:4.9,orders:412,distance:'1.8km',price:'¥50-80/㎡',desc:'瓷砖铺贴·渠县本地·从业5年'},
+  {id:21,name:'梁师傅',role:'门窗安装',color:'#d97706',avatar:'梁',tags:['门窗','断桥铝','安装'],rating:4.6,orders:343,distance:'1.8km',price:'¥50-80/㎡',desc:'门窗安装·渠县本地·从业11年'},
+  {id:22,name:'宋师傅',role:'打孔疏通',color:'#059669',avatar:'宋',tags:['打孔','疏通','下水道'],rating:4.9,orders:166,distance:'2.0km',price:'¥50-80/㎡',desc:'打孔疏通·渠县本地·从业11年'},
+  {id:23,name:'郑师傅',role:'吊顶安装',color:'#6366f1',avatar:'郑',tags:['吊顶','隔断','集成吊顶'],rating:4.9,orders:80,distance:'2.0km',price:'¥50-80/㎡',desc:'吊顶安装·渠县本地·从业9年'},
+  {id:24,name:'谢阿姨',role:'自建房施工',color:'#dc2626',avatar:'谢',tags:['建房','施工','包工'],rating:4.9,orders:293,distance:'2.0km',price:'¥50-80/㎡',desc:'自建房施工·渠县本地·从业17年'},
+  {id:25,name:'韩师傅',role:'水电维修',color:'#2563eb',avatar:'韩',tags:['水电','维修','30分钟上门'],rating:4.8,orders:91,distance:'2.5km',price:'¥80-120/㎡',desc:'水电维修·渠县本地·从业9年'},
+  {id:26,name:'唐师傅',role:'防水补漏',color:'#ef4444',avatar:'唐',tags:['防水','高空作业','质保3年'],rating:4.7,orders:359,distance:'2.5km',price:'¥80-120/㎡',desc:'防水补漏·渠县本地·从业12年'},
+  {id:27,name:'冯师傅',role:'墙面修补',color:'#f59e0b',avatar:'冯',tags:['墙面','油漆','刮腻子'],rating:4.7,orders:163,distance:'2.5km',price:'¥80-120/㎡',desc:'墙面修补·渠县本地·从业14年'},
+  {id:28,name:'董师傅',role:'家电清洗',color:'#10b981',avatar:'董',tags:['清洗','家电','深度清洁'],rating:4.7,orders:501,distance:'3.0km',price:'¥80-120/㎡',desc:'家电清洗·渠县本地·从业11年'},
+  {id:29,name:'萧师傅',role:'日常保洁',color:'#06b6d4',avatar:'萧',tags:['保洁','全屋','包月'],rating:4.9,orders:386,distance:'3.0km',price:'¥80-120/㎡',desc:'日常保洁·渠县本地·从业5年'},
+  {id:30,name:'程师傅',role:'全屋整装',color:'#7c3aed',avatar:'程',tags:['装修','设计','施工'],rating:4.6,orders:122,distance:'3.0km',price:'¥80-120/㎡',desc:'全屋整装·渠县本地·从业9年'},
+  {id:31,name:'曹师傅',role:'旧房翻新',color:'#ec4899',avatar:'曹',tags:['翻新','改造','局改'],rating:4.6,orders:231,distance:'0.3km',price:'¥80-120/㎡',desc:'旧房翻新·渠县本地·从业6年'},
+  {id:32,name:'袁师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'袁',tags:['瓷砖','美缝','铺贴'],rating:4.9,orders:154,distance:'0.3km',price:'¥80-120/㎡',desc:'瓷砖铺贴·渠县本地·从业16年'},
+  {id:33,name:'邓阿姨',role:'门窗安装',color:'#d97706',avatar:'邓',tags:['门窗','断桥铝','安装'],rating:4.9,orders:406,distance:'0.3km',price:'¥80-120/㎡',desc:'门窗安装·渠县本地·从业15年'},
+  {id:34,name:'许师傅',role:'打孔疏通',color:'#059669',avatar:'许',tags:['打孔','疏通','下水道'],rating:4.6,orders:417,distance:'0.5km',price:'¥80-120/㎡',desc:'打孔疏通·渠县本地·从业14年'},
+  {id:35,name:'傅师傅',role:'吊顶安装',color:'#6366f1',avatar:'傅',tags:['吊顶','隔断','集成吊顶'],rating:4.6,orders:252,distance:'0.5km',price:'¥80-120/㎡',desc:'吊顶安装·渠县本地·从业8年'},
+  {id:36,name:'沈师傅',role:'自建房施工',color:'#dc2626',avatar:'沈',tags:['建房','施工','包工'],rating:4.8,orders:80,distance:'0.5km',price:'¥80-120/㎡',desc:'自建房施工·渠县本地·从业8年'},
+  {id:37,name:'曾师傅',role:'水电维修',color:'#2563eb',avatar:'曾',tags:['水电','维修','30分钟上门'],rating:4.7,orders:107,distance:'0.8km',price:'¥100-150/㎡',desc:'水电维修·渠县本地·从业11年'},
+  {id:38,name:'彭师傅',role:'防水补漏',color:'#ef4444',avatar:'彭',tags:['防水','高空作业','质保3年'],rating:4.5,orders:323,distance:'0.8km',price:'¥100-150/㎡',desc:'防水补漏·渠县本地·从业13年'},
+  {id:39,name:'吕师傅',role:'墙面修补',color:'#f59e0b',avatar:'吕',tags:['墙面','油漆','刮腻子'],rating:4.9,orders:155,distance:'0.8km',price:'¥100-150/㎡',desc:'墙面修补·渠县本地·从业8年'},
+  {id:40,name:'苏师傅',role:'家电清洗',color:'#10b981',avatar:'苏',tags:['清洗','家电','深度清洁'],rating:4.8,orders:457,distance:'1.0km',price:'¥100-150/㎡',desc:'家电清洗·渠县本地·从业16年'},
+  {id:41,name:'卢师傅',role:'日常保洁',color:'#06b6d4',avatar:'卢',tags:['保洁','全屋','包月'],rating:4.7,orders:221,distance:'1.0km',price:'¥100-150/㎡',desc:'日常保洁·渠县本地·从业10年'},
+  {id:42,name:'蒋师傅',role:'全屋整装',color:'#7c3aed',avatar:'蒋',tags:['装修','设计','施工'],rating:4.8,orders:458,distance:'1.0km',price:'¥100-150/㎡',desc:'全屋整装·渠县本地·从业12年'},
+  {id:43,name:'蔡师傅',role:'旧房翻新',color:'#ec4899',avatar:'蔡',tags:['翻新','改造','局改'],rating:4.8,orders:214,distance:'1.2km',price:'¥100-150/㎡',desc:'旧房翻新·渠县本地·从业5年'},
+  {id:44,name:'贾阿姨',role:'瓷砖铺贴',color:'#0891b2',avatar:'贾',tags:['瓷砖','美缝','铺贴'],rating:4.6,orders:302,distance:'1.2km',price:'¥100-150/㎡',desc:'瓷砖铺贴·渠县本地·从业9年'},
+  {id:45,name:'丁师傅',role:'门窗安装',color:'#d97706',avatar:'丁',tags:['门窗','断桥铝','安装'],rating:4.6,orders:111,distance:'1.2km',price:'¥100-150/㎡',desc:'门窗安装·渠县本地·从业7年'},
+  {id:46,name:'魏师傅',role:'打孔疏通',color:'#059669',avatar:'魏',tags:['打孔','疏通','下水道'],rating:4.6,orders:139,distance:'1.5km',price:'¥100-150/㎡',desc:'打孔疏通·渠县本地·从业3年'},
+  {id:47,name:'薛师傅',role:'吊顶安装',color:'#6366f1',avatar:'薛',tags:['吊顶','隔断','集成吊顶'],rating:4.6,orders:36,distance:'1.5km',price:'¥100-150/㎡',desc:'吊顶安装·渠县本地·从业13年'},
+  {id:48,name:'叶师傅',role:'自建房施工',color:'#dc2626',avatar:'叶',tags:['建房','施工','包工'],rating:5,orders:185,distance:'1.5km',price:'¥100-150/㎡',desc:'自建房施工·渠县本地·从业11年'},
+  {id:49,name:'阎师傅',role:'水电维修',color:'#2563eb',avatar:'阎',tags:['水电','维修','30分钟上门'],rating:4.8,orders:199,distance:'1.8km',price:'¥150-200/㎡',desc:'水电维修·渠县本地·从业4年'},
+  {id:50,name:'余师傅',role:'防水补漏',color:'#ef4444',avatar:'余',tags:['防水','高空作业','质保3年'],rating:4.7,orders:384,distance:'1.8km',price:'¥150-200/㎡',desc:'防水补漏·渠县本地·从业3年'},
+  {id:51,name:'潘师傅',role:'墙面修补',color:'#f59e0b',avatar:'潘',tags:['墙面','油漆','刮腻子'],rating:4.7,orders:460,distance:'1.8km',price:'¥150-200/㎡',desc:'墙面修补·渠县本地·从业6年'},
+  {id:52,name:'杜师傅',role:'家电清洗',color:'#10b981',avatar:'杜',tags:['清洗','家电','深度清洁'],rating:4.5,orders:106,distance:'2.0km',price:'¥150-200/㎡',desc:'家电清洗·渠县本地·从业14年'},
+  {id:53,name:'戴阿姨',role:'日常保洁',color:'#06b6d4',avatar:'戴',tags:['保洁','全屋','包月'],rating:4.6,orders:136,distance:'2.0km',price:'¥150-200/㎡',desc:'日常保洁·渠县本地·从业9年'},
+  {id:54,name:'夏师傅',role:'全屋整装',color:'#7c3aed',avatar:'夏',tags:['装修','设计','施工'],rating:4.7,orders:410,distance:'2.0km',price:'¥150-200/㎡',desc:'全屋整装·渠县本地·从业16年'},
+  {id:55,name:'钟师傅',role:'旧房翻新',color:'#ec4899',avatar:'钟',tags:['翻新','改造','局改'],rating:4.8,orders:43,distance:'2.5km',price:'¥150-200/㎡',desc:'旧房翻新·渠县本地·从业11年'},
+  {id:56,name:'汪师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'汪',tags:['瓷砖','美缝','铺贴'],rating:4.6,orders:490,distance:'2.5km',price:'¥150-200/㎡',desc:'瓷砖铺贴·渠县本地·从业14年'},
+  {id:57,name:'田师傅',role:'门窗安装',color:'#d97706',avatar:'田',tags:['门窗','断桥铝','安装'],rating:4.7,orders:385,distance:'2.5km',price:'¥150-200/㎡',desc:'门窗安装·渠县本地·从业5年'},
+  {id:58,name:'任师傅',role:'打孔疏通',color:'#059669',avatar:'任',tags:['打孔','疏通','下水道'],rating:4.8,orders:334,distance:'3.0km',price:'¥150-200/㎡',desc:'打孔疏通·渠县本地·从业12年'},
+  {id:59,name:'姜师傅',role:'吊顶安装',color:'#6366f1',avatar:'姜',tags:['吊顶','隔断','集成吊顶'],rating:5,orders:452,distance:'3.0km',price:'¥150-200/㎡',desc:'吊顶安装·渠县本地·从业8年'},
+  {id:60,name:'范师傅',role:'自建房施工',color:'#dc2626',avatar:'范',tags:['建房','施工','包工'],rating:4.6,orders:206,distance:'3.0km',price:'¥150-200/㎡',desc:'自建房施工·渠县本地·从业8年'},
+  {id:61,name:'方师傅',role:'水电维修',color:'#2563eb',avatar:'方',tags:['水电','维修','30分钟上门'],rating:4.7,orders:514,distance:'0.3km',price:'面议',desc:'水电维修·渠县本地·从业4年'},
+  {id:62,name:'石师傅',role:'防水补漏',color:'#ef4444',avatar:'石',tags:['防水','高空作业','质保3年'],rating:4.7,orders:86,distance:'0.3km',price:'面议',desc:'防水补漏·渠县本地·从业8年'},
+  {id:63,name:'姚师傅',role:'墙面修补',color:'#f59e0b',avatar:'姚',tags:['墙面','油漆','刮腻子'],rating:4.7,orders:441,distance:'0.3km',price:'面议',desc:'墙面修补·渠县本地·从业16年'},
+  {id:64,name:'谭阿姨',role:'家电清洗',color:'#10b981',avatar:'谭',tags:['清洗','家电','深度清洁'],rating:4.7,orders:437,distance:'0.5km',price:'面议',desc:'家电清洗·渠县本地·从业12年'},
+  {id:65,name:'廖师傅',role:'日常保洁',color:'#06b6d4',avatar:'廖',tags:['保洁','全屋','包月'],rating:4.7,orders:108,distance:'0.5km',price:'面议',desc:'日常保洁·渠县本地·从业3年'},
+  {id:66,name:'邹师傅',role:'全屋整装',color:'#7c3aed',avatar:'邹',tags:['装修','设计','施工'],rating:4.9,orders:187,distance:'0.5km',price:'面议',desc:'全屋整装·渠县本地·从业5年'},
+  {id:67,name:'熊师傅',role:'旧房翻新',color:'#ec4899',avatar:'熊',tags:['翻新','改造','局改'],rating:4.8,orders:394,distance:'0.8km',price:'面议',desc:'旧房翻新·渠县本地·从业6年'},
+  {id:68,name:'金师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'金',tags:['瓷砖','美缝','铺贴'],rating:4.8,orders:46,distance:'0.8km',price:'面议',desc:'瓷砖铺贴·渠县本地·从业15年'},
+  {id:69,name:'陆师傅',role:'门窗安装',color:'#d97706',avatar:'陆',tags:['门窗','断桥铝','安装'],rating:4.8,orders:74,distance:'0.8km',price:'面议',desc:'门窗安装·渠县本地·从业5年'},
+  {id:70,name:'郝师傅',role:'打孔疏通',color:'#059669',avatar:'郝',tags:['打孔','疏通','下水道'],rating:4.8,orders:154,distance:'1.0km',price:'面议',desc:'打孔疏通·渠县本地·从业11年'},
+  {id:71,name:'孔师傅',role:'吊顶安装',color:'#6366f1',avatar:'孔',tags:['吊顶','隔断','集成吊顶'],rating:4.6,orders:458,distance:'1.0km',price:'面议',desc:'吊顶安装·渠县本地·从业6年'},
+  {id:72,name:'白师傅',role:'自建房施工',color:'#dc2626',avatar:'白',tags:['建房','施工','包工'],rating:4.5,orders:361,distance:'1.0km',price:'面议',desc:'自建房施工·渠县本地·从业5年'},
+  {id:73,name:'崔阿姨',role:'水电维修',color:'#2563eb',avatar:'崔',tags:['水电','维修','30分钟上门'],rating:4.8,orders:254,distance:'1.2km',price:'¥30/㎡起',desc:'水电维修·渠县本地·从业3年'},
+  {id:74,name:'康师傅',role:'防水补漏',color:'#ef4444',avatar:'康',tags:['防水','高空作业','质保3年'],rating:5,orders:251,distance:'1.2km',price:'¥30/㎡起',desc:'防水补漏·渠县本地·从业12年'},
+  {id:75,name:'毛师傅',role:'墙面修补',color:'#f59e0b',avatar:'毛',tags:['墙面','油漆','刮腻子'],rating:4.9,orders:404,distance:'1.2km',price:'¥30/㎡起',desc:'墙面修补·渠县本地·从业15年'},
+  {id:76,name:'邱师傅',role:'家电清洗',color:'#10b981',avatar:'邱',tags:['清洗','家电','深度清洁'],rating:4.7,orders:392,distance:'1.5km',price:'¥30/㎡起',desc:'家电清洗·渠县本地·从业9年'},
+  {id:77,name:'秦师傅',role:'日常保洁',color:'#06b6d4',avatar:'秦',tags:['保洁','全屋','包月'],rating:4.9,orders:92,distance:'1.5km',price:'¥30/㎡起',desc:'日常保洁·渠县本地·从业5年'},
+  {id:78,name:'江师傅',role:'全屋整装',color:'#7c3aed',avatar:'江',tags:['装修','设计','施工'],rating:5,orders:496,distance:'1.5km',price:'¥30/㎡起',desc:'全屋整装·渠县本地·从业12年'},
+  {id:79,name:'史师傅',role:'旧房翻新',color:'#ec4899',avatar:'史',tags:['翻新','改造','局改'],rating:4.8,orders:516,distance:'1.8km',price:'¥30/㎡起',desc:'旧房翻新·渠县本地·从业14年'},
+  {id:80,name:'顾师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'顾',tags:['瓷砖','美缝','铺贴'],rating:4.7,orders:449,distance:'1.8km',price:'¥30/㎡起',desc:'瓷砖铺贴·渠县本地·从业7年'},
+  {id:81,name:'侯师傅',role:'门窗安装',color:'#d97706',avatar:'侯',tags:['门窗','断桥铝','安装'],rating:4.5,orders:452,distance:'1.8km',price:'¥30/㎡起',desc:'门窗安装·渠县本地·从业8年'},
+  {id:82,name:'邵师傅',role:'打孔疏通',color:'#059669',avatar:'邵',tags:['打孔','疏通','下水道'],rating:4.8,orders:343,distance:'2.0km',price:'¥30/㎡起',desc:'打孔疏通·渠县本地·从业13年'},
+  {id:83,name:'孟师傅',role:'吊顶安装',color:'#6366f1',avatar:'孟',tags:['吊顶','隔断','集成吊顶'],rating:4.5,orders:206,distance:'2.0km',price:'¥30/㎡起',desc:'吊顶安装·渠县本地·从业6年'},
+  {id:84,name:'龙阿姨',role:'自建房施工',color:'#dc2626',avatar:'龙',tags:['建房','施工','包工'],rating:4.7,orders:165,distance:'2.0km',price:'¥30/㎡起',desc:'自建房施工·渠县本地·从业10年'},
+  {id:85,name:'万师傅',role:'水电维修',color:'#2563eb',avatar:'万',tags:['水电','维修','30分钟上门'],rating:4.9,orders:51,distance:'2.5km',price:'¥200-500/项',desc:'水电维修·渠县本地·从业17年'},
+  {id:86,name:'段师傅',role:'防水补漏',color:'#ef4444',avatar:'段',tags:['防水','高空作业','质保3年'],rating:4.5,orders:296,distance:'2.5km',price:'¥200-500/项',desc:'防水补漏·渠县本地·从业11年'},
+  {id:87,name:'漕师傅',role:'墙面修补',color:'#f59e0b',avatar:'漕',tags:['墙面','油漆','刮腻子'],rating:4.9,orders:458,distance:'2.5km',price:'¥200-500/项',desc:'墙面修补·渠县本地·从业3年'},
+  {id:88,name:'钱师傅',role:'家电清洗',color:'#10b981',avatar:'钱',tags:['清洗','家电','深度清洁'],rating:4.8,orders:364,distance:'3.0km',price:'¥200-500/项',desc:'家电清洗·渠县本地·从业11年'},
+  {id:89,name:'汤师傅',role:'日常保洁',color:'#06b6d4',avatar:'汤',tags:['保洁','全屋','包月'],rating:5,orders:234,distance:'3.0km',price:'¥200-500/项',desc:'日常保洁·渠县本地·从业15年'},
+  {id:90,name:'尹师傅',role:'全屋整装',color:'#7c3aed',avatar:'尹',tags:['装修','设计','施工'],rating:5,orders:456,distance:'3.0km',price:'¥200-500/项',desc:'全屋整装·渠县本地·从业13年'},
+  {id:91,name:'黎师傅',role:'旧房翻新',color:'#ec4899',avatar:'黎',tags:['翻新','改造','局改'],rating:4.6,orders:333,distance:'0.3km',price:'¥200-500/项',desc:'旧房翻新·渠县本地·从业17年'},
+  {id:92,name:'易师傅',role:'瓷砖铺贴',color:'#0891b2',avatar:'易',tags:['瓷砖','美缝','铺贴'],rating:4.8,orders:301,distance:'0.3km',price:'¥200-500/项',desc:'瓷砖铺贴·渠县本地·从业6年'},
+  {id:93,name:'常阿姨',role:'门窗安装',color:'#d97706',avatar:'常',tags:['门窗','断桥铝','安装'],rating:4.7,orders:42,distance:'0.3km',price:'¥200-500/项',desc:'门窗安装·渠县本地·从业12年'},
+  {id:94,name:'武师傅',role:'打孔疏通',color:'#059669',avatar:'武',tags:['打孔','疏通','下水道'],rating:4.7,orders:36,distance:'0.5km',price:'¥200-500/项',desc:'打孔疏通·渠县本地·从业5年'},
+  {id:95,name:'乔师傅',role:'吊顶安装',color:'#6366f1',avatar:'乔',tags:['吊顶','隔断','集成吊顶'],rating:4.6,orders:299,distance:'0.5km',price:'¥200-500/项',desc:'吊顶安装·渠县本地·从业6年'},
+  {id:96,name:'贺师傅',role:'自建房施工',color:'#dc2626',avatar:'贺',tags:['建房','施工','包工'],rating:4.6,orders:341,distance:'0.5km',price:'¥200-500/项',desc:'自建房施工·渠县本地·从业14年'},
+  {id:97,name:'赖师傅',role:'水电维修',color:'#2563eb',avatar:'赖',tags:['水电','维修','30分钟上门'],rating:5,orders:155,distance:'0.8km',price:'¥50/小时',desc:'水电维修·渠县本地·从业10年'},
+  {id:98,name:'龚师傅',role:'防水补漏',color:'#ef4444',avatar:'龚',tags:['防水','高空作业','质保3年'],rating:4.7,orders:476,distance:'0.8km',price:'¥50/小时',desc:'防水补漏·渠县本地·从业9年'},
+  {id:99,name:'文师傅',role:'墙面修补',color:'#f59e0b',avatar:'文',tags:['墙面','油漆','刮腻子'],rating:4.8,orders:115,distance:'0.8km',price:'¥50/小时',desc:'墙面修补·渠县本地·从业13年'},
+  {id:100,name:'庞师傅',role:'家电清洗',color:'#10b981',avatar:'庞',tags:['清洗','家电','深度清洁'],rating:4.9,orders:402,distance:'1.0km',price:'¥50/小时',desc:'家电清洗·渠县本地·从业10年'},
+];
     const services = [
         { id:1, name:'全屋整装', icon:'🏠', color:'#dbeafe', desc:'设计+施工+主材一站式', popular:true },
         { id:2, name:'旧房翻新', icon:'🔄', color:'#fef3c7', desc:'老房改造，焕然一新', popular:true },
@@ -1536,7 +1638,7 @@ function trackVisit(page) {
                 caseContainer.innerHTML = posted.slice(0, 4).map(function(c) {
                     var firstImg = (c.media || c.images || [])[0];
                     var icon = firstImg ? (firstImg.type === 'video' ? '🎬' : '📷') : '📸';
-                    return '<div class="card" style="cursor:pointer;" onclick="document.querySelector(\'[data-tab=gallery]\').click()">' +
+                    return '<div class="card" style="cursor:pointer;" onclick="navigateTo(\'user-gallery\')">' +
                         '<div style="font-size:2.2rem;text-align:center;margin-bottom:6px;">' + icon + '</div>' +
                         '<h4 style="font-size:.8rem;font-weight:700;text-align:center;">' + (c.text || '').substring(0,15) + '</h4>' +
                         '<p style="font-size:.68rem;color:#64748b;text-align:center;margin-top:2px;">' + (c.type || '') + '</p>' +
@@ -1545,6 +1647,23 @@ function trackVisit(page) {
             } else {
                 caseContainer.innerHTML = '';
             }
+        }
+        // 渲染师傅列表
+        var ml = document.getElementById('masterList');
+        if (ml && masters.length > 0) {
+            var mhtml = '<div class="section-header" style="margin-top:8px;"><h3>👷 附近师傅 <span style="font-size:.7rem;color:#64748b;font-weight:400;">· 共' + masters.length + '人</span></h3></div>';
+            masters.forEach(function(m) {
+                var star = m.rating >= 4.9 ? '🌟🌟' : '⭐';
+                mhtml += '<div class="card master-card" onclick="openBooking(\'' + m.name + '\',\'' + m.role + '\')" style="margin-bottom:8px;">' +
+                    '<div class="avatar" style="background:' + m.color + ';">' + m.avatar + '</div>' +
+                    '<div class="info"><h4>' + m.name + ' · ' + m.role + '</h4>' +
+                    '<div class="tags">' + m.tags.map(function(t){return '<span>' + t + '</span>';}).join('') + '</div>' +
+                    '<div class="meta">' + star + ' ' + m.rating + ' · 已服务' + m.orders + '单 · ' + m.distance + '</div>' +
+                    '<p style="font-size:.75rem;color:var(--gray-500);margin-top:4px;">' + m.desc + '</p></div>' +
+                    '<div class="action"><div class="price">' + m.price + '</div>' +
+                    '<button class="btn-sm" onclick="event.stopPropagation();openBooking(\'' + m.name + '\',\'' + m.role + '\')">预约</button></div></div>';
+            });
+            ml.innerHTML = mhtml;
         }
     }
 
