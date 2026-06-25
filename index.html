@@ -1788,9 +1788,21 @@ function showPushNotification(name, category, phone) {
                     <span class="price">${typeof o.price === 'number' ? '¥'+o.price.toLocaleString() : o.price}</span>
                 </div>
                 ${o.status === 'done' ? '<div style="margin-top:8px;"><button class="btn btn-sm btn-primary" onclick="showToast(\'感谢你的评价！\')">⭐ 评价</button></div>' : ''}
-                ${o.status === 'pending' ? '<div style="margin-top:8px;"><button class="btn btn-sm btn-outline" style="background:var(--gray-100);border:none;" onclick="showToast(\'已取消订单\')">取消订单</button></div>' : ''}
+                ${o.status === 'pending' ? '<div style="margin-top:8px;"><button class="btn btn-sm" style="background:#fee2e2;color:#ef4444;border:none;padding:6px 16px;border-radius:14px;font-size:.75rem;font-weight:600;cursor:pointer;" onclick="cancelOrder(\'' + o.id + '\')">取消订单</button></div>' : ''}
             </div>
         `).join('');
+    }
+
+    function cancelOrder(orderId) {
+        if (!confirm('确定取消此订单？')) return;
+        const orders = getOrders();
+        const idx = orders.findIndex(o => o.id === orderId);
+        if (idx > -1) {
+            orders[idx].status = 'cancelled';
+            saveOrders(orders);
+            renderOrders(document.querySelector('#orderFilterTabs .filter-tab.active')?.dataset?.filter || 'all');
+            showToast('✅ 订单已取消');
+        }
     }
 
     function filterOrders(filter) {
