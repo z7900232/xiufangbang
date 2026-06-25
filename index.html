@@ -611,21 +611,21 @@
 
             <!-- Quick Entry -->
             <div class="quick-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
-                <div class="quick-item" style="background:linear-gradient(135deg,#fee2e2,#fef2f2);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="navigateTo('user-repair')">
+                <div class="quick-item" style="background:linear-gradient(135deg,#fee2e2,#fef2f2);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
                     <div style="font-size:1.8rem;">⚡</div>
-                    <div style="font-size:.7rem;font-weight:600;color:#dc2626;margin-top:4px;">极速报修</div>
+                    <div style="font-size:.7rem;font-weight:600;color:#dc2626;margin-top:4px;">房屋维修</div>
                 </div>
-                <div class="quick-item" style="background:linear-gradient(135deg,#cffafe,#ecfeff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="navigateTo('user-housekeeping')">
-                    <div style="font-size:1.8rem;">🧹</div>
-                    <div style="font-size:.7rem;font-weight:600;color:#0891b2;margin-top:4px;">日常保洁</div>
+                <div class="quick-item" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
+                    <div style="font-size:1.8rem;">🔨</div>
+                    <div style="font-size:.7rem;font-weight:600;color:#d97706;margin-top:4px;">局部改造</div>
                 </div>
-                <div class="quick-item" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="navigateTo('user-services','装修')">
+                <div class="quick-item" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
                     <div style="font-size:1.8rem;">🏠</div>
-                    <div style="font-size:.7rem;font-weight:600;color:#2563eb;margin-top:4px;">装修服务</div>
+                    <div style="font-size:.7rem;font-weight:600;color:#2563eb;margin-top:4px;">装修设计</div>
                 </div>
-                <div class="quick-item" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="navigateTo('user-services','建房')">
-                    <div style="font-size:1.8rem;">🏗️</div>
-                    <div style="font-size:.7rem;font-weight:600;color:#d97706;margin-top:4px;">自建房</div>
+                <div class="quick-item" style="background:linear-gradient(135deg,#cffafe,#ecfeff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
+                    <div style="font-size:1.8rem;">🧹</div>
+                    <div style="font-size:.7rem;font-weight:600;color:#0891b2;margin-top:4px;">家政上门</div>
                 </div>
             </div>
 
@@ -673,6 +673,15 @@
             </div>
             <div class="filter-tabs" id="serviceFilterTabs"></div>
             <div class="grid-2" id="serviceGrid"></div>
+        </div>
+
+        <!-- 施工风采 -->
+        <div class="page" id="page-user-gallery">
+            <div class="banner" style="background:linear-gradient(135deg,#1e293b,#2563eb);">
+                <h3>📸 施工风采</h3>
+                <p>真实工地案例 · 工艺看得见</p>
+            </div>
+            <div class="gap-row" id="galleryGrid"></div>
         </div>
 
         <!-- Repair Page -->
@@ -1489,7 +1498,7 @@ function showPushNotification(name, category, phone) {
         }
         // Update header
         const titles = {
-            'user-home':'修房帮·渠县', 'user-services':'全部服务', 'user-repair':'一键报修',
+            'user-home':'修房帮·渠县', 'user-gallery':'施工风采', 'user-repair':'一键报修',
             'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'order-log':'订单记录台账', 'user-profile':'联系我们',
             'master-home':'师傅中心', 'master-grab':'抢单大厅', 'master-orders':'接单记录',
             'master-profile':'师傅设置',
@@ -1503,6 +1512,7 @@ function showPushNotification(name, category, phone) {
         if (page === 'user-masters') renderMasters();
         if (page === 'user-orders') renderOrders('all');
         if (page === 'order-log') renderOrderLog();
+        if (page === 'user-gallery') renderGallery();
         if (page === 'user-repair') renderRepair();
         if (page === 'user-housekeeping') renderHousekeeping('all',null);
         if (page === 'master-home') renderMasterHome();
@@ -1530,7 +1540,7 @@ function showPushNotification(name, category, phone) {
         const tabs = {
             user: [
                 { id:'user-home', icon:'🏠', label:'首页' },
-                { id:'user-services', icon:'🔧', label:'服务' },
+                { id:'user-gallery', icon:'📸', label:'风采' },
                 { id:'user-repair', icon:'⚡', label:'报修' },
                 { id:'user-orders', icon:'📋', label:'订单' },
                 { id:'user-profile', icon:'📞', label:'联系' },
@@ -1633,6 +1643,27 @@ function showPushNotification(name, category, phone) {
             serviceParents.map(function(p) {
                 return '<button class="filter-tab" onclick="renderServices(\'' + p + '\')">' + p + '</button>';
             }).join('');
+    }
+
+    function renderGallery() {
+        var grid = document.getElementById('galleryGrid');
+        var cases = [
+            { title:'渠县·科华首座 水电改造', type:'水电维修', date:'2025-06', img:'⚡' },
+            { title:'渠县·东城半岛 厨卫翻新', type:'局部改造', date:'2025-06', img:'🔨' },
+            { title:'渠县·紫天花园 全屋装修', type:'装修设计', date:'2025-05', img:'🏠' },
+            { title:'渠县·碧桂园 别墅装修', type:'装修设计', date:'2025-05', img:'🏡' },
+            { title:'渠县·科华首座 开荒保洁', type:'家政上门', date:'2025-06', img:'🧹' },
+            { title:'渠县·农村自建房 三层施工', type:'自建房', date:'2025-04', img:'🏗️' },
+            { title:'渠县·锦尚半岛 防水工程', type:'房屋维修', date:'2025-06', img:'💧' },
+            { title:'渠县·地旺广场 电路改造', type:'局部改造', date:'2025-05', img:'🔥' },
+        ];
+        grid.innerHTML = cases.map(function(c) {
+            return '<div class="card" style="padding:16px;">' +
+                '<div style="font-size:2.5rem;text-align:center;margin-bottom:8px;">' + c.img + '</div>' +
+                '<h4 style="font-size:.9rem;font-weight:700;text-align:center;">' + c.title + '</h4>' +
+                '<p style="font-size:.75rem;color:#64748b;text-align:center;margin-top:4px;">' + c.type + ' · ' + c.date + '</p>' +
+            '</div>';
+        }).join('');
     }
 
     // ===== Housekeeping =====
