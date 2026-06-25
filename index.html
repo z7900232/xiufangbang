@@ -290,7 +290,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- ===== Landing Page (what we already have) ===== -->
-<div id="landingRoot">
+<div id="landingRoot" style="display:none;">
     <header style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);">
         <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:68px;">
             <div style="display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.35rem;">
@@ -517,7 +517,7 @@
 </div>
 
 <!-- ===== App Shell ===== -->
-<div class="app-shell" id="appShell">
+<div class="app-shell active" id="appShell">
     <!-- App Header -->
     <div class="app-header" id="appHeader">
         <div class="app-header-inner">
@@ -1186,7 +1186,6 @@ function showPushNotification(name, category, phone) {
 
     // ===== App Initialization =====
     function enterApp(autoAction) {
-        // 已登录直接进，未登录也先进（提交需求时再收集信息）
         document.getElementById('landingRoot').style.display = 'none';
         document.getElementById('appShell').classList.add('active');
         renderUserHome();
@@ -1513,8 +1512,6 @@ function trackVisit(page) {
     // 页面加载时
     document.addEventListener('DOMContentLoaded', function() {
         detectLocation();
-        document.getElementById('landingRoot').style.display = 'none';
-        document.getElementById('appShell').classList.add('active');
         renderUserHome();
         renderTabbar();
         startCarousel();
