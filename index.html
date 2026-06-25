@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>修房帮 - 装修·维修·建房一站式平台</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+    <style>
+        /* ===== Reset & Base ===== */
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6;overflow-x:hidden}
+        a{text-decoration:none;color:inherit}
+        img{max-width:100%}
+
+        :root{
+            --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#93c5fd;
+            --accent:#f59e0b;--accent-dark:#d97706;--success:#10b981;--danger:#ef4444;
+            --purple:#7c3aed;--pink:#ec4899;
+            --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
+            --gray-500:#64748b;--gray-700:#334155;--gray-800:#1e293b;--gray-900:#0f172a;
+            --radius:12px;--radius-lg:20px;
+            --shadow:0 4px 24px rgba(0,0,0,.06);--shadow-lg:0 12px 48px rgba(0,0,0,.10)
+        }
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+        /* ===== App Shell ===== */
+        .app-shell{display:none}
+        .app-shell.active{display:flex;flex-direction:column;min-height:100vh}
+        .app-header{
+            position:sticky;top:0;z-index:100;
+            background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+            border-bottom:1px solid var(--gray-200);
+            padding:0 16px
+        }
+        .app-header-inner{display:flex;align-items:center;justify-content:space-between;height:56px;max-width:1200px;margin:0 auto}
+        .app-header .back-btn{font-size:1.3rem;cursor:pointer;padding:4px;background:none;border:none;color:var(--gray-700)}
+        .app-header h2{font-size:1.05rem;font-weight:700}
+        .app-header .actions{display:flex;gap:12px;font-size:1.1rem}
+        .app-content{flex:1;padding-bottom:80px}
+        .app-tabbar{
+            position:fixed;bottom:0;left:0;right:0;z-index:100;
+            background:#fff;border-top:1px solid var(--gray-200);
+            display:flex;justify-content:space-around;padding:6px 0 env(safe-area-inset-bottom,6px) 0
+        }
+        .app-tabbar .tab-item{
+            display:flex;flex-direction:column;align-items:center;gap:2px;
+            padding:4px 16px;cursor:pointer;border:none;background:none;
+            font-size:.68rem;color:var(--gray-500);transition:var(--transition);position:relative
+        }
+        .app-tabbar .tab-item .icon{font-size:1.3rem;line-height:1}
+        .app-tabbar .tab-item.active{color:var(--primary)}
+        .app-tabbar .tab-item.active::after{content:'';position:absolute;top:-6px;width:24px;height:3px;background:var(--primary);border-radius:0 0 3px 3px}
+        .app-tabbar .tab-item .badge-count{
+            position:absolute;top:-2px;right:6px;min-width:16px;height:16px;
+            border-radius:8px;background:var(--danger);color:#fff;
+            font-size:.6rem;display:flex;align-items:center;justify-content:center;padding:0 4px
+        }
+
+        /* ===== Page Content ===== */
+        .page{display:none;padding:16px;max-width:800px;margin:0 auto}
+        .page.active{display:block;animation:fadeIn .3s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+        .page-title{font-size:1.2rem;font-weight:700;margin-bottom:4px}
+        .page-sub{font-size:.85rem;color:var(--gray-500);margin-bottom:16px}
+
+        /* ===== Search Bar ===== */
+        .search-bar{
+            display:flex;gap:10px;margin-bottom:16px;
+            background:var(--gray-100);border-radius:24px;padding:4px 4px 4px 16px
+        }
+        .search-bar input{flex:1;border:none;background:none;padding:10px 0;font-size:.9rem;outline:none}
+        .search-bar .btn-search{
+            background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:20px;font-weight:600;font-size:.85rem;cursor:pointer
+        }
+
+        /* ===== Grid / Cards ===== */
+        .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .gap-row{display:flex;flex-direction:column;gap:12px}
+
+        .card{
+            background:#fff;border-radius:var(--radius);padding:16px;
+            box-shadow:var(--shadow);transition:.25s ease;cursor:default
+        }
+        .card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+        .card-click{cursor:pointer}
+
+        .service-card{
+            text-align:center;padding:20px 12px
+        }
+        .service-card .icon{font-size:2rem;margin-bottom:8px}
+        .service-card h4{font-size:.9rem;font-weight:700}
+        .service-card p{font-size:.75rem;color:var(--gray-500);margin-top:4px}
+
+        .master-card{display:flex;gap:12px;padding:14px}
+        .master-card .avatar{
+            width:48px;height:48px;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-size:1.1rem;color:#fff;font-weight:700;flex-shrink:0
+        }
+        .master-card .info{flex:1}
+        .master-card .info h4{font-size:.9rem;font-weight:700}
+        .master-card .info .tags{margin-top:4px;display:flex;gap:4px;flex-wrap:wrap}
+        .master-card .info .tags span{
+            padding:2px 10px;border-radius:10px;font-size:.65rem;font-weight:500;
+            background:var(--gray-100);color:var(--gray-700)
+        }
+        .master-card .info .meta{font-size:.75rem;color:var(--gray-500);margin-top:4px}
+        .master-card .action{
+            display:flex;flex-direction:column;align-items:flex-end;gap:4px
+        }
+        .master-card .action .price{font-size:.95rem;font-weight:700;color:var(--primary)}
+        .master-card .action .price small{font-size:.7rem;font-weight:400;color:var(--gray-500)}
+        .master-card .action .btn-sm{
+            padding:4px 14px;border-radius:14px;border:none;
+            font-size:.72rem;font-weight:600;cursor:pointer;
+            background:var(--primary);color:#fff;transition:.2s
+        }
+        .master-card .action .btn-sm:hover{opacity:.85}
+
+        /* ===== Buttons ===== */
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:24px;font-weight:600;font-size:.9rem;cursor:pointer;transition:.25s;border:none;white-space:nowrap}
+        .btn-primary{background:var(--primary);color:#fff}
+        .btn-primary:hover{background:var(--primary-dark)}
+        .btn-accent{background:linear-gradient(135deg,var(--accent),var(--danger));color:#fff}
+        .btn-block{display:flex;width:100%;justify-content:center}
+        .btn-sm{padding:8px 18px;font-size:.8rem;border-radius:18px}
+
+        /* ===== Section Title ===== */
+        .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+        .section-header h3{font-size:1rem;font-weight:700}
+        .section-header a{font-size:.8rem;color:var(--primary);font-weight:500}
+
+        /* ===== Banner ===== */
+        .banner{
+            background:linear-gradient(135deg,var(--primary),var(--purple));
+            border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:16px
+        }
+        .banner h3{font-size:1.2rem;font-weight:800}
+        .banner p{font-size:.85rem;opacity:.8;margin-top:4px}
+        .banner .btn-mock{
+            display:inline-block;margin-top:12px;padding:8px 20px;border-radius:20px;
+            background:rgba(255,255,255,.2);color:#fff;font-size:.8rem;font-weight:600;border:none;cursor:pointer
+        }
+
+        /* ===== Quick Entry ===== */
+        .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+        .quick-item{text-align:center;padding:12px 4px;background:var(--gray-50);border-radius:var(--radius);cursor:pointer;transition:.2s}
+        .quick-item:hover{background:var(--gray-100)}
+        .quick-item .icon{font-size:1.5rem}
+        .quick-item .label{font-size:.7rem;margin-top:4px;color:var(--gray-700);font-weight:500}
+
+        /* ===== Order Card ===== */
+        .order-card{padding:14px;border-left:3px solid var(--primary)}
+        .order-card.status-ongoing{border-left-color:var(--accent)}
+        .order-card.status-done{border-left-color:var(--success)}
+        .order-card.status-cancel{border-left-color:var(--gray-300)}
+        .order-card .head{display:flex;justify-content:space-between;margin-bottom:6px}
+        .order-card .head h4{font-size:.9rem;font-weight:600}
+        .order-card .head .status{font-size:.72rem;padding:2px 10px;border-radius:10px;font-weight:600}
+        .order-card .head .status.pending{background:#fef3c7;color:#d97706}
+        .order-card .head .status.ongoing{background:#dbeafe;color:#2563eb}
+        .order-card .head .status.done{background:#d1fae5;color:#059669}
+        .order-card p{font-size:.8rem;color:var(--gray-500)}
+        .order-card .price{font-weight:700;color:var(--primary);margin-top:4px}
+
+        /* ===== Modal ===== */
+        .modal-overlay{
+            display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,.5);z-index:200;
+            align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s
+        }
+        .modal-overlay.active{display:flex}
+        .modal{
+            background:#fff;border-radius:var(--radius-lg);padding:28px;
+            max-width:420px;width:100%;max-height:80vh;overflow-y:auto
+        }
+        .modal h3{font-size:1.1rem;font-weight:700;margin-bottom:16px}
+        .modal .form-group{margin-bottom:14px}
+        .modal .form-group label{font-size:.82rem;font-weight:600;display:block;margin-bottom:4px;color:var(--gray-700)}
+        .modal .form-group input,.modal .form-group select,.modal .form-group textarea{
+            width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;
+            font-size:.9rem;outline:none;transition:.2s;font-family:inherit
+        }
+        .modal .form-group input:focus,.modal .form-group select:focus,.modal .form-group textarea:focus{border-color:var(--primary)}
+        .modal .form-group textarea{resize:vertical;min-height:60px}
+        .modal .btn-row{display:flex;gap:10px;margin-top:8px}
+        .modal .btn-row .btn{flex:1;text-align:center}
+        .modal .cancel-btn{background:var(--gray-100);color:var(--gray-700)}
+        .modal .cancel-btn:hover{background:var(--gray-200)}
+
+        /* ===== Toast ===== */
+        .toast{
+            position:fixed;top:80px;left:50%;transform:translateX(-50%);
+            background:var(--gray-900);color:#fff;padding:12px 24px;
+            border-radius:12px;font-size:.85rem;z-index:300;
+            opacity:0;transition:.3s;pointer-events:none;white-space:nowrap
+        }
+        .toast.show{opacity:1}
+
+        /* ===== Stats ===== */
+        .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+        .stat-card{background:#fff;border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow)}
+        .stat-card .num{font-size:1.5rem;font-weight:800;color:var(--primary)}
+        .stat-card .label{font-size:.72rem;color:var(--gray-500);margin-top:2px}
+
+        /* ===== Table ===== */
+        .data-table{width:100%;border-collapse:collapse;font-size:.82rem}
+        .data-table th{padding:10px 12px;text-align:left;font-weight:600;color:var(--gray-500);border-bottom:2px solid var(--gray-200)}
+        .data-table td{padding:10px 12px;border-bottom:1px solid var(--gray-100)}
+        .data-table tr:hover td{background:var(--gray-50)}
+
+        /* ===== Filter Tabs ===== */
+        .filter-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+        .filter-tab{
+            padding:6px 16px;border-radius:16px;font-size:.78rem;font-weight:500;
+            background:var(--gray-100);color:var(--gray-500);cursor:pointer;border:none;transition:.2s
+        }
+        .filter-tab.active{background:var(--primary);color:#fff}
+        .filter-tab:hover{background:var(--gray-200)}
+
+        /* ===== Badge ===== */
+        .badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.68rem;font-weight:600}
+
+        /* ===== Admin Sidebar ===== */
+        .admin-layout{display:flex;gap:0;min-height:calc(100vh - 56px)}
+        .admin-sidebar{
+            width:200px;background:var(--gray-900);color:rgba(255,255,255,.7);padding:16px 0;flex-shrink:0
+        }
+        .admin-sidebar .menu-item{
+            display:flex;align-items:center;gap:10px;padding:12px 20px;font-size:.85rem;cursor:pointer;transition:.2s;border:none;background:none;color:inherit;width:100%;text-align:left
+        }
+        .admin-sidebar .menu-item:hover,.admin-sidebar .menu-item.active{background:rgba(255,255,255,.08);color:#fff}
+        .admin-main{flex:1;padding:20px;overflow-x:auto}
+        @media(max-width:768px){.admin-sidebar{width:56px}.admin-sidebar .menu-item span:not(.emoji){display:none}}
+
+        /* ===== Loading ===== */
+        .loading-skeleton{background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-50) 50%,var(--gray-100) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:60px;margin-bottom:10px}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+        /* ===== Landing overrides for app mode ===== */
+        .landing-hidden{display:none}
+        .landing-show{display:block}
+
+        /* ===== Responsive ===== */
+        @media(max-width:480px){
+            .grid-2{grid-template-columns:1fr}
+            .grid-3{grid-template-columns:repeat(3,1fr)}
+            .quick-grid{grid-template-columns:repeat(4,1fr)}
+            .stat-row{grid-template-columns:repeat(3,1fr)}
+            .modal{padding:20px;margin:0 10px}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== Toast ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== Landing Page (what we already have) ===== -->
+<div id="landingRoot">
+    <header style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200);">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:68px;">
+            <div style="display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.35rem;">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--primary),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;box-shadow:0 2px 8px rgba(37,99,235,.3);">🏠</div>
+                修房<span style="color:var(--primary);">帮</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <span style="font-size:.85rem;color:var(--gray-500);cursor:pointer;" onclick="enterApp()">👤 登录体验 <span style="font-size:.7rem;opacity:.6;">›</span></span>
+                <button onclick="enterApp()" style="padding:9px 22px;border-radius:24px;font-weight:600;font-size:.85rem;border:none;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.3);">📲 进入平台</button>
+            </div>
+        </div>
+    </header>
+
+    <section style="min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 40%,#1e40af 70%,#2563eb 100%);color:#fff;padding:120px 0 60px;position:relative;overflow:hidden;">
+        <div style="position:absolute;width:500px;height:500px;top:-25%;right:-10%;background:radial-gradient(circle,rgba(124,58,237,.15) 0%,transparent 70%);border-radius:50%;"></div>
+        <div style="position:absolute;width:350px;height:350px;bottom:-15%;left:-5%;background:radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 70%);border-radius:50%;"></div>
+        <div class="container" style="position:relative;z-index:2;display:flex;align-items:center;gap:60px;flex-wrap:wrap;">
+            <div style="flex:1.1;min-width:300px;">
+                <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:24px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);font-size:.82rem;font-weight:500;margin-bottom:24px;">
+                    <span style="width:8px;height:8px;background:#10b981;border-radius:50%;animation:pulse-dot 2s infinite;display:inline-block;"></span>
+                    专注县域本地 · 不做跨城
+                </div>
+                <h1 style="font-size:clamp(1.8rem,4vw,3.2rem);font-weight:900;line-height:1.15;">
+                    装修 · 维修 · 建房<br>
+                    <span style="background:linear-gradient(135deg,var(--accent),#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">一站式本地服务平台</span>
+                </h1>
+                <p style="margin:20px 0 36px;font-size:1.05rem;color:rgba(255,255,255,.7);max-width:540px;line-height:1.7;">
+                    对标「美团」本地生活 + 「滴滴」师傅派单模式，<br>
+                    为县城及周边乡镇业主提供靠谱、透明、有保障的房屋全品类服务。
+                </p>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                    <button onclick="enterApp()" style="padding:14px 32px;border-radius:30px;font-weight:600;font-size:.95rem;border:none;background:linear-gradient(135deg,var(--accent),var(--danger));color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,.35);">🚀 一键极速报修</button>
+                    <button onclick="scrollToSection('features')" style="padding:14px 32px;border-radius:30px;font-weight:600;font-size:.95rem;border:none;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.2);">了解更多</button>
+                </div>
+                <div style="display:flex;gap:48px;margin-top:40px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);flex-wrap:wrap;">
+                    <div><h3 style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">5</h3><p style="font-size:.85rem;color:rgba(255,255,255,.5);margin:0;">核心业务板块</p></div>
+                    <div><h3 style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">4端</h3><p style="font-size:.85rem;color:rgba(255,255,255,.5);margin:0;">平台协同架构</p></div>
+                    <div><h3 style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">6重</h3><p style="font-size:.85rem;color:rgba(255,255,255,.5);margin:0;">盈利收入引擎</p></div>
+                </div>
+            </div>
+            <div style="flex:.9;min-width:260px;display:flex;justify-content:center;">
+                <div style="width:280px;background:rgba(255,255,255,.06);border-radius:32px;padding:14px;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);box-shadow:0 24px 64px rgba(0,0,0,.3);">
+                    <div style="width:80px;height:20px;background:rgba(0,0,0,.3);border-radius:12px;margin:0 auto 12px;"></div>
+                    <div style="background:rgba(255,255,255,.05);border-radius:20px;padding:16px;min-height:380px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                            <span style="font-size:.72rem;opacity:.7;">📍 <strong style="opacity:1;">修房帮</strong> · 县城</span>
+                            <span style="font-size:.8rem;">🔔</span>
+                        </div>
+                        <div style="background:linear-gradient(135deg,var(--primary),var(--purple));border-radius:12px;padding:14px;text-align:center;margin-bottom:12px;">
+                            <p style="font-size:.95rem;font-weight:700;margin:0;">🎉 夏季装修特惠</p>
+                            <p style="font-size:.75rem;opacity:.8;margin:4px 0 0;">免费量房 · 先施工后付款</p>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;">
+                            <div style="text-align:center;padding:8px 4px;background:rgba(255,255,255,.06);border-radius:10px;"><div style="font-size:1.1rem;">🏠</div><div style="font-size:.58rem;margin-top:2px;opacity:.7;">装修</div></div>
+                            <div style="text-align:center;padding:8px 4px;background:rgba(255,255,255,.06);border-radius:10px;"><div style="font-size:1.1rem;">🔧</div><div style="font-size:.58rem;margin-top:2px;opacity:.7;">维修</div></div>
+                            <div style="text-align:center;padding:8px 4px;background:rgba(255,255,255,.06);border-radius:10px;"><div style="font-size:1.1rem;">🏗️</div><div style="font-size:.58rem;margin-top:2px;opacity:.7;">建房</div></div>
+                            <div style="text-align:center;padding:8px 4px;background:rgba(255,255,255,.06);border-radius:10px;"><div style="font-size:1.1rem;">🏪</div><div style="font-size:.58rem;margin-top:2px;opacity:.7;">建材</div></div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.05);border-radius:10px;">
+                                <div style="width:36px;height:36px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;">李</div>
+                                <div style="flex:1;"><div style="font-size:.72rem;font-weight:600;">李师傅 · 水电工</div><div style="font-size:.62rem;opacity:.6;">⭐ 4.9 · 127单</div></div>
+                                <span style="padding:3px 10px;border-radius:10px;font-size:.58rem;font-weight:600;background:var(--success);">1.2km</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.05);border-radius:10px;">
+                                <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;">王</div>
+                                <div style="flex:1;"><div style="font-size:.72rem;font-weight:600;">王工长 · 装修整装</div><div style="font-size:.62rem;opacity:.6;">⭐ 5.0 · 83单</div></div>
+                                <span style="padding:3px 10px;border-radius:10px;font-size:.58rem;font-weight:600;background:var(--success);">2.5km</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-around;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);margin-top:10px;">
+                            <span style="font-size:.62rem;opacity:.5;">🏠 首页</span>
+                            <span style="font-size:.62rem;opacity:.5;">🔧 服务</span>
+                            <span style="font-size:.62rem;opacity:.5;color:var(--accent);opacity:1;">📋 订单</span>
+                            <span style="font-size:.62rem;opacity:.5;">👤 我的</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" style="padding:80px 0;background:#fff;">
+        <div class="container" style="text-align:center;">
+            <span style="display:inline-block;padding:6px 20px;border-radius:20px;font-size:.78rem;font-weight:600;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;margin-bottom:14px;">五大核心业务</span>
+            <h2 style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;">修房帮 · 业务全覆盖</h2>
+            <p style="color:var(--gray-500);margin:10px 0 40px;">装修 + 维修 + 建房 + 建材 + 师傅 — 县域唯一全覆盖</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+                <div style="background:var(--gray-50);border-radius:16px;padding:28px 20px;text-align:center;transition:.3s;cursor:default;;border-top:4px solid var(--primary);">
+                    <div style="width:64px;height:64px;border-radius:16px;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem;">🏠</div>
+                    <h4 style="font-size:.95rem;font-weight:700;">家装装修</h4>
+                    <p style="font-size:.8rem;color:var(--gray-500);margin-top:6px;">全屋整装 · 旧房翻新<br>免费量房设计</p>
+                </div>
+                <div style="background:var(--gray-50);border-radius:16px;padding:28px 20px;text-align:center;border-top:4px solid var(--accent);">
+                    <div style="width:64px;height:64px;border-radius:16px;background:#fef3c7;color:#f59e0b;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem;">🔧</div>
+                    <h4 style="font-size:.95rem;font-weight:700;">房屋维修</h4>
+                    <p style="font-size:.8rem;color:var(--gray-500);margin-top:6px;">一键报修 · 就近派单<br>滴滴模式</p>
+                </div>
+                <div style="background:var(--gray-50);border-radius:16px;padding:28px 20px;text-align:center;border-top:4px solid var(--success);">
+                    <div style="width:64px;height:64px;border-radius:16px;background:#d1fae5;color:#10b981;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem;">🏗️</div>
+                    <h4 style="font-size:.95rem;font-weight:700;">自建房服务</h4>
+                    <p style="font-size:.8rem;color:var(--gray-500);margin-top:6px;">设计施工 · 包工包料<br>县域特色</p>
+                </div>
+                <div style="background:var(--gray-50);border-radius:16px;padding:28px 20px;text-align:center;border-top:4px solid var(--purple);">
+                    <div style="width:64px;height:64px;border-radius:16px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem;">🏪</div>
+                    <h4 style="font-size:.95rem;font-weight:700;">建材商城</h4>
+                    <p style="font-size:.8rem;color:var(--gray-500);margin-top:6px;">本地商家 · 线上下单<br>到店核销</p>
+                </div>
+                <div style="background:var(--gray-50);border-radius:16px;padding:28px 20px;text-align:center;border-top:4px solid var(--pink);">
+                    <div style="width:64px;height:64px;border-radius:16px;background:#fce7f3;color:#ec4899;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem;">👷</div>
+                    <h4 style="font-size:.95rem;font-weight:700;">师傅入驻</h4>
+                    <p style="font-size:.8rem;color:var(--gray-500);margin-top:6px;">实名认证 · 抢单派单<br>作品展示</p>
+                </div>
+                <div style="background:var(--gray-50);border-radius:16px;padding:28px 20px;text-align:center;border-top:4px solid #06b6d4;">
+                    <div style="width:64px;height:64px;border-radius:16px;background:#cffafe;color:#06b6d4;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6rem;">🧹</div>
+                    <h4 style="font-size:.95rem;font-weight:700;">家政服务</h4>
+                    <p style="font-size:.8rem;color:var(--gray-500);margin-top:6px;">保洁 · 清洗 · 保姆<br>除螨消杀</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;text-align:center;padding:80px 0;">
+        <div class="container">
+            <h2 style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;">🚀 准备启动你的修房帮？</h2>
+            <p style="font-size:1rem;opacity:.8;margin:14px 0 36px;">点击下方按钮进入平台体验完整功能</p>
+            <button onclick="enterApp()" style="padding:14px 40px;border-radius:30px;font-weight:700;font-size:1rem;border:none;background:#fff;color:var(--primary);cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.15);">📲 立即进入平台</button>
+        </div>
+    </section>
+</div>
+
+<!-- ===== App Shell ===== -->
+<div class="app-shell" id="appShell">
+    <!-- App Header -->
+    <div class="app-header" id="appHeader">
+        <div class="app-header-inner">
+            <button class="back-btn" id="backBtn" onclick="goBack()" style="visibility:hidden;">‹</button>
+            <h2 id="appTitle">修房帮</h2>
+            <div class="actions"><span style="cursor:pointer;" onclick="logout()">🚪</span></div>
+        </div>
+    </div>
+
+    <!-- App Content -->
+    <div class="app-content" id="appContent">
+        <!-- User Pages -->
+        <div class="page active" id="page-user-home">
+            <!-- Banner -->
+            <div class="banner">
+                <h3>🏠 欢迎回到修房帮</h3>
+                <p>附近有 <strong>23</strong> 位师傅在线，5分钟极速响应</p>
+                <button class="btn-mock" onclick="showToast('已提交报修，正在为你匹配师傅...')">⚡ 一键极速报修</button>
+            </div>
+
+            <!-- Quick Entry -->
+            <div class="quick-grid">
+                <div class="quick-item" onclick="navigateTo('user-services','装修')"><div class="icon">🏠</div><div class="label">全屋装修</div></div>
+                <div class="quick-item" onclick="navigateTo('user-services','翻新')"><div class="icon">🔄</div><div class="label">旧房翻新</div></div>
+                <div class="quick-item" onclick="navigateTo('user-repair')"><div class="icon">⚡</div><div class="label">一键报修</div></div>
+                <div class="quick-item" onclick="navigateTo('user-housekeeping')"><div class="icon">🧹</div><div class="label">家政服务</div></div>
+            </div>
+
+            <!-- Recommend Masters -->
+            <div class="section-header"><h3>👷 推荐师傅</h3><a onclick="navigateTo('user-masters')">查看全部 ›</a></div>
+            <div class="gap-row" id="recommendMasters"></div>
+
+            <div style="height:16px"></div>
+
+            <!-- Cases -->
+            <div class="section-header"><h3>🖼️ 近期工地案例</h3><a href="#">更多 ›</a></div>
+            <div class="grid-2" id="caseGrid"></div>
+        </div>
+
+        <!-- Services Page -->
+        <div class="page" id="page-user-services">
+            <div class="search-bar">
+                <input type="text" placeholder="搜索服务类型..." id="serviceSearch" oninput="filterServices()">
+                <button class="btn-search" onclick="filterServices()">搜索</button>
+            </div>
+            <div class="filter-tabs" id="serviceFilterTabs"></div>
+            <div class="grid-2" id="serviceGrid"></div>
+        </div>
+
+        <!-- Repair Page -->
+        <div class="page" id="page-user-repair">
+            <div class="banner" style="background:linear-gradient(135deg,var(--accent),var(--danger));">
+                <h3>⚡ 一键极速报修</h3>
+                <p>拍照上传 · 就近派单 · 3位师傅报价</p>
+            </div>
+            <div class="gap-row">
+                <div class="card">
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📝 问题描述</label>
+                    <textarea id="repairDesc" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;font-family:inherit;min-height:60px;resize:vertical;" placeholder="请描述您遇到的问题..."></textarea>
+                </div>
+                <div class="card">
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📎 上传图片</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <div style="width:60px;height:60px;border-radius:10px;border:2px dashed var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gray-300);cursor:pointer;">+</div>
+                        <span style="font-size:.78rem;color:var(--gray-500);">拍摄或上传现场照片</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📂 服务分类</label>
+                    <select id="repairCategory" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;">
+                        <option>水电维修</option><option>漏水补漏</option><option>墙面修补</option>
+                        <option>瓷砖空鼓</option><option>门窗维修</option><option>打孔疏通</option>
+                        <option>吊顶安装</option><option>灯具安装</option><option>防水施工</option>
+                        <optgroup label="🧹 家政服务">
+                            <option>日常保洁</option><option>深度清洁</option><option>家电清洗</option>
+                            <option>开荒保洁</option><option>除螨消杀</option>
+                        </optgroup>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <button class="btn btn-accent btn-block" onclick="submitRepair()">🚀 立即发布需求</button>
+            </div>
+        </div>
+
+        <!-- Housekeeping Page -->
+        <div class="page" id="page-user-housekeeping">
+            <div class="banner" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);">
+                <h3>🧹 家政服务</h3>
+                <p>日常保洁 · 深度清洁 · 家电清洗 · 保姆月嫂 · 除螨消杀</p>
+            </div>
+            <div class="filter-tabs" id="hkFilterTabs">
+                <button class="filter-tab active" onclick="renderHousekeeping('all',this)">全部</button>
+                <button class="filter-tab" onclick="renderHousekeeping('保洁',this)">保洁</button>
+                <button class="filter-tab" onclick="renderHousekeeping('清洗',this)">家电清洗</button>
+                <button class="filter-tab" onclick="renderHousekeeping('保姆',this)">保姆月嫂</button>
+                <button class="filter-tab" onclick="renderHousekeeping('除螨',this)">除螨消杀</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;" id="hkServices"></div>
+            <div class="section-header"><h3>👩 家政阿姨推荐</h3></div>
+            <div class="gap-row" id="hkMasters"></div>
+        </div>
+
+        <!-- Masters List -->
+        <div class="page" id="page-user-masters">
+            <div class="search-bar">
+                <input type="text" placeholder="搜索师傅名称或技能..." id="masterSearch" oninput="filterMasters()">
+                <button class="btn-search" onclick="filterMasters()">搜索</button>
+            </div>
+            <div class="filter-tabs" id="masterFilterTabs"></div>
+            <div class="gap-row" id="masterList"></div>
+        </div>
+
+        <!-- Orders -->
+        <div class="page" id="page-user-orders">
+            <div class="filter-tabs" id="orderFilterTabs">
+                <button class="filter-tab active" data-filter="all" onclick="filterOrders('all')">全部</button>
+                <button class="filter-tab" data-filter="pending" onclick="filterOrders('pending')">待接单</button>
+                <button class="filter-tab" data-filter="ongoing" onclick="filterOrders('ongoing')">服务中</button>
+                <button class="filter-tab" data-filter="done" onclick="filterOrders('done')">已完成</button>
+            </div>
+            <div class="gap-row" id="orderList"></div>
+        </div>
+
+        <!-- Profile -->
+        <div class="page" id="page-user-profile">
+            <div style="text-align:center;padding:20px 0;">
+                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;color:#fff;">👤</div>
+                <h3 style="font-size:1.1rem;font-weight:700;">装修哥</h3>
+                <p style="font-size:.82rem;color:var(--gray-500);">📱 138****8888 · 已实名</p>
+            </div>
+            <div class="gap-row">
+                <div class="card card-click" onclick="navigateTo('user-orders')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📋</span> 我的订单 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">❤️</span> 我的收藏 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">💬</span> 我的咨询 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">🏗️</span> 我的工地 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">🎫</span> 优惠券 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click" onclick="switchRole('master')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">👷</span> 切换到师傅端 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">切换 ›</span></span></div>
+                <div class="card card-click" onclick="switchRole('shop')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">🏪</span> 切换到商家端 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">切换 ›</span></span></div>
+                <div class="card card-click" onclick="switchRole('admin')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">⚙️</span> 总后台管理 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">进入 ›</span></span></div>
+            </div>
+        </div>
+
+        <!-- ===== Master Pages ===== -->
+        <div class="page" id="page-master-home">
+            <div class="stat-row">
+                <div class="stat-card"><div class="num" id="masterEarnings">¥2,380</div><div class="label">本月收入</div></div>
+                <div class="stat-card"><div class="num" id="masterOrders">16</div><div class="label">本月订单</div></div>
+                <div class="stat-card"><div class="num" id="masterRating">4.9⭐</div><div class="label">服务评分</div></div>
+            </div>
+            <div class="section-header"><h3>⚔️ 附近抢单</h3><a onclick="navigateTo('master-grab')">更多 ›</a></div>
+            <div class="gap-row" id="grabOrders"></div>
+        </div>
+
+        <div class="page" id="page-master-grab">
+            <div class="section-header"><h3>⚔️ 抢单大厅</h3></div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterGrab('all',this)">全部</button>
+                <button class="filter-tab" onclick="filterGrab('水电',this)">水电</button>
+                <button class="filter-tab" onclick="filterGrab('维修',this)">维修</button>
+                <button class="filter-tab" onclick="filterGrab('装修',this)">装修</button>
+                <button class="filter-tab" onclick="filterGrab('保洁',this)">🧹 保洁</button>
+                <button class="filter-tab" onclick="filterGrab('清洗',this)">🧹 清洗</button>
+            </div>
+            <div class="gap-row" id="grabList"></div>
+        </div>
+
+        <div class="page" id="page-master-orders">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all" onclick="filterMasterOrders('all',this)">全部</button>
+                <button class="filter-tab" data-filter="pending" onclick="filterMasterOrders('pending',this)">待服务</button>
+                <button class="filter-tab" data-filter="done" onclick="filterMasterOrders('done',this)">已完成</button>
+            </div>
+            <div class="gap-row" id="masterOrderList"></div>
+        </div>
+
+        <div class="page" id="page-master-profile">
+            <div style="text-align:center;padding:20px 0;">
+                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--danger));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;color:#fff;">👷</div>
+                <h3 style="font-size:1.1rem;font-weight:700;">李师傅</h3>
+                <div style="display:flex;gap:6px;justify-content:center;margin-top:6px;flex-wrap:wrap;">
+                    <span class="badge" style="background:#dbeafe;color:#2563eb;">水电工</span>
+                    <span class="badge" style="background:#d1fae5;color:#059669;">防水</span>
+                    <span class="badge" style="background:#fef3c7;color:#d97706;">5年经验</span>
+                </div>
+            </div>
+            <div class="gap-row">
+                <div class="card card-click" onclick="navigateTo('master-orders')"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">📋</span> 我的订单 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">💰</span> 提现管理 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">📸</span> 工地上传 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click" onclick="switchRole('user')"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">👤</span> 切换到用户端 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">切换 ›</span></span></div>
+            </div>
+        </div>
+
+        <!-- ===== Shop Pages ===== -->
+        <div class="page" id="page-shop-home">
+            <div class="stat-row">
+                <div class="stat-card"><div class="num">¥8,640</div><div class="label">本月营收</div></div>
+                <div class="stat-card"><div class="num">36</div><div class="label">本月订单</div></div>
+                <div class="stat-card"><div class="num">4.8⭐</div><div class="label">店铺评分</div></div>
+            </div>
+            <div class="section-header"><h3>📦 热销商品</h3><a onclick="navigateTo('shop-products')">管理 ›</a></div>
+            <div class="grid-2" id="shopProducts"></div>
+            <div style="height:16px"></div>
+            <div class="section-header"><h3>📋 待处理预约</h3></div>
+            <div class="gap-row" id="shopAppointments"></div>
+            <div style="margin-top:12px">
+                <div class="card card-click" onclick="switchRole('user')"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">👤</span> 切换到用户端 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">切换 ›</span></span></div>
+            </div>
+        </div>
+
+        <div class="page" id="page-shop-products">
+            <div class="section-header"><h3>📦 商品管理</h3><button class="btn btn-sm btn-primary" onclick="showToast('商品上架功能已提交开发')">+ 新增</button></div>
+            <div class="gap-row" id="productManageList"></div>
+        </div>
+
+        <!-- ===== Admin Pages ===== -->
+        <div class="page" id="page-admin-home" style="max-width:none;padding:0;">
+            <div class="admin-layout">
+                <div class="admin-sidebar">
+                    <button class="menu-item active" onclick="adminNav('dashboard',this)"><span class="emoji">📊</span><span>数据看板</span></button>
+                    <button class="menu-item" onclick="adminNav('users',this)"><span class="emoji">👥</span><span>用户管理</span></button>
+                    <button class="menu-item" onclick="adminNav('masters',this)"><span class="emoji">👷</span><span>师傅管理</span></button>
+                    <button class="menu-item" onclick="adminNav('shops',this)"><span class="emoji">🏪</span><span>商家管理</span></button>
+                    <button class="menu-item" onclick="adminNav('orders',this)"><span class="emoji">📋</span><span>订单管理</span></button>
+                    <button class="menu-item" onclick="adminNav('revenue',this)"><span class="emoji">💰</span><span>收益统计</span></button>
+                    <button class="menu-item" onclick="switchRole('user')"><span class="emoji">👤</span><span>返回用户端</span></button>
+                </div>
+                <div class="admin-main" id="adminContent">
+                    <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">📊 数据看板</h3>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
+                        <div class="stat-card"><div class="num" style="color:var(--primary);">1,284</div><div class="label">注册用户</div></div>
+                        <div class="stat-card"><div class="num" style="color:var(--accent);">156</div><div class="label">认证师傅</div></div>
+                        <div class="stat-card"><div class="num" style="color:var(--success);">48</div><div class="label">入驻商家</div></div>
+                        <div class="stat-card"><div class="num" style="color:var(--purple);">¥52,380</div><div class="label">平台总收入</div></div>
+                    </div>
+                    <div class="section-header"><h3>📋 最新订单</h3></div>
+                    <table class="data-table">
+                        <thead><tr><th>订单号</th><th>用户</th><th>类型</th><th>金额</th><th>状态</th></tr></thead>
+                        <tbody id="adminOrderTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabbar -->
+    <div class="app-tabbar" id="appTabbar"></div>
+</div>
+
+<!-- ===== Booking Modal ===== -->
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal">
+        <h3>📋 预约服务</h3>
+        <form id="bookingForm" onsubmit="submitBooking(event)">
+            <div class="form-group"><label>服务类型</label><select id="bookType"><option>全屋整装</option><option>旧房翻新</option><option>局部改造</option><option>维修服务</option></select></div>
+            <div class="form-group"><label>您的称呼</label><input type="text" id="bookName" placeholder="请输入姓名" required></div>
+            <div class="form-group"><label>联系电话</label><input type="tel" id="bookPhone" placeholder="请输入手机号" required></div>
+            <div class="form-group"><label>详细地址</label><input type="text" id="bookAddr" placeholder="小区/街道/门牌号" required></div>
+            <div class="form-group"><label>备注说明</label><textarea id="bookNote" placeholder="补充说明"></textarea></div>
+            <div class="btn-row">
+                <button type="button" class="btn cancel-btn" onclick="closeModal('bookingModal')">取消</button>
+                <button type="submit" class="btn btn-primary">提交预约</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // ===== Mock Data =====
+    const masters = [
+        { id:1, name:'李师傅', role:'水电工', avatar:'李', color:'#2563eb', rating:4.9, orders:127, distance:'1.2km', tags:['水电','防水','打孔'], price:'上门费¥30', desc:'10年水电经验，专业防水施工' },
+        { id:2, name:'王工长', role:'装修整装', avatar:'王', color:'#f59e0b', rating:5.0, orders:83, distance:'2.5km', tags:['全屋整装','旧房翻新','设计'], price:'免费量房', desc:'专注县域装修8年，200+案例' },
+        { id:3, name:'张师傅', role:'防水补漏', avatar:'张', color:'#10b981', rating:4.8, orders:56, distance:'0.8km', tags:['防水','补漏','检测'], price:'免费检测', desc:'专业漏水检测，精准定位不漏修' },
+        { id:4, name:'刘工', role:'木工/吊顶', avatar:'刘', color:'#7c3aed', rating:4.7, orders:42, distance:'3.1km', tags:['吊顶','木工','柜体'], price:'按平米报价', desc:'定制吊顶、衣柜，手艺精细' },
+        { id:5, name:'陈师傅', role:'瓦工/贴砖', avatar:'陈', color:'#ec4899', rating:4.9, orders:98, distance:'1.8km', tags:['贴砖','砌墙','找平'], price:'按面积报价', desc:'15年瓦工经验，平整度≤2mm' },
+        // 家政师傅
+        { id:6, name:'赵阿姨', role:'专业保洁', avatar:'赵', color:'#06b6d4', rating:4.9, orders:312, distance:'0.6km', tags:['日常保洁','深度清洁','开荒'], price:'¥35/小时', desc:'10年家政经验，客户好评率99%' },
+        { id:7, name:'孙姐', role:'家电清洗', avatar:'孙', color:'#f43f5e', rating:4.8, orders:189, distance:'1.1km', tags:['油烟机清洗','空调清洗','洗衣机'], price:'¥80/台起', desc:'专业家电深度清洗，高温消毒杀菌' },
+        { id:8, name:'周阿姨', role:'保姆/月嫂', avatar:'周', color:'#8b5cf6', rating:5.0, orders:67, distance:'2.0km', tags:['住家保姆','月嫂','育儿嫂'], price:'¥4500/月起', desc:'持证高级月嫂，10年母婴护理经验' },
+        { id:9, name:'吴师傅', role:'除螨/消杀', avatar:'吴', color:'#14b8a6', rating:4.7, orders:134, distance:'0.9km', tags:['除螨','除甲醛','消杀'], price:'¥150/次起', desc:'进口设备除螨，CMA认证除甲醛' },
+    ];
+
+    const services = [
+        { id:1, name:'全屋整装', icon:'🏠', color:'#dbeafe', desc:'设计+施工+主材一站式', popular:true },
+        { id:2, name:'旧房翻新', icon:'🔄', color:'#fef3c7', desc:'老房改造，焕然一新', popular:true },
+        { id:3, name:'局部改造', icon:'🔨', color:'#d1fae5', desc:'厨房/卫生间/阳台改造' },
+        { id:4, name:'水电维修', icon:'⚡', color:'#ede9fe', desc:'电路故障、水管维修' },
+        { id:5, name:'防水补漏', icon:'💧', color:'#fce7f3', desc:'屋顶/卫生间/外墙防水' },
+        { id:6, name:'墙面修补', icon:'🧱', color:'#dbeafe', desc:'裂缝/空鼓/发霉处理' },
+        { id:7, name:'自建房设计', icon:'🏗️', color:'#d1fae5', desc:'图纸设计+施工落地', popular:true },
+        { id:8, name:'门窗安装', icon:'🪟', color:'#fef3c7', desc:'铝合金/断桥铝门窗' },
+        { id:9, name:'打孔疏通', icon:'🔧', color:'#ede9fe', desc:'空调孔/下水道疏通' },
+        { id:10, name:'吊顶安装', icon:'⬆️', color:'#fce7f3', desc:'集成吊顶/石膏板吊顶' },
+        { id:11, name:'瓷砖铺贴', icon:'📐', color:'#dbeafe', desc:'地砖/墙砖/美缝' },
+        { id:12, name:'建材采购', icon:'🏪', color:'#d1fae5', desc:'卫浴/瓷砖/门窗/涂料' },
+        // 家政服务
+        { id:13, name:'日常保洁', icon:'🧹', color:'#cffafe', desc:'全屋日常保洁 · 窗明几净', popular:true },
+        { id:14, name:'深度清洁', icon:'✨', color:'#fce7f3', desc:'厨房/卫生间深度去污', popular:true },
+        { id:15, name:'家电清洗', icon:'🔌', color:'#dbeafe', desc:'油烟机/空调/洗衣机清洗' },
+        { id:16, name:'保姆/月嫂', icon:'👶', color:'#fef3c7', desc:'住家保姆 · 月嫂 · 育儿嫂' },
+        { id:17, name:'除螨除甲醛', icon:'🌿', color:'#d1fae5', desc:'床上除螨 · 全屋甲醛检测' },
+        { id:18, name:'开荒保洁', icon:'🏗️', color:'#ede9fe', desc:'新房/装修后开荒大扫除' },
+    ];
+
+    const cases = [
+        { title:'现代简约·三室两厅', type:'全屋整装', area:'126㎡', img:'🏠', style:'现代简约' },
+        { title:'老房翻新·两室一厅', type:'旧房改造', area:'78㎡', img:'🔄', style:'奶油风' },
+    ];
+
+    const products = [
+        { name:'诺贝尔瓷砖 800×800', price:'¥68/片', sales:326, shop:'金牌陶瓷' },
+        { name:'九牧马桶 节水静音', price:'¥899/个', sales:187, shop:'九牧卫浴' },
+        { name:'断桥铝门窗 双层中空', price:'¥580/㎡', sales:94, shop:'恒达门窗' },
+    ];
+
+    const shopAppts = [
+        { user:'张先生', product:'诺贝尔瓷砖', time:'今天 14:00', status:'待核销' },
+        { user:'李女士', product:'九牧马桶', time:'明天 10:30', status:'已预约' },
+    ];
+
+    // ===== State =====
+    let currentRole = 'user';
+    let currentPage = { user:'user-home', master:'master-home', shop:'shop-home', admin:'admin-home' };
+    let orderIdCounter = 1001;
+
+    function getOrders() {
+        const stored = localStorage.getItem('xf_orders');
+        if (stored) return JSON.parse(stored);
+        const defaults = [
+            { id:'XF20250625001', type:'水电维修', status:'done', name:'张先生', price:280, date:'2025-06-24', desc:'水龙头更换+下水疏通' },
+            { id:'XF20250625002', type:'全屋整装', status:'ongoing', name:'李先生', price:68000, date:'2025-06-20', desc:'三室两厅全屋装修施工中' },
+            { id:'XF20250625003', type:'墙面修补', status:'pending', name:'王女士', price:'待报价', date:'2025-06-25', desc:'客厅墙面裂缝修补' },
+        ];
+        localStorage.setItem('xf_orders', JSON.stringify(defaults));
+        return defaults;
+    }
+
+    function saveOrders(orders) {
+        localStorage.setItem('xf_orders', JSON.stringify(orders));
+    }
+
+    const grabTasks = [
+        { id:1, title:'水龙头漏水更换', addr:'幸福小区3栋203', budget:'¥50-80', category:'水电', time:'刚刚', desc:'厨房水龙头漏水，需上门更换' },
+        { id:2, title:'卫生间防水重做', addr:'阳光花园5栋101', budget:'¥800-1200', category:'防水', time:'5分钟前', desc:'卫生间漏水到楼下，需敲掉重做防水' },
+        { id:3, title:'客厅墙面翻新', addr:'锦绣苑8单元', budget:'¥300-500', category:'装修', time:'10分钟前', desc:'客厅墙面发霉脱皮，需铲掉重新粉刷' },
+        { id:4, title:'空调打孔+安装', addr:'龙庭华府12栋', budget:'¥100-150', category:'维修', time:'15分钟前', desc:'新房装修，需要打3个空调孔' },
+        { id:5, title:'厨房瓷砖空鼓修补', addr:'翠湖名苑6栋', budget:'¥200-350', category:'维修', time:'20分钟前', desc:'厨房墙面多块瓷砖空鼓' },
+        // 家政任务
+        { id:6, title:'日常保洁4小时', addr:'幸福家园8-502', budget:'¥120-150', category:'保洁', time:'2分钟前', desc:'两室一厅全屋日常保洁，自备工具' },
+        { id:7, title:'油烟机深度清洗', addr:'滨江花园3-101', budget:'¥80-120', category:'清洗', time:'8分钟前', desc:'老式油烟机深度拆洗，需专业工具' },
+        { id:8, title:'新房开荒保洁', addr:'翰林苑6-1803', budget:'¥300-500', category:'保洁', time:'12分钟前', desc:'120平新房装修后开荒，含擦窗户' },
+        { id:9, title:'全屋除螨服务', addr:'翠湖湾2-201', budget:'¥150-200', category:'除螨', time:'18分钟前', desc:'三室两厅床上+沙发除螨' },
+    ];
+
+    // ===== App Initialization =====
+    function enterApp() {
+        document.getElementById('landingRoot').style.display = 'none';
+        document.getElementById('appShell').classList.add('active');
+        renderUserHome();
+        renderTabbar();
+    }
+
+    function logout() {
+        if (confirm('确定退出平台？')) {
+            document.getElementById('appShell').classList.remove('active');
+            document.getElementById('landingRoot').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+    }
+
+    function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior:'smooth' });
+    }
+
+    // ===== Navigation =====
+    function navigateTo(page, param) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + page);
+        if (target) {
+            target.classList.add('active');
+            currentPage[currentRole] = page;
+        }
+        // Update header
+        const titles = {
+            'user-home':'修房帮', 'user-services':'全部服务', 'user-repair':'一键报修',
+            'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'user-profile':'个人中心',
+            'master-home':'师傅中心', 'master-grab':'抢单大厅', 'master-orders':'接单记录',
+            'master-profile':'师傅设置',
+            'shop-home':'店铺中心', 'shop-products':'商品管理',
+            'admin-home':'总后台管理'
+        };
+        document.getElementById('appTitle').textContent = titles[page] || '修房帮';
+        document.getElementById('backBtn').style.visibility = (page === 'user-home' || page === 'master-home' || page === 'shop-home' || page === 'admin-home') ? 'hidden' : 'visible';
+
+        if (page === 'user-services') renderServices(param);
+        if (page === 'user-masters') renderMasters();
+        if (page === 'user-orders') renderOrders('all');
+        if (page === 'user-repair') renderRepair();
+        if (page === 'user-housekeeping') renderHousekeeping('all',null);
+        if (page === 'master-home') renderMasterHome();
+        if (page === 'master-grab') renderGrabList('all');
+        if (page === 'master-orders') renderMasterOrders('all');
+        if (page === 'shop-home') renderShopHome();
+        if (page === 'shop-products') renderProductManage();
+        if (page === 'admin-home') renderAdminDashboard();
+    }
+
+    function goBack() {
+        const role = currentRole;
+        const backMap = {
+            'user-services':'user-home', 'user-housekeeping':'user-home', 'user-repair':'user-home', 'user-masters':'user-home',
+            'user-orders':'user-profile', 'user-profile':'user-home',
+            'master-grab':'master-home', 'master-orders':'master-profile', 'master-profile':'master-home',
+            'shop-products':'shop-home'
+        };
+        const target = backMap[currentPage[role]] || (role + '-home');
+        navigateTo(target);
+    }
+
+    // ===== Tabbar =====
+    function renderTabbar() {
+        const tabs = {
+            user: [
+                { id:'user-home', icon:'🏠', label:'首页' },
+                { id:'user-services', icon:'🔧', label:'服务' },
+                { id:'user-repair', icon:'⚡', label:'报修' },
+                { id:'user-orders', icon:'📋', label:'订单' },
+                { id:'user-profile', icon:'👤', label:'我的' },
+            ],
+            master: [
+                { id:'master-home', icon:'🏠', label:'工作台' },
+                { id:'master-grab', icon:'⚔️', label:'抢单' },
+                { id:'master-orders', icon:'📋', label:'订单' },
+                { id:'master-profile', icon:'👷', label:'我的' },
+            ],
+            shop: [
+                { id:'shop-home', icon:'🏠', label:'店铺' },
+                { id:'shop-products', icon:'📦', label:'商品' },
+            ],
+        };
+        const tabbar = document.getElementById('appTabbar');
+        const roleTabs = tabs[currentRole] || tabs.user;
+        tabbar.innerHTML = roleTabs.map(t => `
+            <button class="tab-item ${currentPage[currentRole] === t.id ? 'active' : ''}" onclick="navigateTo('${t.id}')">
+                <span class="icon">${t.icon}</span>
+                <span>${t.label}</span>
+            </button>
+        `).join('');
+        document.getElementById('appTitle').textContent = '修房帮';
+        document.getElementById('backBtn').style.visibility = 'hidden';
+    }
+
+    // ===== Role Switching =====
+    function switchRole(role) {
+        currentRole = role;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        renderTabbar();
+        const home = role + '-home';
+        const target = document.getElementById('page-' + home);
+        if (target) { target.classList.add('active'); currentPage[role] = home; }
+        document.getElementById('appTitle').textContent = role === 'user' ? '修房帮' : role === 'master' ? '师傅中心' : role === 'shop' ? '店铺中心' : '总后台管理';
+        document.getElementById('backBtn').style.visibility = 'hidden';
+        if (role === 'master') renderMasterHome();
+        if (role === 'shop') renderShopHome();
+        if (role === 'admin') renderAdminDashboard();
+    }
+
+    // ===== Render Functions =====
+
+    // User Home
+    function renderUserHome() {
+        // Masters
+        const container = document.getElementById('recommendMasters');
+        container.innerHTML = masters.slice(0,3).map(m => `
+            <div class="card master-card" onclick="openBooking('${m.name}','${m.role}')">
+                <div class="avatar" style="background:${m.color};">${m.avatar}</div>
+                <div class="info">
+                    <h4>${m.name} · ${m.role}</h4>
+                    <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+                    <div class="meta">⭐ ${m.rating} · 已服务${m.orders}单 · ${m.distance}</div>
+                </div>
+                <div class="action">
+                    <div class="price">${m.price}</div>
+                    <button class="btn-sm" onclick="event.stopPropagation();openBooking('${m.name}','${m.role}')">预约</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Cases
+        const caseContainer = document.getElementById('caseGrid');
+        caseContainer.innerHTML = cases.map(c => `
+            <div class="card" style="text-align:center;">
+                <div style="font-size:2.5rem;margin-bottom:8px;">${c.img}</div>
+                <h4 style="font-size:.85rem;font-weight:700;">${c.title}</h4>
+                <p style="font-size:.72rem;color:var(--gray-500);margin-top:4px;">${c.type} · ${c.area} · ${c.style}</p>
+            </div>
+        `).join('');
+    }
+
+    // Services
+    function renderServices(filter) {
+        const grid = document.getElementById('serviceGrid');
+        let list = services;
+        if (filter) list = services.filter(s => s.name.includes(filter) || s.desc.includes(filter));
+        grid.innerHTML = list.map(s => `
+            <div class="card service-card" onclick="openBooking('${s.name}','服务')">
+                <div class="icon" style="background:${s.color};width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">${s.icon}</div>
+                <h4>${s.name}${s.popular ? ' 🔥' : ''}</h4>
+                <p>${s.desc}</p>
+            </div>
+        `).join('');
+
+        // Filter tabs
+        const cats = [...new Set(services.map(s => s.name.charAt(0)))].slice(0,4);
+        const ft = document.getElementById('serviceFilterTabs');
+        ft.innerHTML = `<button class="filter-tab active" onclick="renderServices()">全部</button>` +
+            cats.map(c => `<button class="filter-tab" onclick="renderServices('${c}')">${c}</button>`).join('');
+    }
+
+    // ===== Housekeeping =====
+    function renderHousekeeping(filter, el) {
+        // Tabs
+        if (el) {
+            document.querySelectorAll('#hkFilterTabs .filter-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+        // Services
+        const hkServices = services.filter(s => ['日常保洁','深度清洁','家电清洗','保姆/月嫂','除螨除甲醛','开荒保洁'].includes(s.name));
+        let filtered = hkServices;
+        if (filter && filter !== 'all') {
+            filtered = hkServices.filter(s => s.name.includes(filter) || s.desc.includes(filter));
+        }
+        const grid = document.getElementById('hkServices');
+        grid.innerHTML = filtered.map(s => `
+            <div class="card service-card" onclick="openBooking('${s.name}','家政服务')">
+                <div class="icon" style="background:${s.color};width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">${s.icon}</div>
+                <h4>${s.name}${s.popular ? ' 🔥' : ''}</h4>
+                <p>${s.desc}</p>
+            </div>
+        `).join('');
+
+        // Masters (家政阿姨)
+        const hkMasters = masters.filter(m => ['赵阿姨','孙姐','周阿姨','吴师傅'].includes(m.name));
+        let filteredMasters = hkMasters;
+        if (filter && filter !== 'all') {
+            filteredMasters = hkMasters.filter(m => m.tags.some(t => t.includes(filter)));
+        }
+        const ml = document.getElementById('hkMasters');
+        ml.innerHTML = filteredMasters.map(m => `
+            <div class="card master-card" onclick="openBooking('${m.name}','${m.role}')">
+                <div class="avatar" style="background:${m.color};">${m.avatar}</div>
+                <div class="info">
+                    <h4>${m.name} · ${m.role}</h4>
+                    <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+                    <div class="meta">⭐ ${m.rating} · 已服务${m.orders}单 · ${m.distance}</div>
+                    <p style="font-size:.75rem;color:var(--gray-500);margin-top:4px;">${m.desc}</p>
+                </div>
+                <div class="action">
+                    <div class="price">${m.price}</div>
+                    <button class="btn-sm" onclick="event.stopPropagation();openBooking('${m.name}','${m.role}')">预约</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterServices() {
+        const q = document.getElementById('serviceSearch').value;
+        renderServices(q || null);
+    }
+
+    // Masters List
+    function renderMasters() {
+        const list = document.getElementById('masterList');
+        list.innerHTML = masters.map(m => `
+            <div class="card master-card" onclick="openBooking('${m.name}','${m.role}')">
+                <div class="avatar" style="background:${m.color};">${m.avatar}</div>
+                <div class="info">
+                    <h4>${m.name} · ${m.role}</h4>
+                    <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+                    <div class="meta">⭐ ${m.rating} · ${m.orders}单 · ${m.distance}</div>
+                    <p style="font-size:.75rem;color:var(--gray-500);margin-top:4px;">${m.desc}</p>
+                </div>
+                <div class="action">
+                    <div class="price">${m.price}</div>
+                    <button class="btn-sm" onclick="event.stopPropagation();openBooking('${m.name}','${m.role}')">预约</button>
+                </div>
+            </div>
+        `).join('');
+
+        const ft = document.getElementById('masterFilterTabs');
+        const tags = [...new Set(masters.flatMap(m => m.tags))];
+        ft.innerHTML = `<button class="filter-tab active" onclick="filterMasters()">全部</button>` +
+            tags.map(t => `<button class="filter-tab" onclick="filterMastersByTag('${t}')">${t}</button>`).join('');
+    }
+
+    function filterMasters() {
+        const q = document.getElementById('masterSearch').value;
+        if (!q) { renderMasters(); return; }
+        const list = document.getElementById('masterList');
+        const filtered = masters.filter(m => m.name.includes(q) || m.tags.some(t => t.includes(q)));
+        list.innerHTML = filtered.map(m => `
+            <div class="card master-card" onclick="openBooking('${m.name}','${m.role}')">
+                <div class="avatar" style="background:${m.color};">${m.avatar}</div>
+                <div class="info">
+                    <h4>${m.name} · ${m.role}</h4>
+                    <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+                    <div class="meta">⭐ ${m.rating} · ${m.orders}单 · ${m.distance}</div>
+                </div>
+                <div class="action">
+                    <div class="price">${m.price}</div>
+                    <button class="btn-sm" onclick="event.stopPropagation();openBooking('${m.name}','${m.role}')">预约</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterMastersByTag(tag) {
+        const list = document.getElementById('masterList');
+        const filtered = masters.filter(m => m.tags.includes(tag));
+        list.innerHTML = filtered.map(m => `
+            <div class="card master-card" onclick="openBooking('${m.name}','${m.role}')">
+                <div class="avatar" style="background:${m.color};">${m.avatar}</div>
+                <div class="info">
+                    <h4>${m.name} · ${m.role}</h4>
+                    <div class="tags">${m.tags.map(t => `<span>${t}</span>`).join('')}</div>
+                    <div class="meta">⭐ ${m.rating} · ${m.orders}单 · ${m.distance}</div>
+                </div>
+                <div class="action">
+                    <div class="price">${m.price}</div>
+                    <button class="btn-sm" onclick="event.stopPropagation();openBooking('${m.name}','${m.role}')">预约</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Repair
+    function renderRepair() {}
+
+    function submitRepair() {
+        const desc = document.getElementById('repairDesc').value;
+        const cat = document.getElementById('repairCategory').value;
+        if (!desc) { showToast('请描述您遇到的问题'); return; }
+        const orders = getOrders();
+        const newOrder = {
+            id:'XF' + new Date().toISOString().slice(0,10).replace(/-/g,'') + (1000+orders.length),
+            type:cat, status:'pending', name:'我', price:'待报价',
+            date: new Date().toISOString().slice(0,10), desc:desc
+        };
+        orders.unshift(newOrder);
+        saveOrders(orders);
+        showToast('✅ 报修发布成功！正在为您匹配附近师傅...');
+        document.getElementById('repairDesc').value = '';
+    }
+
+    // Orders
+    function renderOrders(filter) {
+        const list = document.getElementById('orderList');
+        const orders = getOrders();
+        const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--gray-500);">暂无相关订单</div>`;
+            return;
+        }
+        list.innerHTML = filtered.map(o => `
+            <div class="card order-card status-${o.status}">
+                <div class="head">
+                    <h4>${o.type}</h4>
+                    <span class="status ${o.status}">${ {pending:'待接单',ongoing:'服务中',done:'已完成'}[o.status] || o.status }</span>
+                </div>
+                <p>${o.name} · ${o.desc}</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <span style="font-size:.75rem;color:var(--gray-500);">${o.date} · ${o.id}</span>
+                    <span class="price">${typeof o.price === 'number' ? '¥'+o.price.toLocaleString() : o.price}</span>
+                </div>
+                ${o.status === 'done' ? '<div style="margin-top:8px;"><button class="btn btn-sm btn-primary" onclick="showToast(\'感谢你的评价！\')">⭐ 评价</button></div>' : ''}
+                ${o.status === 'pending' ? '<div style="margin-top:8px;"><button class="btn btn-sm btn-outline" style="background:var(--gray-100);border:none;" onclick="showToast(\'已取消订单\')">取消订单</button></div>' : ''}
+            </div>
+        `).join('');
+    }
+
+    function filterOrders(filter) {
+        document.querySelectorAll('#orderFilterTabs .filter-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`#orderFilterTabs .filter-tab[data-filter="${filter}"]`).classList.add('active');
+        renderOrders(filter);
+    }
+
+    // ===== Master Functions =====
+    function renderMasterHome() {
+        document.getElementById('masterEarnings').textContent = '¥' + (Math.floor(Math.random()*3000+1500)).toLocaleString();
+        document.getElementById('masterOrders').textContent = Math.floor(Math.random()*20+10);
+        document.getElementById('masterRating').textContent = (4.7 + Math.random()*0.3).toFixed(1) + '⭐';
+
+        const grab = document.getElementById('grabOrders');
+        grab.innerHTML = grabTasks.slice(0,2).map(t => `
+            <div class="card" onclick="grabOrder(${t.id})">
+                <div style="display:flex;justify-content:space-between;">
+                    <h4 style="font-size:.9rem;font-weight:600;">${t.title}</h4>
+                    <span style="font-size:.72rem;color:var(--gray-500);">${t.time}</span>
+                </div>
+                <p style="font-size:.8rem;color:var(--gray-500);margin:4px 0;">📍 ${t.addr}</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-weight:700;color:var(--primary);font-size:.9rem;">${t.budget}</span>
+                    <button class="btn btn-sm btn-accent" style="padding:4px 16px;">立即抢单</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderGrabList(filter) {
+        const list = document.getElementById('grabList');
+        const tasks = filter === 'all' ? grabTasks : grabTasks.filter(t => t.category === filter || t.title.includes(filter));
+        list.innerHTML = tasks.map(t => `
+            <div class="card" onclick="grabOrder(${t.id})">
+                <div style="display:flex;justify-content:space-between;">
+                    <h4 style="font-size:.9rem;font-weight:600;">${t.title}</h4>
+                    <span style="font-size:.72rem;color:var(--gray-500);">${t.time}</span>
+                </div>
+                <p style="font-size:.8rem;color:var(--gray-500);margin:4px 0;">📍 ${t.addr}</p>
+                <p style="font-size:.75rem;color:var(--gray-500);">${t.desc}</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <span style="font-weight:700;color:var(--primary);font-size:.9rem;">${t.budget}</span>
+                    <button class="btn btn-sm btn-accent" style="padding:6px 18px;">⚡ 立即抢单</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterGrab(filter, el) {
+        document.querySelectorAll('#grabList').forEach(() => {});
+        document.querySelectorAll('#page-master-grab .filter-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        renderGrabList(filter);
+    }
+
+    function grabOrder(id) {
+        showToast('✅ 抢单成功！请联系用户确认服务时间');
+    }
+
+    function renderMasterOrders(filter) {
+        const list = document.getElementById('masterOrderList');
+        const orders = getOrders().filter(o => o.status !== 'pending');
+        const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--gray-500);">暂无接单记录</div>`;
+            return;
+        }
+        list.innerHTML = filtered.map(o => `
+            <div class="card order-card status-${o.status}">
+                <div class="head">
+                    <h4>${o.type} · ${o.name}</h4>
+                    <span class="status ${o.status}">${ {ongoing:'服务中',done:'已完成'}[o.status] }</span>
+                </div>
+                <p>${o.desc}</p>
+                <div style="display:flex;justify-content:space-between;margin-top:6px;">
+                    <span style="font-size:.75rem;color:var(--gray-500);">${o.date}</span>
+                    <span style="font-weight:700;color:var(--primary);">${typeof o.price === 'number' ? '¥'+o.price.toLocaleString() : o.price}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterMasterOrders(filter, el) {
+        document.querySelectorAll('#page-master-orders .filter-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        renderMasterOrders(filter);
+    }
+
+    // ===== Shop Functions =====
+    function renderShopHome() {
+        const prod = document.getElementById('shopProducts');
+        prod.innerHTML = products.map(p => `
+            <div class="card" style="text-align:center;">
+                <div style="font-size:2rem;margin-bottom:8px;">📦</div>
+                <h4 style="font-size:.85rem;font-weight:700;">${p.name}</h4>
+                <p style="font-size:.8rem;color:var(--primary);font-weight:700;">${p.price}</p>
+                <p style="font-size:.7rem;color:var(--gray-500);">已售${p.sales}件</p>
+            </div>
+        `).join('');
+
+        const apt = document.getElementById('shopAppointments');
+        apt.innerHTML = shopAppts.map(a => `
+            <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h4 style="font-size:.85rem;font-weight:600;">${a.user} · ${a.product}</h4>
+                    <p style="font-size:.75rem;color:var(--gray-500);">${a.time}</p>
+                </div>
+                <span class="badge" style="background:${a.status === '待核销' ? '#fef3c7' : '#dbeafe'};color:${a.status === '待核销' ? '#d97706' : '#2563eb'}">${a.status}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderProductManage() {
+        const list = document.getElementById('productManageList');
+        list.innerHTML = products.map(p => `
+            <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h4 style="font-size:.85rem;font-weight:600;">${p.name}</h4>
+                    <p style="font-size:.75rem;color:var(--gray-500);">${p.price} · 已售${p.sales}件 · ${p.shop}</p>
+                </div>
+                <span style="display:flex;gap:8px;">
+                    <button class="btn btn-sm" style="background:var(--gray-100);border:none;" onclick="showToast('已编辑')">✏️</button>
+                    <button class="btn btn-sm" style="background:var(--gray-100);border:none;" onclick="showToast('已下架')">🚫</button>
+                </span>
+            </div>
+        `).join('');
+    }
+
+    // ===== Admin Functions =====
+    function renderAdminDashboard() {
+        const tbody = document.getElementById('adminOrderTable');
+        const orders = getOrders().slice(0,5);
+        tbody.innerHTML = orders.map(o => `
+            <tr>
+                <td>${o.id}</td>
+                <td>${o.name}</td>
+                <td>${o.type}</td>
+                <td>${typeof o.price === 'number' ? '¥'+o.price.toLocaleString() : o.price}</td>
+                <td><span class="badge" style="background:${o.status==='done'?'#d1fae5':o.status==='ongoing'?'#dbeafe':'#fef3c7'};color:${o.status==='done'?'#059669':o.status==='ongoing'?'#2563eb':'#d97706'}">${ {pending:'待接单',ongoing:'服务中',done:'已完成'}[o.status] }</span></td>
+            </tr>
+        `).join('');
+    }
+
+    function adminNav(section, el) {
+        document.querySelectorAll('.admin-sidebar .menu-item').forEach(m => m.classList.remove('active'));
+        el.classList.add('active');
+        const content = document.getElementById('adminContent');
+        const data = {
+            dashboard: `<h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">📊 数据看板</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
+                    <div class="stat-card"><div class="num" style="color:var(--primary);">1,284</div><div class="label">注册用户</div></div>
+                    <div class="stat-card"><div class="num" style="color:var(--accent);">156</div><div class="label">认证师傅</div></div>
+                    <div class="stat-card"><div class="num" style="color:var(--success);">48</div><div class="label">入驻商家</div></div>
+                    <div class="stat-card"><div class="num" style="color:var(--purple);">¥52,380</div><div class="label">平台总收入</div></div>
+                </div>
+                <div class="section-header"><h3>📋 最新订单</h3></div>
+                <table class="data-table"><thead><tr><th>订单号</th><th>用户</th><th>类型</th><th>金额</th><th>状态</th></tr></thead>
+                <tbody id="adminOrderTable"></tbody></table>`,
+            users: `<h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">👥 用户管理</h3>
+                <table class="data-table"><thead><tr><th>ID</th><th>昵称</th><th>手机号</th><th>注册时间</th><th>订单数</th><th>状态</th></tr></thead>
+                <tbody>${[1,2,3,4,5].map(i => `<tr><td>${1000+i}</td><td>用户${i}</td><td>138****${String(1000+i).slice(1)}</td><td>2025-06-${10+i}</td><td>${Math.floor(Math.random()*10)}</td><td><span class="badge" style="background:#d1fae5;color:#059669;">正常</span></td></tr>`).join('')}</tbody></table>`,
+            masters: `<h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">👷 师傅管理</h3>
+                <table class="data-table"><thead><tr><th>ID</th><th>姓名</th><th>技能</th><th>评分</th><th>订单数</th><th>认证</th></tr></thead>
+                <tbody>${masters.map(m => `<tr><td>${m.id}</td><td>${m.name}</td><td>${m.tags.join('/')}</td><td>⭐${m.rating}</td><td>${m.orders}</td><td><span class="badge" style="background:#d1fae5;color:#059669;">✅ 已认证</span></td></tr>`).join('')}</tbody></table>`,
+            shops: `<h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">🏪 商家管理</h3>
+                <table class="data-table"><thead><tr><th>店铺名</th><th>联系人</th><th>主营</th><th>评分</th><th>入驻时间</th><th>状态</th></tr></thead>
+                <tbody><tr><td>金牌陶瓷</td><td>王老板</td><td>瓷砖/卫浴</td><td>4.8⭐</td><td>2025-05-01</td><td><span class="badge" style="background:#d1fae5;color:#059669;">营业中</span></td></tr>
+                <tr><td>九牧卫浴</td><td>李总</td><td>卫浴/五金</td><td>4.9⭐</td><td>2025-04-15</td><td><span class="badge" style="background:#d1fae5;color:#059669;">营业中</span></td></tr>
+                <tr><td>恒达门窗</td><td>张经理</td><td>门窗/定制</td><td>4.7⭐</td><td>2025-05-20</td><td><span class="badge" style="background:#d1fae5;color:#059669;">营业中</span></td></tr></tbody></table>`,
+            orders: `<h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">📋 订单管理</h3>
+                <div class="filter-tabs"><button class="filter-tab active">全部</button><button class="filter-tab">待接单</button><button class="filter-tab">服务中</button><button class="filter-tab">已完成</button></div>
+                <table class="data-table"><thead><tr><th>订单号</th><th>用户</th><th>师傅</th><th>类型</th><th>金额</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>${getOrders().slice(0,5).map(o => `<tr><td>${o.id}</td><td>${o.name}</td><td>${o.status==='pending'?'待分配':'李师傅'}</td><td>${o.type}</td><td>${typeof o.price==='number'?'¥'+o.price.toLocaleString():o.price}</td><td><span class="badge" style="background:${o.status==='done'?'#d1fae5':o.status==='ongoing'?'#dbeafe':'#fef3c7'};color:${o.status==='done'?'#059669':o.status==='ongoing'?'#2563eb':'#d97706'}">${ {pending:'待接单',ongoing:'服务中',done:'已完成'}[o.status] }</span></td><td><button class="btn btn-sm" style="background:var(--gray-100);border:none;" onclick="showToast('已处理')">处理</button></td></tr>`).join('')}</tbody></table>`,
+            revenue: `<h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">💰 收益统计</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
+                    <div class="stat-card"><div class="num" style="color:var(--primary);">¥32,400</div><div class="label">本月收入</div></div>
+                    <div class="stat-card"><div class="num" style="color:var(--accent);">¥18,200</div><div class="label">上月收入</div></div>
+                    <div class="stat-card"><div class="num" style="color:var(--success);">+78%</div><div class="label">环比增长</div></div>
+                </div>
+                <div class="section-header"><h3>收入构成</h3></div>
+                <div class="gap-row">
+                    <div class="card" style="display:flex;justify-content:space-between;"><span>接单抽成</span><span style="font-weight:700;">¥18,560</span></div>
+                    <div class="card" style="display:flex;justify-content:space-between;"><span>商家入驻费</span><span style="font-weight:700;">¥8,400</span></div>
+                    <div class="card" style="display:flex;justify-content:space-between;"><span>建材交易佣金</span><span style="font-weight:700;">¥3,240</span></div>
+                    <div class="card" style="display:flex;justify-content:space-between;"><span>广告位收入</span><span style="font-weight:700;">¥2,200</span></div>
+                </div>`
+        };
+        content.innerHTML = data[section] || '<h3>页面开发中...</h3>';
+        if (section === 'dashboard') renderAdminDashboard();
+    }
+
+    // ===== Booking =====
+    function openBooking(name, service) {
+        document.getElementById('bookingModal').classList.add('active');
+        document.getElementById('bookName').value = '';
+        document.getElementById('bookPhone').value = '';
+        document.getElementById('bookAddr').value = '';
+        document.getElementById('bookNote').value = '';
+        document.getElementById('bookType').value = service.includes('服务') ? '维修服务' : '全屋整装';
+        showToast(`已选择 ${name}${service}`);
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function submitBooking(e) {
+        e.preventDefault();
+        const name = document.getElementById('bookName').value;
+        const phone = document.getElementById('bookPhone').value;
+        // Add to orders
+        const orders = getOrders();
+        orders.unshift({
+            id:'XF' + Date.now().toString().slice(-8),
+            type: document.getElementById('bookType').value,
+            status:'pending', name:name, price:'待报价',
+            date: new Date().toISOString().slice(0,10),
+            desc:`${name} · ${phone} · ${document.getElementById('bookAddr').value}`
+        });
+        saveOrders(orders);
+        closeModal('bookingModal');
+        showToast('✅ 预约成功！客服将在30分钟内联系您');
+    }
+
+    // ===== Toast =====
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== Init =====
+    // Close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+        el.addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+    });
+</script>
+</body>
+</html>
