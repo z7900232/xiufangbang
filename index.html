@@ -1948,7 +1948,8 @@
             '瓷砖铺贴':'瓷砖铺贴',
         };
         // 先用typeMap检查角色名，再用nameTypeMap检查服务名称
-        document.getElementById('bookType').value = typeMap[service] || nameTypeMap[name] || (service.includes('服务') ? '维修服务' : '全屋整装');
+        // 先按具体服务名称匹配，再用类型匹配（避免家政服务被统一识别）
+        document.getElementById('bookType').value = nameTypeMap[name] || typeMap[service] || (service.includes('服务') ? '维修服务' : '全屋整装');
         if (name) showToast(`已选择 ${name}`);
     }
 
