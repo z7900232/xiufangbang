@@ -1590,6 +1590,8 @@
         };
         orders.unshift(newOrder);
         saveOrders(orders);
+        // 微信推送
+        pushToWeChat('我', '已登录用户', cat, desc, '未填写', '尽快');
         showToast('✅ 报修发布成功！正在为您匹配附近师傅...');
         document.getElementById('repairDesc').value = '';
     }
@@ -1839,6 +1841,8 @@
             desc:`${name} · ${phone} · ${document.getElementById('bookAddr').value}`
         });
         saveOrders(orders);
+        // 微信推送
+        pushToWeChat(name, phone, document.getElementById('bookType').value, document.getElementById('bookNote').value || '预约服务', document.getElementById('bookAddr').value, '待确认');
         closeModal('bookingModal');
         showToast('✅ 预约成功！客服将在30分钟内联系您');
     }
