@@ -893,9 +893,24 @@
             <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px;">
                 <div style="font-size:.78rem;font-weight:600;color:#334155;margin-bottom:10px;">📂 预约项目</div>
                 <select id="bookType" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:.9rem;outline:none;background:#fff;">
-                    <option>全屋整装</option><option>旧房翻新</option><option>局部改造</option>
-                    <option>维修服务</option><option>日常保洁</option><option>深度清洁</option>
-                    <option>家电清洗</option><option>自建房设计</option><option>建材采购</option>
+                    <optgroup label="🏠 装修服务">
+                        <option>全屋整装</option><option>旧房翻新</option><option>局部改造</option>
+                    </optgroup>
+                    <optgroup label="🔧 维修服务">
+                        <option>水电维修</option><option>漏水补漏</option><option>墙面修补</option>
+                        <option>瓷砖空鼓</option><option>门窗维修</option><option>打孔疏通</option>
+                        <option>吊顶安装</option><option>灯具安装</option><option>防水施工</option>
+                    </optgroup>
+                    <optgroup label="🧹 保洁家政">
+                        <option>日常保洁</option><option>深度清洁</option><option>家电清洗</option>
+                        <option>开荒保洁</option><option>除螨除甲醛</option><option>保姆/月嫂</option>
+                    </optgroup>
+                    <optgroup label="🏗️ 自建房/建材">
+                        <option>自建房设计</option><option>建材采购</option>
+                    </optgroup>
+                    <optgroup label="🔨 安装施工">
+                        <option>门窗安装</option><option>瓷砖铺贴</option>
+                    </optgroup>
                 </select>
             </div>
             <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px;">
@@ -1191,13 +1206,21 @@
         }
         const title = prefix + ' - ' + category;
         const content = `
+━━━━━━━━━━━━━━━━━━
+📋 订单详情
+━━━━━━━━━━━━━━━━━━
+
+📂 服务项目：${category}
 👤 联系人：${name}
 📱 电话：${phone}
-📂 类型：${category}
-📍 地址：${addr}
-🕐 时间：${time}
-📝 描述：${problem}
-🔗 查看详情：http://xiufangbang.xin
+📍 地址：${addr || '未填写'}
+🕐 上门时间：${time}
+📝 问题描述：${problem || '无'}
+
+━━━━━━━━━━━━━━━━━━
+⏱ 提交时间：${new Date().toLocaleString()}
+🔗 修房帮：http://xiufangbang.xin
+━━━━━━━━━━━━━━━━━━
         `.trim();
 
         // 使用 Server酱 推送
@@ -1907,13 +1930,22 @@
             '除螨/消杀':'深度清洁',
             '家政服务':'日常保洁',
         };
-        // 根据名称自动匹配服务类型
+        // 根据名称自动匹配服务类型（覆盖所有18项服务）
         const nameTypeMap = {
-            '自建房设计':'自建房设计','全屋整装':'全屋整装','旧房翻新':'旧房翻新','局部改造':'局部改造',
-            '水电维修':'水电维修','防水补漏':'防水补漏','墙面修补':'墙面修补','门窗安装':'门窗安装',
-            '打孔疏通':'打孔疏通','吊顶安装':'吊顶安装','瓷砖铺贴':'瓷砖铺贴','建材采购':'建材采购',
-            '日常保洁':'日常保洁','深度清洁':'深度清洁','家电清洗':'家电清洗','开荒保洁':'开荒保洁',
-            '除螨除甲醛':'除螨除甲醛','保姆/月嫂':'保姆/月嫂','精细保洁':'日常保洁',
+            // 装修
+            '全屋整装':'全屋整装','旧房翻新':'旧房翻新','局部改造':'局部改造',
+            // 维修
+            '水电维修':'水电维修','防水补漏':'漏水补漏','墙面修补':'墙面修补',
+            '瓷砖空鼓':'瓷砖空鼓','门窗安装':'门窗安装','打孔疏通':'打孔疏通',
+            '吊顶安装':'吊顶安装','灯具安装':'灯具安装','防水施工':'防水施工',
+            // 家政
+            '日常保洁':'日常保洁','深度清洁':'深度清洁','家电清洗':'家电清洗',
+            '开荒保洁':'开荒保洁','除螨除甲醛':'除螨除甲醛','保姆/月嫂':'保姆/月嫂',
+            '精细保洁':'日常保洁',
+            // 自建房/建材
+            '自建房设计':'自建房设计','建材采购':'建材采购',
+            // 安装
+            '瓷砖铺贴':'瓷砖铺贴',
         };
         // 先用typeMap检查角色名，再用nameTypeMap检查服务名称
         document.getElementById('bookType').value = typeMap[service] || nameTypeMap[name] || (service.includes('服务') ? '维修服务' : '全屋整装');
@@ -1950,7 +1982,7 @@
         saveOrders(orders);
         closeModal('bookingModal');
         // 微信推送（所有字段齐全）
-        pushToWeChat(name, phone, type, note || '预约服务', addr, '待确认');
+        pushToWeChat(name, phone, type, (note || '') + ` | 预约项目：${type}`, addr, '待确认');
         showToast('✅ 预约成功！已推送至您的微信');
     }
 
