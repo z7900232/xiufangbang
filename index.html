@@ -271,6 +271,10 @@
         .user-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;color:#fff}
 
         /* ===== Responsive ===== */
+        @keyframes scrollBanner {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
         @media(max-width:480px){
             .grid-2{grid-template-columns:1fr}
             .grid-3{grid-template-columns:repeat(3,1fr)}
@@ -675,13 +679,25 @@
             <div class="grid-2" id="serviceGrid"></div>
         </div>
 
-        <!-- 施工风采 -->
-        <div class="page" id="page-user-gallery">
-            <div class="banner" style="background:linear-gradient(135deg,#1e293b,#2563eb);">
-                <h3>📸 施工风采</h3>
-                <p>真实工地案例 · 工艺看得见</p>
+        <!-- 案例（朋友圈风格）-->
+        <div class="page" id="page-user-gallery" style="padding:0;">
+            <!-- 顶部固定大图 -->
+            <div style="position:sticky;top:0;z-index:10;overflow:hidden;height:200px;background:linear-gradient(135deg,#1e293b,#2563eb);">
+                <div style="display:flex;height:100%;animation:scrollBanner 12s linear infinite;width:200%;" id="bannerTrack">
+                    <div style="width:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-direction:column;">
+                        <div style="font-size:2.5rem;">🏠</div>
+                        <div style="font-size:1rem;font-weight:700;margin-top:6px;">渠县本地案例</div>
+                        <div style="font-size:.75rem;opacity:.6;margin-top:4px;">真实工地 · 工艺看得见</div>
+                    </div>
+                    <div style="width:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-direction:column;">
+                        <div style="font-size:2.5rem;">🔨</div>
+                        <div style="font-size:1rem;font-weight:700;margin-top:6px;">200+ 完工案例</div>
+                        <div style="font-size:.75rem;opacity:.6;margin-top:4px;">业主好评 · 口碑保障</div>
+                    </div>
+                </div>
             </div>
-            <div class="gap-row" id="galleryGrid"></div>
+            <!-- 案例列表（朋友圈风格）-->
+            <div style="padding:16px;" id="galleryGrid"></div>
         </div>
 
         <!-- Repair Page -->
@@ -1498,7 +1514,7 @@ function showPushNotification(name, category, phone) {
         }
         // Update header
         const titles = {
-            'user-home':'修房帮·渠县', 'user-gallery':'施工风采', 'user-repair':'一键报修',
+            'user-home':'修房帮·渠县', 'user-gallery':'案例', 'user-repair':'一键报修',
             'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'order-log':'订单记录台账', 'user-profile':'联系我们',
             'master-home':'师傅中心', 'master-grab':'抢单大厅', 'master-orders':'接单记录',
             'master-profile':'师傅设置',
@@ -1540,7 +1556,7 @@ function showPushNotification(name, category, phone) {
         const tabs = {
             user: [
                 { id:'user-home', icon:'🏠', label:'首页' },
-                { id:'user-gallery', icon:'📸', label:'风采' },
+                { id:'user-gallery', icon:'📸', label:'案例' },
                 { id:'user-repair', icon:'⚡', label:'报修' },
                 { id:'user-orders', icon:'📋', label:'订单' },
                 { id:'user-profile', icon:'📞', label:'联系' },
@@ -1648,20 +1664,32 @@ function showPushNotification(name, category, phone) {
     function renderGallery() {
         var grid = document.getElementById('galleryGrid');
         var cases = [
-            { title:'渠县·科华首座 水电改造', type:'水电维修', date:'2025-06', img:'⚡' },
-            { title:'渠县·东城半岛 厨卫翻新', type:'局部改造', date:'2025-06', img:'🔨' },
-            { title:'渠县·紫天花园 全屋装修', type:'装修设计', date:'2025-05', img:'🏠' },
-            { title:'渠县·碧桂园 别墅装修', type:'装修设计', date:'2025-05', img:'🏡' },
-            { title:'渠县·科华首座 开荒保洁', type:'家政上门', date:'2025-06', img:'🧹' },
-            { title:'渠县·农村自建房 三层施工', type:'自建房', date:'2025-04', img:'🏗️' },
-            { title:'渠县·锦尚半岛 防水工程', type:'房屋维修', date:'2025-06', img:'💧' },
-            { title:'渠县·地旺广场 电路改造', type:'局部改造', date:'2025-05', img:'🔥' },
+            { title:'科华首座·水电改造完工', type:'房屋维修', date:'3天前', like:12, comment:3, images:['⚡','💧'] },
+            { title:'东城半岛·厨房翻新前后对比', type:'局部改造', date:'1周前', like:28, comment:5, images:['🔨','🍳'] },
+            { title:'紫天花园·三室两厅完工实拍', type:'装修设计', date:'2周前', like:45, comment:8, images:['🏠','🛋️'] },
+            { title:'碧桂园·别墅外墙翻新', type:'装修设计', date:'2周前', like:33, comment:6, images:['🏡','🌳'] },
+            { title:'科华首座·全屋深度保洁', type:'家政上门', date:'5天前', like:18, comment:2, images:['🧹','✨'] },
+            { title:'农村自建房·三层砖混施工', type:'自建房修建', date:'1月前', like:56, comment:12, images:['🏗️','🔨'] },
+            { title:'锦尚半岛·卫生间防水完工', type:'房屋维修', date:'1周前', like:22, comment:4, images:['💧','🚽'] },
+            { title:'地旺广场·全屋电路改造', type:'局部改造', date:'3天前', like:15, comment:1, images:['⚡','🔌'] },
         ];
         grid.innerHTML = cases.map(function(c) {
-            return '<div class="card" style="padding:16px;">' +
-                '<div style="font-size:2.5rem;text-align:center;margin-bottom:8px;">' + c.img + '</div>' +
-                '<h4 style="font-size:.9rem;font-weight:700;text-align:center;">' + c.title + '</h4>' +
-                '<p style="font-size:.75rem;color:#64748b;text-align:center;margin-top:4px;">' + c.type + ' · ' + c.date + '</p>' +
+            var imgs = c.images.map(function(ic) {
+                return '<div style="display:inline-block;width:calc(50% - 4px);height:120px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:2px;">' + ic + '</div>';
+            }).join('');
+            return '<div style="background:#fff;border-radius:14px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);">' +
+                '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px 8px;">' +
+                    '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;">🏠</div>' +
+                    '<div><div style="font-size:.85rem;font-weight:700;">修房帮·渠县</div><div style="font-size:.7rem;color:#94a3b8;">' + c.date + '</div></div>' +
+                '</div>' +
+                '<div style="padding:0 16px 8px;font-size:.82rem;color:#334155;line-height:1.5;">' + c.title + '</div>' +
+                '<div style="padding:0 16px 8px;display:flex;gap:6px;">' +
+                    '<span style="padding:2px 10px;border-radius:10px;font-size:.65rem;font-weight:600;background:#dbeafe;color:#2563eb;">' + c.type + '</span>' +
+                '</div>' +
+                '<div style="padding:0 16px;display:flex;flex-wrap:wrap;">' + imgs + '</div>' +
+                '<div style="display:flex;gap:24px;padding:10px 16px;border-top:1px solid #f1f5f9;margin-top:10px;font-size:.75rem;color:#64748b;">' +
+                    '<span>❤️ ' + c.like + '</span><span>💬 ' + c.comment + '</span><span style="flex:1;text-align:right;" onclick="showRepairForm()">📋 我也要预约</span>' +
+                '</div>' +
             '</div>';
         }).join('');
     }
