@@ -615,19 +615,19 @@
 
             <!-- Quick Entry -->
             <div class="quick-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
-                <div class="quick-item" style="background:linear-gradient(135deg,#fee2e2,#fef2f2);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
+                <div class="quick-item" style="background:linear-gradient(135deg,#fee2e2,#fef2f2);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm('房屋维修')">
                     <div style="font-size:1.8rem;">⚡</div>
                     <div style="font-size:.7rem;font-weight:600;color:#dc2626;margin-top:4px;">房屋维修</div>
                 </div>
-                <div class="quick-item" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
+                <div class="quick-item" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm('局部改造')">
                     <div style="font-size:1.8rem;">🔨</div>
                     <div style="font-size:.7rem;font-weight:600;color:#d97706;margin-top:4px;">局部改造</div>
                 </div>
-                <div class="quick-item" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
+                <div class="quick-item" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm('装修设计')">
                     <div style="font-size:1.8rem;">🏠</div>
                     <div style="font-size:.7rem;font-weight:600;color:#2563eb;margin-top:4px;">装修设计</div>
                 </div>
-                <div class="quick-item" style="background:linear-gradient(135deg,#cffafe,#ecfeff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm()">
+                <div class="quick-item" style="background:linear-gradient(135deg,#cffafe,#ecfeff);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm('家政上门')">
                     <div style="font-size:1.8rem;">🧹</div>
                     <div style="font-size:.7rem;font-weight:600;color:#0891b2;margin-top:4px;">家政上门</div>
                 </div>
@@ -1248,13 +1248,33 @@
     }
 
     // ===== Repair Form Functions =====
-    function showRepairForm() {
+    function showRepairForm(category) {
         // Check login
         if (!isLoggedIn()) {
             showAuth('login');
             return;
         }
         document.getElementById('repairFormModal').classList.add('active');
+        // 根据传入的类别预选服务
+        if (category) {
+            var catMap = {
+                '房屋维修':'水电维修',
+                '局部改造':'厕所翻新',
+                '装修设计':'旧房翻新',
+                '家政上门':'日常保洁',
+                '自建房修建':'设计'
+            };
+            var el = document.getElementById('repairCategory2');
+            if (el) {
+                var target = catMap[category] || '水电维修';
+                for (var i = 0; i < el.options.length; i++) {
+                    if (el.options[i].value === target) {
+                        el.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
         // 如果已登录，自动填写联系人
         if (currentUser) {
             document.getElementById('repairContact').value = currentUser.name || '';
