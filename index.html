@@ -875,7 +875,7 @@
     <div class="modal">
         <h3>📋 预约服务</h3>
         <form id="bookingForm" onsubmit="submitBooking(event)">
-            <div class="form-group"><label>服务类型</label><select id="bookType"><option>全屋整装</option><option>旧房翻新</option><option>局部改造</option><option>维修服务</option></select></div>
+            <div class="form-group"><label>服务类型</label><select id="bookType"><option>全屋整装</option><option>旧房翻新</option><option>局部改造</option><option>维修服务</option><option>日常保洁</option><option>深度清洁</option><option>家电清洗</option></select></div>
             <div class="form-group"><label>您的称呼</label><input type="text" id="bookName" placeholder="请输入姓名" required></div>
             <div class="form-group"><label>联系电话</label><input type="tel" id="bookPhone" placeholder="请输入手机号" required></div>
             <div class="form-group"><label>详细地址</label><input type="text" id="bookAddr" placeholder="小区/街道/门牌号" required></div>
@@ -1815,12 +1815,20 @@
     // ===== Booking =====
     function openBooking(name, service) {
         document.getElementById('bookingModal').classList.add('active');
-        document.getElementById('bookName').value = '';
-        document.getElementById('bookPhone').value = '';
+        document.getElementById('bookName').value = currentUser ? currentUser.name || '' : '';
+        document.getElementById('bookPhone').value = currentUser ? currentUser.phone || '' : '';
         document.getElementById('bookAddr').value = '';
         document.getElementById('bookNote').value = '';
-        document.getElementById('bookType').value = service.includes('服务') ? '维修服务' : '全屋整装';
-        showToast(`已选择 ${name}${service}`);
+        // 根据调用来源自动选择服务类型
+        const typeMap = {
+            '专业保洁':'日常保洁',
+            '家电清洗':'家电清洗',
+            '保姆/月嫂':'深度清洁',
+            '除螨/消杀':'深度清洁',
+            '家政服务':'日常保洁',
+        };
+        document.getElementById('bookType').value = typeMap[service] || (service.includes('服务') ? '维修服务' : '全屋整装');
+        if (name) showToast(`已选择 ${name}`);
     }
 
     function closeModal(id) {
