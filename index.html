@@ -584,6 +584,45 @@
     <div class="app-content" id="appContent">
         <!-- User Pages -->
         <div class="page active" id="page-user-home">
+            <!-- 轮播图 -->
+            <div style="position:relative;overflow:hidden;border-radius:16px;margin-bottom:16px;" id="carouselContainer">
+                <div style="display:flex;transition:transform .5s ease;" id="carouselTrack">
+                    <div style="min-width:100%;padding:32px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,#f97316,#ef4444);">
+                        <div style="font-size:2.5rem;margin-bottom:8px;">🔧</div>
+                        <div style="font-size:1.1rem;font-weight:800;">房屋维修</div>
+                        <div style="font-size:.78rem;opacity:.8;margin-top:4px;">水管维修·电路检查·漏水修补</div>
+                    </div>
+                    <div style="min-width:100%;padding:32px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,#f59e0b,#d97706);">
+                        <div style="font-size:2.5rem;margin-bottom:8px;">🔨</div>
+                        <div style="font-size:1.1rem;font-weight:800;">局部改造</div>
+                        <div style="font-size:.78rem;opacity:.8;margin-top:4px;">厕所翻新·厨房改造·门窗更换</div>
+                    </div>
+                    <div style="min-width:100%;padding:32px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);">
+                        <div style="font-size:2.5rem;margin-bottom:8px;">🏠</div>
+                        <div style="font-size:1.1rem;font-weight:800;">装修设计</div>
+                        <div style="font-size:.78rem;opacity:.8;margin-top:4px;">旧房翻新·新房装修·别墅装修</div>
+                    </div>
+                    <div style="min-width:100%;padding:32px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,#06b6d4,#0ea5e9);">
+                        <div style="font-size:2.5rem;margin-bottom:8px;">🧹</div>
+                        <div style="font-size:1.1rem;font-weight:800;">家政上门</div>
+                        <div style="font-size:.78rem;opacity:.8;margin-top:4px;">日常保洁·开荒保洁</div>
+                    </div>
+                    <div style="min-width:100%;padding:32px 24px;text-align:center;color:#fff;background:linear-gradient(135deg,#10b981,#059669);">
+                        <div style="font-size:2.5rem;margin-bottom:8px;">🏗️</div>
+                        <div style="font-size:1.1rem;font-weight:800;">自建房修建</div>
+                        <div style="font-size:.78rem;opacity:.8;margin-top:4px;">设计·施工·一站式服务</div>
+                    </div>
+                </div>
+                <!-- 指示器 -->
+                <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;" id="carouselDots">
+                    <div style="width:8px;height:8px;border-radius:50%;background:#fff;opacity:1;cursor:pointer;" onclick="goCarousel(0)"></div>
+                    <div style="width:8px;height:8px;border-radius:50%;background:#fff;opacity:.4;cursor:pointer;" onclick="goCarousel(1)"></div>
+                    <div style="width:8px;height:8px;border-radius:50%;background:#fff;opacity:.4;cursor:pointer;" onclick="goCarousel(2)"></div>
+                    <div style="width:8px;height:8px;border-radius:50%;background:#fff;opacity:.4;cursor:pointer;" onclick="goCarousel(3)"></div>
+                    <div style="width:8px;height:8px;border-radius:50%;background:#fff;opacity:.4;cursor:pointer;" onclick="goCarousel(4)"></div>
+                </div>
+            </div>
+
             <!-- 主推维修 Banner -->
             <div class="banner" style="background:linear-gradient(135deg,#f97316,#ef4444);padding:20px 24px;">
                 <div style="display:flex;align-items:center;gap:12px;">
@@ -932,23 +971,25 @@
             <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:16px;">
                 <div style="font-size:.78rem;font-weight:600;color:#334155;margin-bottom:10px;">📂 预约项目</div>
                 <select id="bookType" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:.9rem;outline:none;background:#fff;">
-                    <optgroup label="🏠 装修服务">
-                        <option>全屋整装</option><option>旧房翻新</option><option>局部改造</option>
+                    <optgroup label="🔧 房屋维修">
+                        <option>水管维修</option><option>五金龙头更换</option><option>卫浴更换</option>
+                        <option>电路检查</option><option>房屋漏水</option><option>油漆修补</option>
+                        <option>瓷砖修补</option><option>油漆修复</option>
                     </optgroup>
-                    <optgroup label="🔧 维修服务">
-                        <option>水电维修</option><option>漏水补漏</option><option>墙面修补</option>
-                        <option>瓷砖空鼓</option><option>门窗维修</option><option>打孔疏通</option>
-                        <option>吊顶安装</option><option>灯具安装</option><option>防水施工</option>
+                    <optgroup label="🔨 局部改造">
+                        <option>防盗网更换</option><option>电路重做</option><option>水路重做</option>
+                        <option>厕所翻新</option><option>厨房翻新</option><option>衣柜更换</option>
+                        <option>房间门更换</option><option>铝天花更换</option><option>橱柜门更换</option>
+                        <option>窗户更换</option><option>瓷砖更换</option>
                     </optgroup>
-                    <optgroup label="🧹 保洁家政">
-                        <option>日常保洁</option><option>深度清洁</option><option>家电清洗</option>
-                        <option>开荒保洁</option><option>除螨除甲醛</option><option>保姆/月嫂</option>
+                    <optgroup label="🏠 装修设计">
+                        <option>旧房翻新</option><option>新房装修</option><option>别墅装修</option>
                     </optgroup>
-                    <optgroup label="🏗️ 自建房/建材">
-                        <option>自建房设计</option><option>建材采购</option>
+                    <optgroup label="🧹 家政上门">
+                        <option>日常保洁</option><option>开荒保洁</option>
                     </optgroup>
-                    <optgroup label="🔨 安装施工">
-                        <option>门窗安装</option><option>瓷砖铺贴</option>
+                    <optgroup label="🏗️ 自建房修建">
+                        <option>自建房设计</option><option>自建房施工</option>
                     </optgroup>
                 </select>
             </div>
@@ -1069,6 +1110,33 @@
         { id:8, title:'新房开荒保洁', addr:'翰林苑6-1803', budget:'¥300-500', category:'保洁', time:'12分钟前', desc:'120平新房装修后开荒，含擦窗户' },
         { id:9, title:'全屋除螨服务', addr:'翠湖湾2-201', budget:'¥150-200', category:'除螨', time:'18分钟前', desc:'三室两厅床上+沙发除螨' },
     ];
+
+    // ===== 轮播图 =====
+    let carouselIndex = 0;
+    let carouselTimer = null;
+    function startCarousel() {
+        carouselTimer = setInterval(function() {
+            carouselIndex = (carouselIndex + 1) % 5;
+            goCarousel(carouselIndex);
+        }, 3000);
+    }
+    function goCarousel(idx) {
+        carouselIndex = idx;
+        var track = document.getElementById('carouselTrack');
+        var dots = document.getElementById('carouselDots');
+        if (track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+        if (dots) {
+            var all = dots.children;
+            for (var i = 0; i < all.length; i++) {
+                all[i].style.opacity = i === idx ? '1' : '.4';
+            }
+        }
+        clearInterval(carouselTimer);
+        carouselTimer = setInterval(function() {
+            var ni = (carouselIndex + 1) % 5;
+            goCarousel(ni);
+        }, 3000);
+    }
 
     // ===== Auth Functions =====
     let currentUser = null;
@@ -1436,12 +1504,12 @@ function showPushNotification(name, category, phone) {
 
     // 页面加载时
     document.addEventListener('DOMContentLoaded', function() {
-        // 尝试获取位置
         detectLocation();
         document.getElementById('landingRoot').style.display = 'none';
         document.getElementById('appShell').classList.add('active');
         renderUserHome();
         renderTabbar();
+        startCarousel();
     });
 
     function scrollToSection(id) {
@@ -1584,21 +1652,24 @@ function showPushNotification(name, category, phone) {
     // Services
     function renderServices(filter) {
         const grid = document.getElementById('serviceGrid');
-        let list = services;
-        if (filter) list = services.filter(s => s.name.includes(filter) || s.desc.includes(filter));
-        grid.innerHTML = list.map(s => `
-            <div class="card service-card" onclick="openBooking('${s.name}','服务')">
-                <div class="icon" style="background:${s.color};width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">${s.icon}</div>
-                <h4>${s.name}${s.popular ? ' 🔥' : ''}</h4>
-                <p>${s.desc}</p>
-            </div>
-        `).join('');
+        var list = services;
+        if (filter) {
+            list = services.filter(function(s) { return s.parent === filter || s.name.includes(filter); });
+        }
+        grid.innerHTML = list.map(function(s) {
+            return '<div class="card service-card" onclick="openBooking(\'' + s.name + '\',\'服务\')">' +
+                '<div class="icon" style="background:' + s.color + ';width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">' + s.icon + '</div>' +
+                '<h4>' + s.name + (s.popular ? ' 🔥' : '') + '</h4>' +
+                '<p style="font-size:.72rem;color:#64748b;margin-top:4px;">' + s.parent + '</p>' +
+            '</div>';
+        }).join('');
 
-        // Filter tabs
-        const cats = [...new Set(services.map(s => s.name.charAt(0)))].slice(0,4);
-        const ft = document.getElementById('serviceFilterTabs');
-        ft.innerHTML = `<button class="filter-tab active" onclick="renderServices()">全部</button>` +
-            cats.map(c => `<button class="filter-tab" onclick="renderServices('${c}')">${c}</button>`).join('');
+        // Filter tabs using parent categories
+        var ft = document.getElementById('serviceFilterTabs');
+        ft.innerHTML = '<button class="filter-tab active" onclick="renderServices()">全部</button>' +
+            serviceParents.map(function(p) {
+                return '<button class="filter-tab" onclick="renderServices(\'' + p + '\')">' + p + '</button>';
+            }).join('');
     }
 
     // ===== Housekeeping =====
@@ -2109,22 +2180,18 @@ function showPushNotification(name, category, phone) {
             '保姆/月嫂':'深度清洁',
             '除螨/消杀':'深度清洁',
         };
-        // 根据名称自动匹配服务类型（覆盖所有18项服务）
+        // 根据名称自动匹配服务类型
         const nameTypeMap = {
-            // 装修
-            '全屋整装':'全屋整装','旧房翻新':'旧房翻新','局部改造':'局部改造',
-            // 维修
-            '水电维修':'水电维修','防水补漏':'漏水补漏','墙面修补':'墙面修补',
-            '瓷砖空鼓':'瓷砖空鼓','门窗安装':'门窗安装','打孔疏通':'打孔疏通',
-            '吊顶安装':'吊顶安装','灯具安装':'灯具安装','防水施工':'防水施工',
-            // 家政
-            '日常保洁':'日常保洁','深度清洁':'深度清洁','家电清洗':'家电清洗',
-            '开荒保洁':'开荒保洁','除螨除甲醛':'除螨除甲醛','保姆/月嫂':'保姆/月嫂',
-            '精细保洁':'日常保洁',
-            // 自建房/建材
-            '自建房设计':'自建房设计','建材采购':'建材采购',
-            // 安装
-            '瓷砖铺贴':'瓷砖铺贴',
+            '水管维修':'水管维修','五金龙头更换':'五金龙头更换','卫浴更换':'卫浴更换',
+            '电路检查':'电路检查','房屋漏水':'房屋漏水','油漆修补':'油漆修补',
+            '瓷砖修补':'瓷砖修补','油漆修复':'油漆修复',
+            '防盗网更换':'防盗网更换','电路重做':'电路重做','水路重做':'水路重做',
+            '厕所翻新':'厕所翻新','厨房翻新':'厨房翻新','衣柜更换':'衣柜更换',
+            '房间门更换':'房间门更换','铝天花更换':'铝天花更换','橱柜门更换':'橱柜门更换',
+            '窗户更换':'窗户更换','瓷砖更换':'瓷砖更换',
+            '旧房翻新':'旧房翻新','新房装修':'新房装修','别墅装修':'别墅装修',
+            '日常保洁':'日常保洁','开荒保洁':'开荒保洁',
+            '设计':'自建房设计','施工':'自建房施工',
         };
         // 先用typeMap检查角色名，再用nameTypeMap检查服务名称
         // 先按具体服务名称匹配，再用类型匹配（避免家政服务被统一识别）
