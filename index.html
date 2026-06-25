@@ -320,7 +320,7 @@
                     修房帮·渠县 —— 县域本地房屋服务平台。水电维修、漏水补漏、日常保洁、家电清洗，附近师傅极速接单，靠谱透明有保障。
                 </p>
                 <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                    <button onclick="showRepairForm()" style="padding:15px 36px;border-radius:50px;font-weight:700;font-size:.95rem;border:none;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(245,158,11,.35);transition:.3s;">⚡ 一键极速报修</button>
+                    <button onclick="enterApp('repair')" style="padding:15px 36px;border-radius:50px;font-weight:700;font-size:.95rem;border:none;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(245,158,11,.35);transition:.3s;">⚡ 一键极速报修</button>
                     <button onclick="scrollToSection('features')" style="padding:15px 36px;border-radius:50px;font-weight:600;font-size:.95rem;border:none;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;border:1px solid rgba(255,255,255,.15);transition:.3s;">了解更多</button>
                 </div>
                 <!-- 特色标签 -->
@@ -431,7 +431,7 @@
             <h2 style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;">🚀 准备启动你的修房帮·渠县？</h2>
             <p style="font-size:1rem;opacity:.8;margin:14px 0 36px;">客服热线：<strong>15881864944</strong> · 欢迎咨询</p>
             <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-                <button onclick="showRepairForm()" style="padding:14px 40px;border-radius:30px;font-weight:700;font-size:1rem;border:none;background:#fff;color:var(--primary);cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.15);">📲 一键报修</button>
+                <button onclick="enterApp('repair')" style="padding:14px 40px;border-radius:30px;font-weight:700;font-size:1rem;border:none;background:#fff;color:var(--primary);cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.15);">📲 进入平台</button>
                 <a href="tel:15881864944" style="padding:14px 40px;border-radius:30px;font-weight:700;font-size:1rem;border:2px solid rgba(255,255,255,.4);background:transparent;color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">📞 15881864944</a>
             </div>
         </div>
@@ -1185,12 +1185,13 @@ function showPushNotification(name, category, phone) {
     }
 
     // ===== App Initialization =====
-    function enterApp() {
+    function enterApp(autoAction) {
         // 已登录直接进，未登录也先进（提交需求时再收集信息）
         document.getElementById('landingRoot').style.display = 'none';
         document.getElementById('appShell').classList.add('active');
         renderUserHome();
         renderTabbar();
+        if (autoAction === 'repair') { setTimeout(function(){ showRepairForm(); }, 300); }
         if (isLoggedIn()) {
             const pn = document.getElementById('profileName');
             const pp = document.getElementById('profilePhone');
