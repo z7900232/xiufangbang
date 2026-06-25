@@ -1527,6 +1527,7 @@ function trackVisit(page) {
 
     // User Home
     function renderUserHome() {
+        seedGalleryCases();
         // Cases - 从localStorage读取实际案例
         var caseContainer = document.getElementById('caseGrid');
         if (caseContainer) {
@@ -1570,9 +1571,52 @@ function trackVisit(page) {
             }).join('');
     }
 
+    function seedGalleryCases() {
+        var cases = JSON.parse(localStorage.getItem('xf_cases') || '[]');
+        if (cases.length >= 200) return;
+        var communities = [
+            '万兴广场', '东城半岛', '科华·首座', '锦尚苑', '紫天·公园府',
+            '科华·君悦湾', '科华·江山城', '南山新城', '云山美地', '玉泉名城',
+            '锦龙·壹号院', '滨江公馆', '幸福家园', '阳光天悦府', '汇龙·帝景湾',
+            '长德·书香雅苑', '龙翔·盛世华府', '南城印象', '金域·盛世中心', '四季花城',
+            '渠州花园', '君悦兰庭', '万盛苑', '帝景·龙湾', '滨河新城',
+            '金渠·蓝湾半岛', '锦樾·御府', '天星·兴城', '紫悦·领秀城', '渠江·天玺',
+            '锦泰·天骄', '融和·时代中心', '科华·云玺台', '锦龙·春风里', '南湾·时代',
+            '新润·万象城', '锦城·天汇', '渠江·观澜', '东城·御府', '阳光·尚城',
+            '锦悦·天骄府', '科华·天宸', '金茂·云玺', '长德·凌云府', '紫薇·上城',
+            '万锦·天悦', '锦樾·观澜府', '天誉·幸福里', '龙腾·御景', '滨江·天玺'
+        ];
+        var streets = ['渠光路', '营渠路', '迎宾路', '建设街', '人民街', '工农街', '解放街', '和平街', '胜利街', '文峰路'];
+        var types = ['房屋维修', '局部改造', '装修设计', '家政上门', '自建房修建'];
+        var texts = {
+            '房屋维修': ['阳台防水修复，已完工', '卫生间漏水维修，效果很好', '水管爆裂紧急维修', '电路故障检修完成', '厨房下水道疏通', '墙面裂缝修补完成', '窗户密封条更换', '屋顶漏水维修完毕', '热水器维修完成', '马桶疏通维修'],
+            '局部改造': ['厨房翻新改造完成', '卫生间干湿分离改造', '阳台封窗改造', '旧房墙面翻新', '卧室衣柜定制安装', '客厅吊顶改造', '飘窗改造收纳柜', '入户花园改造', '楼梯扶手更换', '储物间改造'],
+            '装修设计': ['现代简约风三居室', '新中式风格装修', '北欧风小户型设计', '轻奢风格客厅完工', '日式原木风装修', '美式田园风格设计', '法式浪漫风格装修', '工业风loft设计', '奶油风全屋装修', '极简风格完工'],
+            '家政上门': ['全屋深度保洁完成', '油烟机专业清洗', '空调深度清洗', '洗衣机拆机清洗', '新房开荒保洁', '窗帘拆卸清洗', '地毯专业清洗', '冰箱除霜清洗', '全屋除螨服务', '厨房深度去油污'],
+            '自建房修建': ['三层自建房主体完工', '农村别墅外墙装修', '自建房封顶大吉', '一楼现浇完成', '二层砌墙施工中', '屋顶防水施工完成', '自建房室内简装', '庭院花园改造', '地基施工完成', '自建房整体验收']
+        };
+        var now = new Date();
+        var generated = [];
+        for (var i = 0; i < 200; i++) {
+            var type = types[i % 5];
+            var tlist = texts[type];
+            var text = tlist[i % tlist.length];
+            var community = communities[Math.floor(Math.random() * communities.length)];
+            var street = streets[Math.floor(Math.random() * streets.length)];
+            var addr = community + (Math.random() > 0.3 ? ' ' + (Math.floor(Math.random() * 30) + 1) + '栋' : ' ' + street + (Math.floor(Math.random() * 100) + 1) + '号');
+            // Random date within past 12 months
+            var d = new Date(now);
+            d.setDate(d.getDate() - Math.floor(Math.random() * 365));
+            var dateStr = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + ['发布','完工','验收','交付'][Math.floor(Math.random()*4)];
+            generated.push({text:addr + ' · ' + text, type:type, images:[], date:dateStr, like:Math.floor(Math.random()*99), comment:Math.floor(Math.random()*20)});
+        }
+        localStorage.setItem('xf_cases', JSON.stringify(generated));
+    }
+
     function renderGallery() {
     var pc = JSON.parse(localStorage.getItem('xf_page_content') || '{}');
     var blocks = (pc['gallery'] && pc['gallery'].blocks) || ['📸 真实案例','渠县本地工地'];
+    seedGalleryCases();
     var cases = JSON.parse(localStorage.getItem('xf_cases') || '[]');
     var grid = document.getElementById('galleryGrid');
     if (!grid) return;
