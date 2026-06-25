@@ -647,6 +647,10 @@
                     <div style="width:44px;height:44px;border-radius:12px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🏗️</div>
                     <div><div style="font-size:.85rem;font-weight:700;">开荒保洁</div><div style="font-size:.7rem;color:#64748b;">新房装修后大扫除</div></div>
                 </div>
+                <div onclick="navigateTo('user-housekeeping')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.04);cursor:pointer;">
+                    <div style="width:44px;height:44px;border-radius:12px;background:#fce7f3;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📅</div>
+                    <div><div style="font-size:.85rem;font-weight:700;">保洁包月</div><div style="font-size:.7rem;color:#64748b;">每周保洁 · 省心套餐</div></div>
+                </div>
             </div>
 
             <!-- Recommend Masters -->
@@ -1233,7 +1237,7 @@
         // 根据分类自动匹配标题前缀 - 全覆盖所有服务类目
         const categoryMap = [
             // 保洁家政类
-            { prefix:'🧹 新保洁订单', keywords:['日常保洁','深度清洁','家电清洗','开荒保洁','除螨','保姆','月嫂','保洁'] },
+            { prefix:'🧹 新保洁订单', keywords:['日常保洁','深度清洁','家电清洗','开荒保洁','除螨','保姆','保洁包月','保洁'] },
             // 维修类
             { prefix:'🔧 新维修订单', keywords:['水电维修','漏水补漏','墙面修补','瓷砖空鼓','门窗维修','打孔疏通','吊顶安装','灯具安装','防水施工','打孔','疏通','维修'] },
             // 装修类
