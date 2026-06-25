@@ -1274,28 +1274,17 @@
 
     // ===== 推送到微信 =====
     function pushToWeChat(name, phone, category, problem, addr, time) {
-        // 获取配置的推送密钥（用户自己在页面设置的）
+        // 获取配置的推送密钥
         let wechatKey = localStorage.getItem('xf_wechat_key');
-        if (!wechatKey) {
-            // 如果没有配置，检查是否有默认密钥（用户可设置）
-            console.log('未配置微信推送密钥，订单已保存到本地');
-            return;
-        }
 
         // 组装推送消息
         // 根据分类自动匹配标题前缀 - 全覆盖所有服务类目
         const categoryMap = [
-            // 保洁家政类
             { prefix:'🧹 新保洁订单', keywords:['日常保洁','深度清洁','家电清洗','开荒保洁','除螨','保姆','保洁包月','保洁'] },
-            // 维修类
             { prefix:'🔧 新维修订单', keywords:['水电维修','漏水补漏','墙面修补','瓷砖空鼓','门窗维修','打孔疏通','吊顶安装','灯具安装','防水施工','打孔','疏通','维修'] },
-            // 装修类
             { prefix:'🏠 新装修订单', keywords:['装修','整装','翻新','改造','全屋'] },
-            // 自建房类
             { prefix:'🏗️ 新建房订单', keywords:['自建房','建房','设计','施工队','倒楼板','包工包料'] },
-            // 建材类
             { prefix:'🏪 新建材订单', keywords:['建材','采购','卫浴','瓷砖','门窗','板材','五金','涂料'] },
-            // 安装类
             { prefix:'🔨 新安装订单', keywords:['安装','铺贴','贴砖'] },
         ];
         let prefix = '🔔 新订单';
@@ -1326,30 +1315,42 @@
 ━━━━━━━━━━━━━━━━━━
         `.trim();
 
-        // 使用 Server酱 推送
-        fetch(`https://sctapi.ftqq.com/${wechatKey}.send`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, desp: content })
-        }).then(r => r.json()).then(d => {
-            console.log('微信推送结果:', d);
-            if (d.code === 0) {
-                console.log('✅ 微信推送成功');
-            }
-        }).catch(e => console.log('推送失败:', e));
+        // === 渠道1: Server酱 ===
+        if (wechatKey) {
+            fetch(`https://sctapi.ftqq.com/${wechatKey}.send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, desp: content })
+            }).then(r => r.json()).then(d => {
+                console.log('Server酱推送结果:', d);
+            }).catch(e => console.log('Server酱推送失败:', e));
+        }
 
-        // 同时也尝试用 PushPlus 推送（备用）
+        // === 渠道2: 企业微信机器人 ===
+        const wxworkUrl = localStorage.getItem('xf_wxwork_url');
+        if (wxworkUrl) {
+            const wxworkContent = {
+                msgtype: 'markdown',
+                markdown: {
+                    content: `## 🔔 新订单通知\n> 📂 **服务项目**：${category}\n> 👤 **联系人**：${name}\n> 📱 **电话**：${phone}\n> 📍 **地址**：${addr || '未填写'}\n> 🕐 **时间**：${time}\n> 📝 **描述**：${problem || '无'}\n> ⏱ ${new Date().toLocaleString()}`
+                }
+            };
+            fetch(wxworkUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(wxworkContent)
+            }).then(r => r.json()).then(d => {
+                console.log('企业微信推送结果:', d);
+            }).catch(e => console.log('企业微信推送失败:', e));
+        }
+
+        // === 渠道3: PushPlus ===
         const pushplusKey = localStorage.getItem('xf_pushplus_key');
         if (pushplusKey) {
             fetch('https://www.pushplus.plus/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    token: pushplusKey,
-                    title: title,
-                    content: content,
-                    template: 'txt'
-                })
+                body: JSON.stringify({ token: pushplusKey, title, content, template: 'txt' })
             }).catch(e => console.log('PushPlus推送失败:', e));
         }
     }
@@ -1382,6 +1383,11 @@
                     <input type="text" id="ppKey" value="${currentPushplus}" placeholder="请填写PushPlus Token" style="width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:.85rem;outline:none;" />
                     <p style="font-size:.72rem;color:#94a3b8;margin-top:4px;"><a href="https://www.pushplus.plus" target="_blank" style="color:#2563eb;">PushPlus官网</a> · 微信扫码登录获取 Token</p>
                 </div>
+                <div style="margin-bottom:20px;">
+                    <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:#334155;">🏢 企业微信机器人 Webhook URL</label>
+                    <input type="text" id="wxworkKey" value="${localStorage.getItem('xf_wxwork_url') || ''}" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..." style="width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:.82rem;outline:none;" />
+                    <p style="font-size:.72rem;color:#94a3b8;margin-top:4px;">企业微信 → 新建群 → 群设置 → 群机器人 → 复制Webhook地址</p>
+                </div>
                 <button onclick="saveWechatKeys()" style="width:100%;padding:14px;border-radius:30px;font-weight:700;font-size:.9rem;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.3);">
                     💾 保存配置
                 </button>
@@ -1396,8 +1402,10 @@
     function saveWechatKeys() {
         const sct = document.getElementById('sctKey').value.trim();
         const pp = document.getElementById('ppKey').value.trim();
+        const wxwork = document.getElementById('wxworkKey').value.trim();
         if (sct) localStorage.setItem('xf_wechat_key', sct);
         if (pp) localStorage.setItem('xf_pushplus_key', pp);
+        if (wxwork) localStorage.setItem('xf_wxwork_url', wxwork);
         showToast('✅ 推送配置已保存');
         document.getElementById('wechatSetting').remove();
     }
