@@ -1416,22 +1416,36 @@
     }
 
     function logout() {
-        if (confirm('确定退出平台？')) {
+        if (confirm('确定退出登录？')) {
             localStorage.removeItem('xf_currentUser');
             currentUser = null;
             document.getElementById('appShell').classList.remove('active');
-            document.getElementById('landingRoot').style.display = 'block';
-            window.scrollTo(0, 0);
+            document.getElementById('landingRoot').style.display = 'none';
+            // 重新进入应用并弹出登录
+            document.getElementById('appShell').classList.add('active');
+            renderUserHome();
+            renderTabbar();
+            setTimeout(() => showAuth('register'), 300);
             showToast('已退出登录');
         }
     }
 
-    // 检查登录状态（页面加载时）
+    // 页面加载时直接进入平台
     document.addEventListener('DOMContentLoaded', function() {
-        // 如果已登录，在页面右上角显示用户名
+        // 如果已登录直接进应用
         if (isLoggedIn()) {
-            const loginBtn = document.querySelector('header span[onclick*="showAuth"]');
-            if (loginBtn) loginBtn.textContent = '👤 ' + currentUser.name;
+            document.getElementById('landingRoot').style.display = 'none';
+            document.getElementById('appShell').classList.add('active');
+            renderUserHome();
+            renderTabbar();
+        } else {
+            // 未登录跳转到登录
+            document.getElementById('landingRoot').style.display = 'none';
+            document.getElementById('appShell').classList.add('active');
+            renderUserHome();
+            renderTabbar();
+            // 延迟弹出登录框
+            setTimeout(() => showAuth('register'), 500);
         }
     });
 
