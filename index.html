@@ -688,6 +688,18 @@
                     </div>
                 </div>
                 <div class="card">
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">👤 联系人</label>
+                    <input type="text" id="repairContact2" placeholder="请输入您的称呼" value="" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;" />
+                </div>
+                <div class="card">
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📱 联系电话</label>
+                    <input type="tel" id="repairPhone2" placeholder="请输入手机号" maxlength="11" value="" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;" />
+                </div>
+                <div class="card">
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📍 详细地址</label>
+                    <input type="text" id="repairAddr2" placeholder="小区/街道/门牌号" value="" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;" />
+                </div>
+                <div class="card">
                     <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📂 服务分类</label>
                     <select id="repairCategory" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;">
                         <option>水电维修</option><option>漏水补漏</option><option>墙面修补</option>
@@ -1601,21 +1613,38 @@
     function renderRepair() {}
 
     function submitRepair() {
-        const desc = document.getElementById('repairDesc').value;
+        const desc = document.getElementById('repairDesc').value.trim();
         const cat = document.getElementById('repairCategory').value;
+        const contact = document.getElementById('repairContact2').value.trim() || (currentUser ? currentUser.name : '');
+        const phone = document.getElementById('repairPhone2').value.trim() || (currentUser ? currentUser.phone : '');
+        const addr = document.getElementById('repairAddr2').value.trim() || '未填写';
+
         if (!desc) { showToast('请描述您遇到的问题'); return; }
+        if (!contact) { showToast('请输入联系人'); return; }
+        if (!phone || phone.length < 11) { showToast('请输入正确的手机号'); return; }
+
+        // 自动填入当前用户信息
+        if (!document.getElementById('repairContact2').value.trim() && currentUser) {
+            document.getElementById('repairContact2').value = currentUser.name;
+            document.getElementById('repairPhone2').value = currentUser.phone;
+        }
+
         const orders = getOrders();
         const newOrder = {
             id:'XF' + new Date().toISOString().slice(0,10).replace(/-/g,'') + (1000+orders.length),
-            type:cat, status:'pending', name:'我', price:'待报价',
+            type:cat, status:'pending', name:contact, phone:phone, addr:addr,
+            price:'待报价',
             date: new Date().toISOString().slice(0,10), desc:desc
         };
         orders.unshift(newOrder);
         saveOrders(orders);
-        // 微信推送
-        pushToWeChat('我', '已登录用户', cat, desc, '未填写', '尽快');
-        showToast('✅ 报修发布成功！正在为您匹配附近师傅...');
+        // 微信推送（完整联系方式）
+        pushToWeChat(contact, phone, cat, desc, addr, '尽快');
+        showToast('✅ 报修发布成功！已推送至您的微信');
         document.getElementById('repairDesc').value = '';
+        document.getElementById('repairContact2').value = '';
+        document.getElementById('repairPhone2').value = '';
+        document.getElementById('repairAddr2').value = '';
     }
 
     // Orders
@@ -1868,22 +1897,32 @@
 
     function submitBooking(e) {
         e.preventDefault();
-        const name = document.getElementById('bookName').value;
-        const phone = document.getElementById('bookPhone').value;
+        const name = document.getElementById('bookName').value.trim();
+        const phone = document.getElementById('bookPhone').value.trim();
+        const addr = document.getElementById('bookAddr').value.trim();
+        const type = document.getElementById('bookType').value;
+        const note = document.getElementById('bookNote').value.trim();
+
+        if (!name) { showToast('请输入您的称呼'); return }
+        if (!phone || phone.length < 11) { showToast('请输入正确的手机号'); return }
+        if (!addr) { showToast('请输入详细地址'); return }
+
         // Add to orders
         const orders = getOrders();
-        orders.unshift({
+        const newOrder = {
             id:'XF' + Date.now().toString().slice(-8),
-            type: document.getElementById('bookType').value,
-            status:'pending', name:name, price:'待报价',
+            type: type,
+            status:'pending', name:name, phone:phone, addr:addr,
+            price:'待报价',
             date: new Date().toISOString().slice(0,10),
-            desc:`${name} · ${phone} · ${document.getElementById('bookAddr').value}`
-        });
+            desc: note || `${name}预约${type}`
+        };
+        orders.unshift(newOrder);
         saveOrders(orders);
-        // 微信推送
-        pushToWeChat(name, phone, document.getElementById('bookType').value, document.getElementById('bookNote').value || '预约服务', document.getElementById('bookAddr').value, '待确认');
         closeModal('bookingModal');
-        showToast('✅ 预约成功！客服将在30分钟内联系您');
+        // 微信推送（所有字段齐全）
+        pushToWeChat(name, phone, type, note || '预约服务', addr, '待确认');
+        showToast('✅ 预约成功！已推送至您的微信');
     }
 
     // ===== Toast =====
