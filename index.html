@@ -754,34 +754,6 @@
         </div>
 
         <!-- Housekeeping Page -->
-        <div class="page" id="page-user-housekeeping">
-            <div class="banner" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);">
-                <h3>🧹 家政服务</h3>
-                <p>日常保洁 · 深度清洁 · 家电清洗 · 保姆月嫂 · 除螨消杀</p>
-            </div>
-            <div class="filter-tabs" id="hkFilterTabs">
-                <button class="filter-tab active" onclick="renderHousekeeping('all',this)">全部</button>
-                <button class="filter-tab" onclick="renderHousekeeping('保洁',this)">保洁</button>
-                <button class="filter-tab" onclick="renderHousekeeping('清洗',this)">家电清洗</button>
-                <button class="filter-tab" onclick="renderHousekeeping('保姆',this)">保姆月嫂</button>
-                <button class="filter-tab" onclick="renderHousekeeping('除螨',this)">除螨消杀</button>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;" id="hkServices"></div>
-            <div class="section-header"><h3>👩 家政阿姨推荐</h3></div>
-            <div class="gap-row" id="hkMasters"></div>
-        </div>
-
-        <!-- Masters List -->
-        <div class="page" id="page-user-masters">
-            <div class="search-bar">
-                <input type="text" placeholder="搜索师傅名称或技能..." id="masterSearch" oninput="filterMasters()">
-                <button class="btn-search" onclick="filterMasters()">搜索</button>
-            </div>
-            <div class="filter-tabs" id="masterFilterTabs"></div>
-            <div class="gap-row" id="masterList"></div>
-        </div>
-
-        <!-- Orders -->
         <div class="page" id="page-user-orders">
             <div class="filter-tabs" id="orderFilterTabs">
                 <button class="filter-tab active" data-filter="all" onclick="filterOrders('all')">全部</button>
@@ -793,45 +765,7 @@
         </div>
 
         <!-- 订单记录表（详细台账） -->
-        <div class="page" id="page-order-log" style="max-width:100%;padding:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
-                <div>
-                    <h3 style="font-size:1.1rem;font-weight:800;">📊 订单记录台账</h3>
-                    <p style="font-size:.75rem;color:#64748b;">共 <span id="logCount">0</span> 条记录 · 自动保存</p>
-                </div>
-                <div style="display:flex;gap:8px;">
-                    <button onclick="exportOrdersCSV()" style="padding:8px 18px;border-radius:20px;font-size:.78rem;font-weight:600;border:none;background:#10b981;color:#fff;cursor:pointer;">📥 导出Excel</button>
-                    <button onclick="exportOrdersJSON()" style="padding:8px 18px;border-radius:20px;font-size:.78rem;font-weight:600;border:none;background:#2563eb;color:#fff;cursor:pointer;">📄 导出JSON</button>
-                    <button onclick="if(confirm('确定清空所有记录？')){localStorage.removeItem('xf_order_log');showToast('已清空');renderOrderLog()}" style="padding:8px 18px;border-radius:20px;font-size:.78rem;font-weight:600;border:none;background:#ef4444;color:#fff;cursor:pointer;">🗑️ 清空</button>
-                </div>
-            </div>
-            <div style="overflow-x:auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.04);">
-                <table style="width:100%;border-collapse:collapse;font-size:.78rem;min-width:900px;" id="orderLogTable">
-                    <thead>
-                        <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">序号</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">提交时间</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">服务类型</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">联系人</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">手机号</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">地址</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">上门时间</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">问题描述</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">订单编号</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">状态</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">微信推送</th>
-                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">提交来源</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orderLogBody"></tbody>
-                </table>
-            </div>
-            <div style="margin-top:12px;font-size:.72rem;color:#94a3b8;text-align:center;">
-                💾 数据自动保存在浏览器中 · 导出Excel可到桌面用WPS/Excel打开
-            </div>
-        </div>
-
-        <!-- Profile -->
+              <!-- Profile -->
         <div class="page" id="page-user-profile">
             <div class="gap-row">
                 <a href="tel:15881864944" style="text-decoration:none;color:inherit;"><div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📞</span> 客服电话：15881864944 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div></a>
@@ -846,110 +780,7 @@
         </div>
 
         <!-- ===== Master Pages ===== -->
-        <div class="page" id="page-master-home">
-            <div class="stat-row">
-                <div class="stat-card"><div class="num" id="masterEarnings">¥2,380</div><div class="label">本月收入</div></div>
-                <div class="stat-card"><div class="num" id="masterOrders">16</div><div class="label">本月订单</div></div>
-                <div class="stat-card"><div class="num" id="masterRating">4.9⭐</div><div class="label">服务评分</div></div>
-            </div>
-            <div class="section-header"><h3>⚔️ 附近抢单</h3><a onclick="navigateTo('master-grab')">更多 ›</a></div>
-            <div class="gap-row" id="grabOrders"></div>
-        </div>
-
-        <div class="page" id="page-master-grab">
-            <div class="section-header"><h3>⚔️ 抢单大厅</h3></div>
-            <div class="filter-tabs">
-                <button class="filter-tab active" onclick="filterGrab('all',this)">全部</button>
-                <button class="filter-tab" onclick="filterGrab('水电',this)">水电</button>
-                <button class="filter-tab" onclick="filterGrab('维修',this)">维修</button>
-                <button class="filter-tab" onclick="filterGrab('装修',this)">装修</button>
-                <button class="filter-tab" onclick="filterGrab('保洁',this)">🧹 保洁</button>
-                <button class="filter-tab" onclick="filterGrab('清洗',this)">🧹 清洗</button>
-            </div>
-            <div class="gap-row" id="grabList"></div>
-        </div>
-
-        <div class="page" id="page-master-orders">
-            <div class="filter-tabs">
-                <button class="filter-tab active" data-filter="all" onclick="filterMasterOrders('all',this)">全部</button>
-                <button class="filter-tab" data-filter="pending" onclick="filterMasterOrders('pending',this)">待服务</button>
-                <button class="filter-tab" data-filter="done" onclick="filterMasterOrders('done',this)">已完成</button>
-            </div>
-            <div class="gap-row" id="masterOrderList"></div>
-        </div>
-
-        <div class="page" id="page-master-profile">
-            <div style="text-align:center;padding:20px 0;">
-                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--danger));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;color:#fff;">👷</div>
-                <h3 style="font-size:1.1rem;font-weight:700;">李师傅</h3>
-                <div style="display:flex;gap:6px;justify-content:center;margin-top:6px;flex-wrap:wrap;">
-                    <span class="badge" style="background:#dbeafe;color:#2563eb;">水电工</span>
-                    <span class="badge" style="background:#d1fae5;color:#059669;">防水</span>
-                    <span class="badge" style="background:#fef3c7;color:#d97706;">5年经验</span>
-                </div>
-            </div>
-            <div class="gap-row">
-                <div class="card card-click" onclick="navigateTo('master-orders')"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">📋</span> 我的订单 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
-                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">💰</span> 提现管理 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
-                <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">📸</span> 工地上传 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
-                <div class="card card-click" onclick="switchRole('user')"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">👤</span> 切换到用户端 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">切换 ›</span></span></div>
-            </div>
-        </div>
-
-        <!-- ===== Shop Pages ===== -->
-        <div class="page" id="page-shop-home">
-            <div class="stat-row">
-                <div class="stat-card"><div class="num">¥8,640</div><div class="label">本月营收</div></div>
-                <div class="stat-card"><div class="num">36</div><div class="label">本月订单</div></div>
-                <div class="stat-card"><div class="num">4.8⭐</div><div class="label">店铺评分</div></div>
-            </div>
-            <div class="section-header"><h3>📦 热销商品</h3><a onclick="navigateTo('shop-products')">管理 ›</a></div>
-            <div class="grid-2" id="shopProducts"></div>
-            <div style="height:16px"></div>
-            <div class="section-header"><h3>📋 待处理预约</h3></div>
-            <div class="gap-row" id="shopAppointments"></div>
-            <div style="margin-top:12px">
-                <div class="card card-click" onclick="switchRole('user')"><span style="display:flex;align-items:center;gap:12px;"><span style="font-size:1.2rem;">👤</span> 切换到用户端 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">切换 ›</span></span></div>
-            </div>
-        </div>
-
-        <div class="page" id="page-shop-products">
-            <div class="section-header"><h3>📦 商品管理</h3><button class="btn btn-sm btn-primary" onclick="showToast('商品上架功能已提交开发')">+ 新增</button></div>
-            <div class="gap-row" id="productManageList"></div>
-        </div>
-
-        <!-- ===== Admin Pages ===== -->
-        <div class="page" id="page-admin-home" style="max-width:none;padding:0;">
-            <div class="admin-layout">
-                <div class="admin-sidebar">
-                    <button class="menu-item active" onclick="adminNav('dashboard',this)"><span class="emoji">📊</span><span>数据看板</span></button>
-                    <button class="menu-item" onclick="adminNav('users',this)"><span class="emoji">👥</span><span>用户管理</span></button>
-                    <button class="menu-item" onclick="adminNav('masters',this)"><span class="emoji">👷</span><span>师傅管理</span></button>
-                    <button class="menu-item" onclick="adminNav('shops',this)"><span class="emoji">🏪</span><span>商家管理</span></button>
-                    <button class="menu-item" onclick="adminNav('orders',this)"><span class="emoji">📋</span><span>订单管理</span></button>
-                    <button class="menu-item" onclick="adminNav('revenue',this)"><span class="emoji">💰</span><span>收益统计</span></button>
-                    <button class="menu-item" onclick="switchRole('user')"><span class="emoji">👤</span><span>返回用户端</span></button>
-                </div>
-                <div class="admin-main" id="adminContent">
-                    <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:16px;">📊 数据看板</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
-                        <div class="stat-card"><div class="num" style="color:var(--primary);">1,284</div><div class="label">注册用户</div></div>
-                        <div class="stat-card"><div class="num" style="color:var(--accent);">156</div><div class="label">认证师傅</div></div>
-                        <div class="stat-card"><div class="num" style="color:var(--success);">48</div><div class="label">入驻商家</div></div>
-                        <div class="stat-card"><div class="num" style="color:var(--purple);">¥52,380</div><div class="label">平台总收入</div></div>
-                    </div>
-                    <div class="section-header"><h3>📋 最新订单</h3></div>
-                    <table class="data-table">
-                        <thead><tr><th>订单号</th><th>用户</th><th>类型</th><th>金额</th><th>状态</th></tr></thead>
-                        <tbody id="adminOrderTable"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tabbar -->
-    <div class="app-tabbar" id="appTabbar"></div>
+        <div class="app-tabbar" id="appTabbar"></div>
 </div>
 
 <!-- ===== Booking Modal ===== -->
@@ -1018,19 +849,7 @@
 
 <script>
     // ===== Mock Data =====
-    const masters = [
-        { id:1, name:'李师傅', role:'水电工', avatar:'李', color:'#2563eb', rating:4.9, orders:127, distance:'1.2km', tags:['水电','防水','打孔'], price:'上门费¥30', desc:'10年水电经验，专业防水施工' },
-        { id:2, name:'王工长', role:'装修整装', avatar:'王', color:'#f59e0b', rating:5.0, orders:83, distance:'2.5km', tags:['全屋整装','旧房翻新','设计'], price:'免费量房', desc:'专注县域装修8年，200+案例' },
-        { id:3, name:'张师傅', role:'防水补漏', avatar:'张', color:'#10b981', rating:4.8, orders:56, distance:'0.8km', tags:['防水','补漏','检测'], price:'免费检测', desc:'专业漏水检测，精准定位不漏修' },
-        { id:4, name:'刘工', role:'木工/吊顶', avatar:'刘', color:'#7c3aed', rating:4.7, orders:42, distance:'3.1km', tags:['吊顶','木工','柜体'], price:'按平米报价', desc:'定制吊顶、衣柜，手艺精细' },
-        { id:5, name:'陈师傅', role:'瓦工/贴砖', avatar:'陈', color:'#ec4899', rating:4.9, orders:98, distance:'1.8km', tags:['贴砖','砌墙','找平'], price:'按面积报价', desc:'15年瓦工经验，平整度≤2mm' },
-        // 家政师傅
-        { id:6, name:'赵阿姨', role:'专业保洁', avatar:'赵', color:'#06b6d4', rating:4.9, orders:312, distance:'0.6km', tags:['日常保洁','深度清洁','开荒'], price:'电话咨询', desc:'10年家政经验，客户好评率99%' },
-        { id:7, name:'孙姐', role:'家电清洗', avatar:'孙', color:'#f43f5e', rating:4.8, orders:189, distance:'1.1km', tags:['油烟机清洗','空调清洗','洗衣机'], price:'¥80/台起', desc:'专业家电深度清洗，高温消毒杀菌' },
-        { id:8, name:'周阿姨', role:'保姆/月嫂', avatar:'周', color:'#8b5cf6', rating:5.0, orders:67, distance:'2.0km', tags:['住家保姆','月嫂','育儿嫂'], price:'¥4500/月起', desc:'持证高级月嫂，10年母婴护理经验' },
-        { id:9, name:'吴师傅', role:'除螨/消杀', avatar:'吴', color:'#14b8a6', rating:4.7, orders:134, distance:'0.9km', tags:['除螨','除甲醛','消杀'], price:'¥150/次起', desc:'进口设备除螨，CMA认证除甲醛' },
-    ];
-
+    const masters = [];
     const services = [
         { id:1, name:'全屋整装', icon:'🏠', color:'#dbeafe', desc:'设计+施工+主材一站式', popular:true },
         { id:2, name:'旧房翻新', icon:'🔄', color:'#fef3c7', desc:'老房改造，焕然一新', popular:true },
@@ -1886,45 +1705,36 @@ function trackVisit(page) {
     }
 
     function renderGallery() {
-        var grid = document.getElementById('galleryGrid');
-        // 从本地存储读取案例
-        var cases = JSON.parse(localStorage.getItem('xf_cases') || '[]');
-        if (cases.length === 0) {
-            grid.innerHTML = '<div style="text-align:center;padding:60px 20px;">' +
-                '<div style="font-size:3rem;margin-bottom:12px;">📸</div>' +
-                '<p style="font-size:.9rem;color:#64748b;margin-bottom:6px;">暂无案例</p>' +
-                '<p style="font-size:.78rem;color:#94a3b8;">管理员可通过后台发布案例</p>' +
-            '</div>';
-            return;
-        }
-        grid.innerHTML = cases.map(function(c, idx) {
-            var imgs = (c.images || []).map(function(ic) {
-                if (ic && ic.startsWith('data:')) {
-                    return '<div style="width:calc(50% - 4px);height:120px;border-radius:10px;overflow:hidden;display:inline-block;margin:2px;">' +
-                        '<img src="' + ic + '" style="width:100%;height:100%;object-fit:cover;" />' +
-                    '</div>';
+    var pc = JSON.parse(localStorage.getItem('xf_page_content') || '{}');
+    var blocks = (pc['gallery'] && pc['gallery'].blocks) || ['📸 真实案例','渠县本地工地'];
+    var cases = JSON.parse(localStorage.getItem('xf_cases') || '[]');
+    var grid = document.getElementById('galleryGrid');
+    if (!grid) return;
+    // 先显示可编辑的内容块
+    var html = blocks.map(function(b){
+        return '<div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);font-size:.85rem;color:#334155;line-height:1.6;">' + b + '</div>';
+    }).join('');
+    // 再显示已发布的案例
+    if (cases.length > 0) {
+        html += '<div style="font-size:.82rem;font-weight:600;color:#64748b;margin:12px 0 8px;">📸 已发布案例</div>';
+        cases.forEach(function(c){
+            var imgs = (c.media || c.images || []).map(function(ic){
+                var src = ic.data || ic;
+                if (src && src.startsWith('data:')) {
+                    return '<div style="width:calc(50% - 4px);height:120px;border-radius:10px;overflow:hidden;display:inline-block;margin:2px;"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;" /></div>';
                 }
-                return '<div style="display:inline-block;width:calc(50% - 4px);height:120px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:2px;">📷</div>';
+                return '<div style="display:inline-block;width:calc(50% - 4px);height:120px;border-radius:10px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:2px;">'+(ic.type==='video'?'🎬':'📷')+'</div>';
             }).join('');
-            var videos = (c.videos || []).map(function() {
-                return '<div style="width:100%;height:160px;border-radius:10px;background:#0f172a;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;margin:2px;">🎬</div>';
-            }).join('');
-            return '<div style="background:#fff;border-radius:14px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);">' +
-                '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px 8px;">' +
-                    '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;">🏠</div>' +
-                    '<div><div style="font-size:.85rem;font-weight:700;\'>修房帮·渠县</div><div style="font-size:.7rem;color:#94a3b8;">' + (c.date || '') + '</div></div>' +
-                '</div>' +
-                '<div style="padding:0 16px 8px;font-size:.82rem;color:#334155;line-height:1.5;">' + (c.text || '') + '</div>' +
-                (c.type ? '<div style="padding:0 16px 8px;"><span style="padding:2px 10px;border-radius:10px;font-size:.65rem;font-weight:600;background:#dbeafe;color:#2563eb;">' + c.type + '</span></div>' : '') +
-                '<div style="padding:0 16px;display:flex;flex-wrap:wrap;">' + imgs + videos + '</div>' +
-                '<div style="padding:10px 16px;border-top:1px solid #f1f5f9;margin-top:10px;font-size:.75rem;color:#64748b;">' +
-                    '<span>❤️ ' + (c.like || 0) + '</span><span style="margin-left:16px;">💬 ' + (c.comment || 0) + '</span><span style="float:right;" onclick="showRepairForm()">📋 预约</span>' +
-                '</div>' +
-            '</div>';
-        }).join('');
+            html += '<div style="background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);">' +
+                '<div style="padding:12px 14px 6px;"><div style="font-size:.82rem;color:#334155;">'+(c.text||'')+'</div>' +
+                '<div style="font-size:.7rem;color:#94a3b8;margin-top:4px;">'+(c.type||'')+' · '+(c.date||'')+'</div></div>' +
+                '<div style="padding:0 14px 10px;display:flex;flex-wrap:wrap;">' + imgs + '</div></div>';
+        });
+    } else {
+        html += '<div style="background:#fff;border-radius:12px;padding:24px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04);"><div style="font-size:2.5rem;margin-bottom:8px;">📸</div><p style="font-size:.82rem;color:#94a3b8;">管理员可发布案例</p></div>';
     }
-
-    // ===== Housekeeping =====
+    grid.innerHTML = html;
+}// ===== Housekeeping =====
     function renderHousekeeping(filter, el) {
         // Tabs
         if (el) {
@@ -2041,7 +1851,16 @@ function trackVisit(page) {
     }
 
     // Repair
-    function renderRepair() {}
+    function renderRepair() {
+    var pc = JSON.parse(localStorage.getItem('xf_page_content') || '{}');
+    var blocks = (pc['repair'] && pc['repair'].blocks) || [];
+    if (blocks.length >= 2) {
+        var h3 = document.querySelector('#page-user-repair .banner h3');
+        var p = document.querySelector('#page-user-repair .banner p');
+        if (h3) h3.textContent = blocks[0];
+        if (p && blocks[1]) p.textContent = blocks[1];
+    }
+}
 
     function handleFileSelect(event) {
         const files = event.target.files;
