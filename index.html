@@ -1284,7 +1284,17 @@
         let title = prefix + ' ' + name + ' ' + phone.slice(0,3) + '****' + phone.slice(-4);
         if (addr) title += ' ' + addr.substring(0,8);
         if (title.length > 80) title = title.substring(0,77) + '...';
-        const detail = '服务项目：' + category + '\n联系人：' + name + '\n电话：' + phone + '\n地址：' + (addr || '未填写') + '\n上门时间：' + time + '\n描述：' + (problem || '无') + '\n时间：' + new Date().toLocaleString();
+        // 检查是否有附件
+        let fileInfo = '';
+        var fileInput = document.getElementById('repairFileInput');
+        if (fileInput && fileInput.files && fileInput.files.length > 0) {
+            fileInfo = '\n📎 附件：' + fileInput.files.length + ' 张现场照片';
+        }
+        var fileInput2 = document.getElementById('repairFileInput2');
+        if (fileInput2 && fileInput2.files && fileInput2.files.length > 0 && !fileInfo) {
+            fileInfo = '\n📎 附件：' + fileInput2.files.length + ' 张现场照片';
+        }
+        const detail = '服务项目：' + category + '\n联系人：' + name + '\n电话：' + phone + '\n地址：' + (addr || '未填写') + '\n上门时间：' + time + '\n描述：' + (problem || '无') + fileInfo + '\n时间：' + new Date().toLocaleString();
 
         // === Server酱推送（使用内部配置密钥）===
         const img = new Image();
