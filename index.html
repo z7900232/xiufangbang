@@ -1814,6 +1814,16 @@
         log.unshift(record);
         saveOrderLog(log);
         console.log('✅ 订单已记录:', record);
+        // 同步到桌面本地服务（如果运行中）
+        fetch('http://localhost:9527/api/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+        }).then(r => r.json()).then(d => {
+            if (d.success) console.log('📁 已同步到桌面表格');
+        }).catch(() => {
+            console.log('ℹ️ 桌面同步服务未启动，数据已保存到网站');
+        });
     }
 
     function renderOrderLog() {
