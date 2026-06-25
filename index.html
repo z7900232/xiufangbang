@@ -1418,20 +1418,37 @@
 
     function testWechatPush() {
         const sct = document.getElementById('sctKey').value.trim();
-        if (!sct) { showToast('请先填写SendKey'); return }
-        const title = '✅ 修房帮推送测试';
-        const content = '🎉 恭喜！微信推送配置成功！\n\n现在当业主提交维修需求时，\n订单信息会自动推送到你的微信。\n\n📅 测试时间：' + new Date().toLocaleString();
-        fetch(`https://sctapi.ftqq.com/${sct}.send`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, desp: content })
-        }).then(r => r.json()).then(d => {
-            if (d.code === 0) {
-                showToast('✅ 测试消息已发送，请查看微信');
-            } else {
-                showToast('❌ 发送失败：' + (d.message || '密钥错误'));
-            }
-        }).catch(e => showToast('❌ 网络错误：' + e.message));
+        const wxwork = document.getElementById('wxworkKey').value.trim();
+        let sent = false;
+
+        // 测试Server酱
+        if (sct) {
+            const title = '✅ 修房帮推送测试';
+            const content = '🎉 恭喜！微信推送配置成功！\n\n订单信息会自动推送到你的微信。\n\n📅 测试时间：' + new Date().toLocaleString();
+            fetch(`https://sctapi.ftqq.com/${sct}.send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, desp: content })
+            }).then(r => r.json()).then(d => {
+                if (d.code === 0) { sent = true; showToast('✅ Server酱测试消息已发送'); }
+                else { showToast('❌ Server酱失败：' + (d.message || '密钥错误')); }
+            }).catch(e => showToast('❌ Server酱网络错误'));
+        }
+
+        // 测试企业微信
+        if (wxwork) {
+            const msg = '🔔 修房帮推送测试\n\n🎉 恭喜配置成功！\n当有业主提交订单时，你会收到通知。\n测试时间：' + new Date().toLocaleString();
+            fetch(wxwork, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ msgtype: 'text', text: { content: msg } })
+            }).then(r => r.json()).then(d => {
+                if (d.errcode === 0) { sent = true; showToast('✅ 企业微信测试消息已发送'); }
+                else { showToast('❌ 企业微信失败：错误码' + d.errcode); }
+            }).catch(e => showToast('❌ 企业微信网络错误'));
+        }
+
+        if (!sct && !wxwork) { showToast('请先填写至少一个推送渠道'); }
     }
 
     function showPushNotification(name, category, phone) {
