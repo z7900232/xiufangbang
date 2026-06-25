@@ -459,6 +459,7 @@
             </div>
         </div>
         <button class="auth-btn" onclick="doLogin()">登 录</button>
+        <button onclick="quickPhoneLogin()" style="width:100%;margin-top:8px;padding:12px;border-radius:30px;font-size:.85rem;font-weight:600;border:2px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer;">📱 手机号一键登录（维修用户）</button>
         <div class="switch-link">
             还没有账号？<a onclick="switchAuth('register')">立即注册</a>
         </div>
@@ -1127,6 +1128,40 @@
         const users = getUsers();
         const user = users.find(u => u.phone === phone && u.pwd === pwd);
         if (!user) { showToast('手机号或密码错误'); return }
+        loginAsUser(user);
+    }
+
+    // 手机号一键登录：检查是否提过维修需求，是则直接登录
+    function quickPhoneLogin() {
+        const phone = document.getElementById('loginPhone').value.trim();
+        if (!phone || phone.length < 11) { showToast('请输入正确的手机号'); return }
+        const users = getUsers();
+        let user = users.find(u => u.phone === phone);
+        if (user) {
+            // 已有账号，直接登录
+            loginAsUser(user);
+        } else {
+            // 没有账号，自动注册
+            const orders = getOrders();
+            const hasOrder = orders.some(o => o.phone === phone);
+            if (hasOrder) {
+                // 提过维修需求，自动创建账号
+                const newUser = {
+                    phone, name: phone.slice(0,3)+'****'+phone.slice(-4),
+                    pwd: '123456', id: Date.now(),
+                    created: new Date().toLocaleDateString()
+                };
+                users.push(newUser);
+                saveUsers(users);
+                loginAsUser(newUser);
+                showToast('✅ 已自动创建账号（默认密码123456）');
+            } else {
+                showToast('该手机号未注册，请先注册');
+            }
+        }
+    }
+
+    function loginAsUser(user) {
         currentUser = user;
         localStorage.setItem('xf_currentUser', JSON.stringify(user));
         showToast('✅ 登录成功！');
@@ -1189,6 +1224,20 @@
         if (!problem) { showToast('请描述您遇到的问题'); return }
         if (!contact) { showToast('请输入联系人'); return }
         if (!phone || phone.length < 11) { showToast('请输入正确的手机号'); return }
+
+        // 自动注册/登录（维修提交通道自动创建账号）
+        if (!isLoggedIn()) {
+            const users = getUsers();
+            let user = users.find(u => u.phone === phone);
+            if (!user) {
+                user = { phone, name: contact, pwd: '123456', id: Date.now(), created: new Date().toLocaleDateString() };
+                users.push(user);
+                saveUsers(users);
+            }
+            currentUser = user;
+            localStorage.setItem('xf_currentUser', JSON.stringify(user));
+            showToast('📱 已自动注册，默认密码123456');
+        }
 
         // 保存到订单
         const orders = getOrders();
