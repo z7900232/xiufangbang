@@ -37,7 +37,7 @@
         .app-header .back-btn{font-size:1.3rem;cursor:pointer;padding:4px;background:none;border:none;color:var(--gray-700)}
         .app-header h2{font-size:1.05rem;font-weight:700}
         .app-header .actions{display:flex;gap:12px;font-size:1.1rem}
-        .app-content{flex:1;padding:36px 0 72px}
+        .app-content{flex:1;padding:0 0 72px}
         .app-tabbar{
             position:fixed;bottom:0;left:0;right:0;z-index:100;
             background:#fff;border-top:1px solid var(--gray-200);
@@ -304,7 +304,7 @@
         </div>
     </header>
 
-    <section style="min-height:100vh;display:flex;align-items:center;background:linear-gradient(165deg,#0a1628 0%,#0f2942 40%,#1a3a5c 70%,#1e4d8a 100%);color:#fff;padding:120px 0 60px;position:relative;overflow:hidden;">
+    <section style="min-height:100vh;display:flex;align-items:flex-start;background:linear-gradient(165deg,#0a1628 0%,#0f2942 40%,#1a3a5c 70%,#1e4d8a 100%);color:#fff;padding:88px 0 60px;position:relative;overflow:hidden;">
         <div style="position:absolute;width:600px;height:600px;top:-30%;right:-10%;background:radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 70%);border-radius:50%;"></div>
         <div style="position:absolute;width:400px;height:400px;bottom:-20%;left:-5%;background:radial-gradient(circle,rgba(16,185,129,.08) 0%,transparent 70%);border-radius:50%;"></div>
         <div class="container" style="position:relative;z-index:2;display:flex;align-items:center;gap:60px;flex-wrap:wrap;">
@@ -660,8 +660,6 @@
                     <div style="width:44px;height:44px;border-radius:12px;background:#fce7f3;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📅</div>
                     <div><div style="font-size:.85rem;font-weight:700;">自建房</div><div style="font-size:.7rem;color:#64748b;">设计·施工·包工包料</div></div>
                 </div>
-                    <div><div style="font-size:.85rem;font-weight:700;">保洁包月</div><div style="font-size:.7rem;color:#64748b;">每周定时保洁 · 省心更省钱</div></div>
-                </div>
             </div>
 
             <!-- Recommend Masters -->
@@ -678,12 +676,12 @@
             </div>
             <div class="filter-tabs" id="serviceFilterTabs"></div>
             <div class="grid-2" id="serviceGrid"></div>
+        </div>
 
         <!-- 案例 -->
         <div class="page" id="page-user-gallery" style="padding:0;">
             <div style="padding:10px;" id="galleryGrid"></div>
-        </div>
-<div style="position:fixed;bottom:80px;right:16px;z-index:50;">
+            <div style="position:fixed;bottom:80px;right:16px;z-index:50;">
                 <button onclick="openCasePublisher()" style="width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.35);display:flex;align-items:center;justify-content:center;">＋</button>
             </div>
         </div>
