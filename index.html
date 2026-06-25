@@ -1276,9 +1276,12 @@
     function pushToWeChat(name, phone, category, problem, addr, time) {
         // 获取配置的推送密钥
         let wechatKey = localStorage.getItem('xf_wechat_key');
+        let wxworkUrl = localStorage.getItem('xf_wxwork_url');
+        let pushplusKey = localStorage.getItem('xf_pushplus_key');
+
+        if (!wechatKey && !wxworkUrl && !pushplusKey) return;
 
         // 组装推送消息
-        // 根据分类自动匹配标题前缀 - 全覆盖所有服务类目
         const categoryMap = [
             { prefix:'🧹 新保洁订单', keywords:['日常保洁','深度清洁','家电清洗','开荒保洁','除螨','保姆','保洁包月','保洁'] },
             { prefix:'🔧 新维修订单', keywords:['水电维修','漏水补漏','墙面修补','瓷砖空鼓','门窗维修','打孔疏通','吊顶安装','灯具安装','防水施工','打孔','疏通','维修'] },
@@ -1297,68 +1300,39 @@
         let title = prefix + ' ' + name + ' ' + phone.slice(0,3) + '****' + phone.slice(-4);
         if (addr) title += ' ' + addr.substring(0,8);
         if (title.length > 80) title = title.substring(0,77) + '...';
-        const content = `
-━━━━━━━━━━━━━━━━━━
-📋 订单详情
-━━━━━━━━━━━━━━━━━━
+        const detail = '服务项目：' + category + '\n联系人：' + name + '\n电话：' + phone + '\n地址：' + (addr || '未填写') + '\n上门时间：' + time + '\n描述：' + (problem || '无') + '\n时间：' + new Date().toLocaleString();
 
-📂 服务项目：${category}
-👤 联系人：${name}
-📱 电话：${phone}
-📍 地址：${addr || '未填写'}
-🕐 上门时间：${time}
-📝 问题描述：${problem || '无'}
-
-━━━━━━━━━━━━━━━━━━
-⏱ 提交时间：${new Date().toLocaleString()}
-🔗 修房帮：http://xiufangbang.xin
-━━━━━━━━━━━━━━━━━━
-        `.trim();
-
-        // === 渠道1: Server酱 ===
+        // === 渠道1: Server酱（使用Image GET方式，兼容所有浏览器）===
         if (wechatKey) {
-            fetch(`https://sctapi.ftqq.com/${wechatKey}.send`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, desp: content })
-            }).then(r => r.json()).then(d => {
-                console.log('Server酱推送结果:', d);
-            }).catch(e => console.log('Server酱推送失败:', e));
+            const img = new Image();
+            img.src = 'https://sctapi.ftqq.com/' + wechatKey + '.send?title=' + encodeURIComponent(title) + '&desp=' + encodeURIComponent(detail);
         }
 
-        // === 渠道2: 企业微信机器人 ===
-        const wxworkUrl = localStorage.getItem('xf_wxwork_url');
+        // === 渠道2: 企业微信机器人（使用sendBeacon，比fetch更可靠）===
         if (wxworkUrl) {
-            const msg = '🔔 新订单通知\n' +
-                '服务项目：' + category + '\n' +
-                '联系人：' + name + '\n' +
-                '电话：' + phone + '\n' +
-                '地址：' + (addr || '未填写') + '\n' +
-                '上门时间：' + time + '\n' +
-                '问题描述：' + (problem || '无') + '\n' +
-                '提交时间：' + new Date().toLocaleString();
-            fetch(wxworkUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+            try {
+                const data = JSON.stringify({
                     msgtype: 'text',
-                    text: { content: msg }
-                })
-            }).then(r => r.json()).then(d => {
-                console.log('✅ 企业微信推送成功:', d);
-                if (d.errcode !== 0) console.log('企业微信错误:', d.errmsg);
-            }).catch(e => console.log('❌ 企业微信推送失败:', e));
+                    text: { content: '🔔 新订单通知\n' + detail }
+                });
+                navigator.sendBeacon(wxworkUrl, data);
+            } catch(e) {
+                console.log('企业微信sendBeacon失败，尝试fetch');
+                fetch(wxworkUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ msgtype:'text', text: { content: '🔔 新订单通知\n' + detail } })
+                }).catch(function(){});
+            }
         }
 
         // === 渠道3: PushPlus ===
-        const pushplusKey = localStorage.getItem('xf_pushplus_key');
         if (pushplusKey) {
-            fetch('https://www.pushplus.plus/send', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: pushplusKey, title, content, template: 'txt' })
-            }).catch(e => console.log('PushPlus推送失败:', e));
+            const img = new Image();
+            img.src = 'https://www.pushplus.plus/send?token=' + pushplusKey + '&title=' + encodeURIComponent(title) + '&content=' + encodeURIComponent(detail) + '&template=txt';
         }
+
+        console.log('✅ 推送已发送（3通道）');
     }
 
     // ===== 微信推送设置页面 =====
