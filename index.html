@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>修房帮·渠县 - 装修·维修·建房一站式平台</title>
+    <title id="pageTitle">修房帮·渠县 - 装修·维修·建房一站式平台</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
     <style>
         /* ===== Reset & Base ===== */
@@ -575,7 +575,7 @@
     <div class="app-header" id="appHeader">
         <div class="app-header-inner">
             <button class="back-btn" id="backBtn" onclick="goBack()" style="visibility:hidden;">‹</button>
-            <h2 id="appTitle">修房帮·渠县</h2>
+            <h2 id="appTitle">修房帮<span id="appLocation">·渠县</span></h2>
             <div class="actions"><span style="cursor:pointer;" onclick="logout()">🚪</span></div>
         </div>
     </div>
@@ -1484,8 +1484,74 @@
         }
     }
 
-    // 页面加载时直接进入平台
+    // ===== 动态地理位置 =====
+    let userCity = localStorage.getItem('xf_city') || '渠县';
+    let userRegion = localStorage.getItem('xf_region') || '';
+
+    function getBrandName() {
+        const loc = userRegion ? userRegion + '-' + userCity : userCity;
+        return '修房帮·' + loc;
+    }
+
+    function getLocationStr() {
+        return userRegion ? userRegion + '-' + userCity : userCity;
+    }
+
+    function updateAllBrandNames() {
+        const loc = getLocationStr();
+        // 更新标题
+        const pt = document.getElementById('pageTitle');
+        if (pt) pt.textContent = '修房帮·' + loc + ' - 装修·维修·建房一站式平台';
+        // 更新顶栏位置
+        const al = document.getElementById('appLocation');
+        if (al) al.textContent = '·' + loc;
+    }
+
+    function detectLocation() {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                // 使用Nominatim反向地理编码
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=zh`)
+                    .then(r => r.json())
+                    .then(data => {
+                        const addr = data.address || {};
+                        const city = addr.city || addr.town || addr.county || addr.state || '';
+                        const region = addr.state || '';
+                        if (city) {
+                            // 提取市县
+                            let county = city.replace(/市$/,'');
+                            let state = region.replace(/省$/,'').replace(/市$/,'');
+                            // 简化名称
+                            if (county.includes('区')) county = county;
+                            if (county.includes('县')) county = county.replace(/.*?([^市]+县)/, '$1');
+                            userCity = county || '渠县';
+                            userRegion = state;
+                            localStorage.setItem('xf_city', userCity);
+                            localStorage.setItem('xf_region', userRegion);
+                            updateAllBrandNames();
+                            // 刷新tabbar标题
+                            const tabTitle = document.getElementById('appTitle');
+                            if (tabTitle) {
+                                const base = tabTitle.textContent.split('·')[0] || '修房帮';
+                                // 保留原有tab逻辑
+                        }
+                    })
+                    .catch(() => {});
+            },
+            () => {
+                // 定位失败，用默认值
+                console.log('定位失败，使用默认位置');
+            },
+            { enableHighAccuracy: false, timeout: 5000 }
+        );
+    }
+
+    // 页面加载时
     document.addEventListener('DOMContentLoaded', function() {
+        // 尝试获取位置
+        detectLocation();
         // 如果已登录直接进应用
         if (isLoggedIn()) {
             document.getElementById('landingRoot').style.display = 'none';
