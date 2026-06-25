@@ -1329,19 +1329,25 @@
         // === 渠道2: 企业微信机器人 ===
         const wxworkUrl = localStorage.getItem('xf_wxwork_url');
         if (wxworkUrl) {
-            const wxworkContent = {
-                msgtype: 'markdown',
-                markdown: {
-                    content: `## 🔔 新订单通知\n> 📂 **服务项目**：${category}\n> 👤 **联系人**：${name}\n> 📱 **电话**：${phone}\n> 📍 **地址**：${addr || '未填写'}\n> 🕐 **时间**：${time}\n> 📝 **描述**：${problem || '无'}\n> ⏱ ${new Date().toLocaleString()}`
-                }
-            };
+            const msg = '🔔 新订单通知\n' +
+                '服务项目：' + category + '\n' +
+                '联系人：' + name + '\n' +
+                '电话：' + phone + '\n' +
+                '地址：' + (addr || '未填写') + '\n' +
+                '上门时间：' + time + '\n' +
+                '问题描述：' + (problem || '无') + '\n' +
+                '提交时间：' + new Date().toLocaleString();
             fetch(wxworkUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(wxworkContent)
+                body: JSON.stringify({
+                    msgtype: 'text',
+                    text: { content: msg }
+                })
             }).then(r => r.json()).then(d => {
-                console.log('企业微信推送结果:', d);
-            }).catch(e => console.log('企业微信推送失败:', e));
+                console.log('✅ 企业微信推送成功:', d);
+                if (d.errcode !== 0) console.log('企业微信错误:', d.errmsg);
+            }).catch(e => console.log('❌ 企业微信推送失败:', e));
         }
 
         // === 渠道3: PushPlus ===
