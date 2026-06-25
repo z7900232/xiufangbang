@@ -755,6 +755,45 @@
             <div class="gap-row" id="orderList"></div>
         </div>
 
+        <!-- 订单记录表（详细台账） -->
+        <div class="page" id="page-order-log" style="max-width:100%;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <h3 style="font-size:1.1rem;font-weight:800;">📊 订单记录台账</h3>
+                    <p style="font-size:.75rem;color:#64748b;">共 <span id="logCount">0</span> 条记录 · 自动保存</p>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="exportOrdersCSV()" style="padding:8px 18px;border-radius:20px;font-size:.78rem;font-weight:600;border:none;background:#10b981;color:#fff;cursor:pointer;">📥 导出Excel</button>
+                    <button onclick="exportOrdersJSON()" style="padding:8px 18px;border-radius:20px;font-size:.78rem;font-weight:600;border:none;background:#2563eb;color:#fff;cursor:pointer;">📄 导出JSON</button>
+                    <button onclick="if(confirm('确定清空所有记录？')){localStorage.removeItem('xf_order_log');showToast('已清空');renderOrderLog()}" style="padding:8px 18px;border-radius:20px;font-size:.78rem;font-weight:600;border:none;background:#ef4444;color:#fff;cursor:pointer;">🗑️ 清空</button>
+                </div>
+            </div>
+            <div style="overflow-x:auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.04);">
+                <table style="width:100%;border-collapse:collapse;font-size:.78rem;min-width:900px;" id="orderLogTable">
+                    <thead>
+                        <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">序号</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">提交时间</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">服务类型</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">联系人</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">手机号</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">地址</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">上门时间</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">问题描述</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">订单编号</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">状态</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">微信推送</th>
+                            <th style="padding:10px 8px;text-align:left;white-space:nowrap;">提交来源</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderLogBody"></tbody>
+                </table>
+            </div>
+            <div style="margin-top:12px;font-size:.72rem;color:#94a3b8;text-align:center;">
+                💾 数据自动保存在浏览器中 · 导出Excel可到桌面用WPS/Excel打开
+            </div>
+        </div>
+
         <!-- Profile -->
         <div class="page" id="page-user-profile">
             <div style="text-align:center;padding:20px 0;">
@@ -764,6 +803,7 @@
             </div>
             <div class="gap-row">
                 <div class="card card-click" onclick="navigateTo('user-orders')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📋</span> 我的订单 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <div class="card card-click" onclick="navigateTo('order-log')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📊</span> 订单记录台账 <span style="flex:1;text-align:right;color:var(--primary);font-weight:600;">详细 ›</span></span></div>
                 <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">❤️</span> 我的收藏 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
                 <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">💬</span> 我的咨询 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
                 <div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">🏗️</span> 我的工地 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
@@ -1164,6 +1204,13 @@
 
         closeRepairForm();
 
+        // 记录到台账
+        logOrder({
+            type: category, contact, phone, address: addr,
+            schedule: time, description: problem, source: '首页维修Banner',
+            pushStatus: localStorage.getItem('xf_wechat_key') ? '✅ 已推送微信' : '⚠️ 未配置推送'
+        });
+
         // 推送到微信
         pushToWeChat(contact, phone, category, problem, addr, time);
 
@@ -1404,7 +1451,7 @@
         // Update header
         const titles = {
             'user-home':'修房帮', 'user-services':'全部服务', 'user-repair':'一键报修',
-            'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'user-profile':'个人中心',
+            'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'order-log':'订单记录台账', 'user-profile':'个人中心',
             'master-home':'师傅中心', 'master-grab':'抢单大厅', 'master-orders':'接单记录',
             'master-profile':'师傅设置',
             'shop-home':'店铺中心', 'shop-products':'商品管理',
@@ -1416,6 +1463,7 @@
         if (page === 'user-services') renderServices(param);
         if (page === 'user-masters') renderMasters();
         if (page === 'user-orders') renderOrders('all');
+        if (page === 'order-log') renderOrderLog();
         if (page === 'user-repair') renderRepair();
         if (page === 'user-housekeeping') renderHousekeeping('all',null);
         if (page === 'master-home') renderMasterHome();
@@ -1430,7 +1478,7 @@
         const role = currentRole;
         const backMap = {
             'user-services':'user-home', 'user-housekeeping':'user-home', 'user-repair':'user-home', 'user-masters':'user-home',
-            'user-orders':'user-profile', 'user-profile':'user-home',
+            'user-orders':'user-profile', 'order-log':'user-profile', 'user-profile':'user-home',
             'master-grab':'master-home', 'master-orders':'master-profile', 'master-profile':'master-home',
             'shop-products':'shop-home'
         };
@@ -1690,6 +1738,12 @@
         };
         orders.unshift(newOrder);
         saveOrders(orders);
+        // 记录到台账
+        logOrder({
+            type: cat, contact, phone, address: addr,
+            schedule: '尽快', description: desc, source: '报修页面',
+            pushStatus: localStorage.getItem('xf_wechat_key') ? '✅ 已推送微信' : '⚠️ 未配置推送'
+        });
         // 微信推送（完整联系方式）
         pushToWeChat(contact, phone, cat, desc, addr, '尽快');
         showToast('✅ 报修发布成功！已推送至您的微信');
@@ -1731,7 +1785,93 @@
         renderOrders(filter);
     }
 
-    // ===== Master Functions =====
+    // ===== 订单记录台账 =====
+    function getOrderLog() {
+        return JSON.parse(localStorage.getItem('xf_order_log') || '[]');
+    }
+
+    function saveOrderLog(log) {
+        localStorage.setItem('xf_order_log', JSON.stringify(log));
+    }
+
+    function logOrder(data) {
+        const log = getOrderLog();
+        // 生成完整记录
+        const record = {
+            id: log.length + 1,
+            orderId: 'XF' + Date.now().toString().slice(-8),
+            time: new Date().toLocaleString('zh-CN', { hour12: false }),
+            type: data.type || '未指定',
+            contact: data.contact || '未填写',
+            phone: data.phone || '未填写',
+            address: data.address || '未填写',
+            schedule: data.schedule || '尽快',
+            description: data.description || '无',
+            source: data.source || '网站',
+            pushStatus: data.pushStatus || '已推送',
+            status: '待接单'
+        };
+        log.unshift(record);
+        saveOrderLog(log);
+        console.log('✅ 订单已记录:', record);
+    }
+
+    function renderOrderLog() {
+        const log = getOrderLog();
+        const tbody = document.getElementById('orderLogBody');
+        const count = document.getElementById('logCount');
+        if (count) count.textContent = log.length;
+        if (log.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="12" style="padding:40px;text-align:center;color:#94a3b8;">暂无订单记录</td></tr>';
+            return;
+        }
+        tbody.innerHTML = log.map((r, i) => `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:8px;white-space:nowrap;">${r.id}</td>
+                <td style="padding:8px;white-space:nowrap;font-size:.72rem;">${r.time}</td>
+                <td style="padding:8px;white-space:nowrap;"><span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:8px;font-size:.7rem;">${r.type}</span></td>
+                <td style="padding:8px;white-space:nowrap;font-weight:600;">${r.contact}</td>
+                <td style="padding:8px;white-space:nowrap;">${r.phone}</td>
+                <td style="padding:8px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.address}">${r.address}</td>
+                <td style="padding:8px;white-space:nowrap;">${r.schedule}</td>
+                <td style="padding:8px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.description}">${r.description}</td>
+                <td style="padding:8px;white-space:nowrap;font-size:.7rem;color:#64748b;">${r.orderId}</td>
+                <td style="padding:8px;white-space:nowrap;"><span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:8px;font-size:.7rem;">${r.status}</span></td>
+                <td style="padding:8px;white-space:nowrap;"><span style="background:#d1fae5;color:#059669;padding:2px 8px;border-radius:8px;font-size:.7rem;">${r.pushStatus}</span></td>
+                <td style="padding:8px;white-space:nowrap;font-size:.7rem;color:#64748b;">${r.source}</td>
+            </tr>
+        `).join('');
+    }
+
+    function exportOrdersCSV() {
+        const log = getOrderLog();
+        if (log.length === 0) { showToast('暂无记录可导出'); return; }
+        const headers = ['序号','提交时间','服务类型','联系人','手机号','地址','上门时间','问题描述','订单编号','状态','微信推送','提交来源'];
+        const rows = log.map(r => [r.id, r.time, r.type, r.contact, r.phone, r.address, r.schedule, r.description, r.orderId, r.status, r.pushStatus, r.source]);
+        let csv = '\uFEFF' + headers.join(',') + '\n';
+        rows.forEach(row => {
+            csv += row.map(v => `"${(v+'').replace(/"/g,'""')}"`).join(',') + '\n';
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `修房帮_订单台账_${new Date().toISOString().slice(0,10)}.csv`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast('✅ 已导出CSV，用Excel打开即可');
+    }
+
+    function exportOrdersJSON() {
+        const log = getOrderLog();
+        if (log.length === 0) { showToast('暂无记录可导出'); return; }
+        const blob = new Blob([JSON.stringify(log, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `修房帮_订单台账_${new Date().toISOString().slice(0,10)}.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast('✅ JSON已导出');
+    }
     function renderMasterHome() {
         document.getElementById('masterEarnings').textContent = '¥' + (Math.floor(Math.random()*3000+1500)).toLocaleString();
         document.getElementById('masterOrders').textContent = Math.floor(Math.random()*20+10);
@@ -1981,6 +2121,13 @@
         orders.unshift(newOrder);
         saveOrders(orders);
         closeModal('bookingModal');
+        // 记录到台账
+        logOrder({
+            type, contact: name, phone, address: addr,
+            schedule: '待确认', description: (note || '') + ' | 预约项目：' + type,
+            source: '预约弹窗',
+            pushStatus: localStorage.getItem('xf_wechat_key') ? '✅ 已推送微信' : '⚠️ 未配置推送'
+        });
         // 微信推送（所有字段齐全）
         pushToWeChat(name, phone, type, (note || '') + ` | 预约项目：${type}`, addr, '待确认');
         showToast('✅ 预约成功！已推送至您的微信');
