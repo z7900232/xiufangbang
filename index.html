@@ -1780,7 +1780,7 @@ function showPushNotification(name, category, phone) {
             <div class="card order-card status-${o.status}">
                 <div class="head">
                     <h4>${o.type}</h4>
-                    <span class="status ${o.status}">${ {pending:'待接单',ongoing:'服务中',done:'已完成'}[o.status] || o.status }</span>
+                    <span class="status ${o.status}">${ {pending:'待接单',ongoing:'服务中',done:'已完成',cancelled:'已取消'}[o.status] || o.status }</span>
                 </div>
                 <p>${o.name} · ${o.desc}</p>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
