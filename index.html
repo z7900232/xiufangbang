@@ -33,11 +33,11 @@
             border-bottom:1px solid var(--gray-200);
             padding:0 16px
         }
-        .app-header-inner{display:flex;align-items:center;justify-content:space-between;height:40px;max-width:1200px;margin:0 auto}
+        .app-header-inner{display:flex;align-items:center;justify-content:space-between;height:36px;max-width:1200px;margin:0 auto}
         .app-header .back-btn{font-size:1.3rem;cursor:pointer;padding:4px;background:none;border:none;color:var(--gray-700)}
         .app-header h2{font-size:1.05rem;font-weight:700}
         .app-header .actions{display:flex;gap:12px;font-size:1.1rem}
-        .app-content{flex:1;padding-bottom:72px}
+        .app-content{flex:1;padding:36px 0 72px}
         .app-tabbar{
             position:fixed;bottom:0;left:0;right:0;z-index:100;
             background:#fff;border-top:1px solid var(--gray-200);
@@ -48,7 +48,7 @@
             padding:4px 16px;cursor:pointer;border:none;background:none;
             font-size:.68rem;color:var(--gray-500);transition:var(--transition);position:relative
         }
-        .app-tabbar .tab-item .icon{font-size:1.2rem;line-height:1}
+        .app-tabbar .tab-item .icon{font-size:1.1rem;line-height:1}
         .app-tabbar .tab-item.active{color:var(--primary)}
         .app-tabbar .tab-item.active::after{content:'';position:absolute;top:-6px;width:24px;height:3px;background:var(--primary);border-radius:0 0 3px 3px}
         .app-tabbar .tab-item .badge-count{
@@ -58,7 +58,7 @@
         }
 
         /* ===== Page Content ===== */
-        .page{display:none;padding:0 12px 12px;max-width:800px;margin:0 auto}
+        .page{display:none;max-width:800px;margin:0 auto;padding:0}
         .page.active{display:block;animation:fadeIn .3s ease}
         @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
@@ -78,7 +78,7 @@
         /* ===== Grid / Cards ===== */
         .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
         .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-        .gap-row{display:flex;flex-direction:column;gap:12px}
+        .gap-row{display:flex;flex-direction:column;gap:10px}
 
         .card{
             background:#fff;border-radius:var(--radius);padding:16px;
@@ -391,7 +391,7 @@
             <span style="display:inline-block;padding:6px 20px;border-radius:20px;font-size:.78rem;font-weight:600;background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;margin-bottom:14px;">五大核心业务</span>
             <h2 style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;">修房帮·渠县 · 业务全覆盖</h2>
             <p style="color:var(--gray-500);margin:10px 0 40px;">装修 + 维修 + 建房 + 建材 + 师傅 — 县域唯一全覆盖</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
                 <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:center;transition:.3s;cursor:default;box-shadow:0 4px 20px rgba(0,0,0,.04);border:1px solid #f1f5f9;">
                     <div style="width:56px;height:56px;border-radius:14px;background:#fee2e2;color:#ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.5rem;box-shadow:0 4px 12px rgba(239,68,68,.15);">⚡</div>
                     <h4 style="font-size:.9rem;font-weight:700;">房屋维修</h4>
@@ -614,7 +614,7 @@
             </div>
 
             <!-- Quick Entry -->
-            <div class="quick-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+            <div class="quick-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;">
                 <div class="quick-item" style="background:linear-gradient(135deg,#fee2e2,#fef2f2);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showRepairForm('房屋维修')">
                     <div style="font-size:1.8rem;">⚡</div>
                     <div style="font-size:.7rem;font-weight:600;color:#dc2626;margin-top:4px;">房屋维修</div>
@@ -635,7 +635,7 @@
 
             <!-- 热门服务 -->
             <div class="section-header"><h3>🔥 热门服务</h3></div>
-            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
                 <div onclick="showRepairForm('房屋维修')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.04);cursor:pointer;">
                     <div style="width:44px;height:44px;border-radius:12px;background:#fee2e2;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">💧</div>
                     <div><div style="font-size:.85rem;font-weight:700;">漏水补漏</div><div style="font-size:.7rem;color:#64748b;">屋顶 · 卫生间 · 外墙防水</div></div>
@@ -681,7 +681,7 @@
 
         <!-- 案例 -->
         <div class="page" id="page-user-gallery" style="padding:0;">
-            <div style="padding:12px;" id="galleryGrid"></div>
+            <div style="padding:10px;" id="galleryGrid"></div>
         </div>
 <div style="position:fixed;bottom:80px;right:16px;z-index:50;">
                 <button onclick="openCasePublisher()" style="width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.35);display:flex;align-items:center;justify-content:center;">＋</button>
