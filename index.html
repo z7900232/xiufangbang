@@ -802,14 +802,9 @@
 
         <!-- Profile -->
         <div class="page" id="page-user-profile">
-            <div style="text-align:center;padding:20px 0;">
-                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;color:#fff;">👤</div>
-                <h3 style="font-size:1.1rem;font-weight:700;" id="profileName">装修哥</h3>
-                <p style="font-size:.82rem;color:var(--gray-500);" id="profilePhone">📱 15881864944 · 已实名</p>
-            </div>
             <div class="gap-row">
                 <div class="card card-click" onclick="navigateTo('user-orders')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📋</span> 我的订单 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
-                <div class="card card-click" onclick="showToast('客服热线：15881864944')"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📞</span> 客服电话：15881864944 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div>
+                <a href="tel:15881864944" style="text-decoration:none;color:inherit;"><div class="card card-click"><span style="display:flex;align-items:center;gap:12px;font-size:.9rem;"><span style="font-size:1.2rem;">📞</span> 客服电话：15881864944 <span style="flex:1;text-align:right;color:var(--gray-500);">›</span></span></div></a>
             </div>
         </div>
 
@@ -1449,7 +1444,7 @@ function showPushNotification(name, category, phone) {
         // Update header
         const titles = {
             'user-home':'修房帮·渠县', 'user-services':'全部服务', 'user-repair':'一键报修',
-            'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'order-log':'订单记录台账', 'user-profile':'个人中心',
+            'user-masters':'师傅列表', 'user-housekeeping':'家政服务', 'user-orders':'我的订单', 'order-log':'订单记录台账', 'user-profile':'联系我们',
             'master-home':'师傅中心', 'master-grab':'抢单大厅', 'master-orders':'接单记录',
             'master-profile':'师傅设置',
             'shop-home':'店铺中心', 'shop-products':'商品管理',
@@ -1492,7 +1487,7 @@ function showPushNotification(name, category, phone) {
                 { id:'user-services', icon:'🔧', label:'服务' },
                 { id:'user-repair', icon:'⚡', label:'报修' },
                 { id:'user-orders', icon:'📋', label:'订单' },
-                { id:'user-profile', icon:'👤', label:'我的' },
+                { id:'user-profile', icon:'📞', label:'联系' },
             ],
             master: [
                 { id:'master-home', icon:'🏠', label:'工作台' },
@@ -1525,7 +1520,7 @@ function showPushNotification(name, category, phone) {
         const home = role + '-home';
         const target = document.getElementById('page-' + home);
         if (target) { target.classList.add('active'); currentPage[role] = home; }
-        document.getElementById('appTitle').textContent = role === 'user' ? '修房帮·渠县' : role === 'master' ? '师傅中心' : role === 'shop' ? '店铺中心' : '总后台管理';
+        document.getElementById('appTitle').textContent = role === 'user' ? '联系我们' : role === 'master' ? '师傅中心' : role === 'shop' ? '店铺中心' : '总后台管理';
         document.getElementById('backBtn').style.visibility = 'hidden';
         if (role === 'master') renderMasterHome();
         if (role === 'shop') renderShopHome();
