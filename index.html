@@ -1521,38 +1521,22 @@ function renderAdminPanel(tab) {
         html += '</div></div>';
     }
 
-        if (tab === 'page') {
+            if (tab === 'page') {
         html += '<div style="background:#fff;border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.04);">' +
-            '<h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px;">📝 首页模块管理</h3>' +
-            '<p style="font-size:.78rem;color:#64748b;margin-bottom:14px;">拖动调整顺序，点击编辑文字，删除不需要的模块</p>' +
-            '<div id="pageModules"></div>' +
-        '</div>';        setTimeout(function(){
-            var modules = JSON.parse(localStorage.getItem('xf_page_modules') || '[]');
-            if (modules.length === 0) {
-                modules = [
-                    {id:1, type:'banner', title:'🔧 房屋维修', text:'哪怕一个水龙头我们都修', visible:true},
-                    {id:2, type:'banner', title:'🧹 日常保洁', text:'全屋保洁·专业设备', visible:true},
-                    {id:3, type:'hot', title:'🔥 热门服务', visible:true},
-                    {id:4, type:'cases', title:'📸 案例展示', visible:true},
-                ];
-                localStorage.setItem('xf_page_modules', JSON.stringify(modules));
-            }
-            var box = document.getElementById('pageModules');
-            if (!box) return;
-            box.innerHTML = modules.map(function(m, idx){
-                return '<div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">' +
-                    '<span style="cursor:grab;color:#94a3b8;font-size:1.2rem;">⠿</span>' +
-                    '<span style="font-size:1.2rem;">' + (m.type === 'banner' ? '📋' : m.type === 'hot' ? '🔥' : '📸') + '</span>' +
-                    '<div style="flex:1;"><div style="font-size:.82rem;font-weight:600;">' + (m.title || '') + '</div>' +
-                    '<div style="font-size:.7rem;color:#64748b;">' + (m.text || '') + '</div></div>' +
-                    '<button onclick="editPageModule('+idx+')" style="padding:4px 10px;border-radius:8px;font-size:.68rem;border:none;background:#dbeafe;color:#2563eb;cursor:pointer;">编辑</button>' +
-                    '<button onclick="deletePageModule('+idx+')" style="padding:4px 10px;border-radius:8px;font-size:.68rem;border:none;background:#fee2e2;color:#ef4444;cursor:pointer;">删除</button>' +
-                '</div>';
-            }).join('') + '<button onclick="addPageModule()" style="width:100%;margin-top:8px;padding:10px;border-radius:10px;font-size:.8rem;font-weight:600;border:2px dashed #e2e8f0;background:#fff;color:#2563eb;cursor:pointer;">+ 添加新模块</button>';
-        }, 100);
+            '<h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px;">📝 页面内容编辑</h3>' +
+            '<p style="font-size:.78rem;color:#64748b;margin-bottom:14px;">选择页面 → 修改文字 → 点保存</p>' +
+            '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">' +
+                '<button onclick="openPageEditor(\'home\')" style="padding:6px 18px;border-radius:14px;font-size:.75rem;font-weight:600;border:none;cursor:pointer;background:#2563eb;color:#fff;">🏠 首页</button>' +
+                '<button onclick="openPageEditor(\'gallery\')" style="padding:6px 18px;border-radius:14px;font-size:.75rem;font-weight:600;border:none;cursor:pointer;background:#f1f5f9;color:#64748b;">📸 案例</button>' +
+                '<button onclick="openPageEditor(\'repair\')" style="padding:6px 18px;border-radius:14px;font-size:.75rem;font-weight:600;border:none;cursor:pointer;background:#f1f5f9;color:#64748b;">⚡ 报修</button>' +
+                '<button onclick="openPageEditor(\'contact\')" style="padding:6px 18px;border-radius:14px;font-size:.75rem;font-weight:600;border:none;cursor:pointer;background:#f1f5f9;color:#64748b;">📞 联系</button>' +
+            '</div>' +
+            '<div id="pageEditorArea" style="background:#f8fafc;border-radius:10px;padding:16px;">' +
+                '<p style="color:#94a3b8;font-size:.82rem;text-align:center;">点击上方按钮选择要编辑的页面</p>' +
+            '</div>' +
+        '</div>';
     }
-
-    if (tab === 'stats') {
+if (tab === 'stats') {
         var catStats = {};
         orders.forEach(function(o){if(o.type){catStats[o.type]=(catStats[o.type]||0)+1}});
         var sorted = Object.keys(catStats).sort(function(a,b){return catStats[b]-catStats[a]});
@@ -1635,6 +1619,36 @@ function addPageModule() {
     modules.push({id: Date.now(), type: 'banner', title: '新模块', text: '模块内容', visible: true});
     localStorage.setItem('xf_page_modules', JSON.stringify(modules));
     renderAdminPanel('page');
+}
+
+function openPageEditor(key) {
+    document.querySelectorAll('#adminPanel button').forEach(function(b){if(b.textContent.includes('首页')||b.textContent.includes('案例')||b.textContent.includes('报修')||b.textContent.includes('联系')){b.style.background='#f1f5f9';b.style.color='#64748b';}});
+    event.target.style.background='#2563eb';event.target.style.color='#fff';
+    var content = JSON.parse(localStorage.getItem('xf_page_content') || '{}');
+    var page = content[key];
+    if(!page) page = {blocks:['页面内容']};
+    var area = document.getElementById('pageEditorArea');
+    if(!area) return;
+    area.innerHTML = '<div style="font-size:.82rem;font-weight:600;color:#334155;margin-bottom:8px;">编辑文字内容（每行一个内容块）</div>' +
+        '<textarea id="pageEditorText" style="width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;font-size:.85rem;outline:none;min-height:120px;font-family:inherit;margin-bottom:10px;">' + (page.blocks||[]).join('\n') + '</textarea>' +
+        '<div style="display:flex;gap:8px;"><button onclick="savePageEditor(\''+key+'\')" style="padding:10px 28px;border-radius:20px;font-size:.85rem;font-weight:700;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;cursor:pointer;">💾 保存</button>' +
+        '<button onclick="previewPage(\''+key+'\')" style="padding:10px 28px;border-radius:20px;font-size:.85rem;font-weight:600;border:none;background:#f1f5f9;color:#334155;cursor:pointer;">👁 预览</button></div>' +
+        '<div id="pagePreview" style="margin-top:12px;padding:12px;background:#fff;border-radius:8px;font-size:.82rem;color:#334155;line-height:1.8;display:none;"></div>';
+}
+function savePageEditor(key) {
+    var text = document.getElementById('pageEditorText').value;
+    var blocks = text.split('\n').filter(function(l){return l.trim()});
+    var content = JSON.parse(localStorage.getItem('xf_page_content') || '{}');
+    if(!content[key]) content[key] = {blocks:[]};
+    content[key].blocks = blocks;
+    localStorage.setItem('xf_page_content', JSON.stringify(content));
+    showToast('✅ 已保存');
+}
+function previewPage(key) {
+    var text = document.getElementById('pageEditorText').value;
+    var preview = document.getElementById('pagePreview');
+    preview.style.display = 'block';
+    preview.innerHTML = text.split('\n').filter(function(l){return l.trim()}).map(function(l){return '<div>'+l+'</div>'}).join('');
 }
 
 function trackVisit(page) {
