@@ -1126,16 +1126,27 @@
         }
 
         // 组装推送消息
-        // 根据分类自动匹配标题前缀
-        const cleanTypes = ['日常保洁','深度清洁','家电清洗','开荒保洁','除螨消杀','保姆','月嫂'];
-        const repairTypes = ['水电维修','漏水补漏','墙面修补','瓷砖空鼓','门窗维修','打孔疏通','吊顶安装','灯具安装','防水施工'];
+        // 根据分类自动匹配标题前缀 - 全覆盖所有服务类目
+        const categoryMap = [
+            // 保洁家政类
+            { prefix:'🧹 新保洁订单', keywords:['日常保洁','深度清洁','家电清洗','开荒保洁','除螨','保姆','月嫂','保洁'] },
+            // 维修类
+            { prefix:'🔧 新维修订单', keywords:['水电维修','漏水补漏','墙面修补','瓷砖空鼓','门窗维修','打孔疏通','吊顶安装','灯具安装','防水施工','打孔','疏通','维修'] },
+            // 装修类
+            { prefix:'🏠 新装修订单', keywords:['装修','整装','翻新','改造','全屋'] },
+            // 自建房类
+            { prefix:'🏗️ 新建房订单', keywords:['自建房','建房','设计','施工队','倒楼板','包工包料'] },
+            // 建材类
+            { prefix:'🏪 新建材订单', keywords:['建材','采购','卫浴','瓷砖','门窗','板材','五金','涂料'] },
+            // 安装类
+            { prefix:'🔨 新安装订单', keywords:['安装','铺贴','贴砖'] },
+        ];
         let prefix = '🔔 新订单';
-        if (cleanTypes.some(t => category.includes(t))) {
-            prefix = '🧹 新保洁订单';
-        } else if (repairTypes.some(t => category.includes(t))) {
-            prefix = '🔧 新维修订单';
-        } else if (category.includes('装修') || category.includes('整装') || category.includes('翻新') || category.includes('改造')) {
-            prefix = '🏠 新装修订单';
+        for (const group of categoryMap) {
+            if (group.keywords.some(k => category.includes(k))) {
+                prefix = group.prefix;
+                break;
+            }
         }
         const title = prefix + ' - ' + category;
         const content = `
