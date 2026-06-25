@@ -687,10 +687,11 @@
                     <textarea id="repairDesc" style="width:100%;padding:10px 14px;border:1px solid var(--gray-200);border-radius:10px;font-size:.9rem;outline:none;font-family:inherit;min-height:60px;resize:vertical;" placeholder="请描述您遇到的问题..."></textarea>
                 </div>
                 <div class="card">
-                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📎 上传图片</label>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                        <div style="width:60px;height:60px;border-radius:10px;border:2px dashed var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gray-300);cursor:pointer;">+</div>
-                        <span style="font-size:.78rem;color:var(--gray-500);">拍摄或上传现场照片</span>
+                    <label style="font-size:.82rem;font-weight:600;color:var(--gray-700);display:block;margin-bottom:6px;">📎 上传图片（选填）</label>
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                        <input type="file" id="repairFileInput" accept="image/*" multiple style="display:none;" onchange="handleFileSelect(event)" />
+                        <div onclick="document.getElementById('repairFileInput').click()" style="width:60px;height:60px;border-radius:10px;border:2px dashed var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gray-300);cursor:pointer;">+</div>
+                        <span id="fileCount" style="font-size:.78rem;color:var(--gray-500);">点击上传现场照片</span>
                     </div>
                 </div>
                 <div class="card">
@@ -1704,6 +1705,16 @@ function showPushNotification(name, category, phone) {
 
     // Repair
     function renderRepair() {}
+
+    function handleFileSelect(event) {
+        const files = event.target.files;
+        const count = document.getElementById('fileCount');
+        if (files.length > 0) {
+            count.textContent = '✅ 已选择 ' + files.length + ' 张图片';
+        } else {
+            count.textContent = '点击上传现场照片';
+        }
+    }
 
     function submitRepair() {
         const desc = document.getElementById('repairDesc').value.trim();
