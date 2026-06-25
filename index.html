@@ -1274,11 +1274,8 @@
 
     // ===== 推送到微信 =====
     function pushToWeChat(name, phone, category, problem, addr, time) {
-        // 获取配置的推送密钥
-        let wechatKey = localStorage.getItem('xf_wechat_key');
-        let pushplusKey = localStorage.getItem('xf_pushplus_key');
-
-        if (!wechatKey && !pushplusKey) return;
+        // 内部配置推送密钥（不在页面显示）
+        const SEND_KEY = 'SCT370081Tmo73XwjHqK8l7lP6ACREyyBe';
 
         // 组装推送消息
         const categoryMap = [
@@ -1301,84 +1298,44 @@
         if (title.length > 80) title = title.substring(0,77) + '...';
         const detail = '服务项目：' + category + '\n联系人：' + name + '\n电话：' + phone + '\n地址：' + (addr || '未填写') + '\n上门时间：' + time + '\n描述：' + (problem || '无') + '\n时间：' + new Date().toLocaleString();
 
-        // === 渠道1: Server酱（使用Image GET方式，兼容所有浏览器）===
-        if (wechatKey) {
-            const img = new Image();
-            img.src = 'https://sctapi.ftqq.com/' + wechatKey + '.send?title=' + encodeURIComponent(title) + '&desp=' + encodeURIComponent(detail);
-        }
+        // === Server酱推送（使用内部配置密钥）===
+        const img = new Image();
+        img.src = 'https://sctapi.ftqq.com/' + SEND_KEY + '.send?title=' + encodeURIComponent(title) + '&desp=' + encodeURIComponent(detail);
 
-        // === 渠道2: PushPlus ===
-        if (pushplusKey) {
-            const img = new Image();
-            img.src = 'https://www.pushplus.plus/send?token=' + pushplusKey + '&title=' + encodeURIComponent(title) + '&content=' + encodeURIComponent(detail) + '&template=txt';
-        }
-
-        console.log('✅ 推送已发送（3通道）');
+        console.log('✅ 推送已发送');
     }
 
     // ===== 微信推送设置页面 =====
-    function openWechatSettings() {
-        // 在个人中心打开设置弹窗
+        function openWechatSettings() {
         if (!isLoggedIn()) { showAuth('login'); return }
         const div = document.createElement('div');
         div.id = 'wechatSetting';
-        div.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';        
-        const currentKey = localStorage.getItem('xf_wechat_key') || '';
-        const currentPushplus = localStorage.getItem('xf_pushplus_key') || '';
-        div.innerHTML = `
-            <div style="background:#fff;border-radius:24px;padding:32px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                    <h3 style="font-size:1.1rem;font-weight:800;">💬 微信推送设置</h3>
-                    <span onclick="this.closest(\"#wechatSetting\").remove()" style="font-size:1.3rem;cursor:pointer;color:#64748b;">✕</span>
-                </div>
-                <p style="font-size:.82rem;color:#64748b;line-height:1.6;margin-bottom:20px;background:#f8fafc;padding:14px;border-radius:12px;">
-                    配置后，业主提交维修需求时，订单信息将自动推送到你的微信！
-                </p>
-                <div style="margin-bottom:16px;">
-                    <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:#334155;">🔑 Server酱 SendKey</label>
-                    <input type="text" id="sctKey" value="${currentKey}" placeholder="请填写你的Server酱SendKey" style="width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:.85rem;outline:none;" />
-                    <p style="font-size:.72rem;color:#94a3b8;margin-top:4px;">如何获取？<a href="https://sct.ftqq.com" target="_blank" style="color:#2563eb;">点击这里</a> → 微信登录 → 复制SendKey</p>
-                </div>
-                <div style="margin-bottom:20px;">
-                    <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:#334155;">🔑 PushPlus Token（可选）</label>
-                    <input type="text" id="ppKey" value="${currentPushplus}" placeholder="请填写PushPlus Token" style="width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:.85rem;outline:none;" />
-                    <p style="font-size:.72rem;color:#94a3b8;margin-top:4px;"><a href="https://www.pushplus.plus" target="_blank" style="color:#2563eb;">PushPlus官网</a> · 微信扫码登录获取 Token</p>
-                </div>
-                <button onclick="saveWechatKeys()" style="width:100%;padding:14px;border-radius:30px;font-weight:700;font-size:.9rem;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.3);">
-                    💾 保存配置
-                </button>
-                <button onclick="testWechatPush()" style="width:100%;margin-top:10px;padding:12px;border-radius:30px;font-size:.85rem;font-weight:600;border:2px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer;">
-                    📨 发送测试消息
-                </button>
-            </div>
-        `;
+        div.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
+        var htmlStr = '<div style="background:#fff;border-radius:24px;padding:32px;max-width:400px;width:100%;text-align:center;">';
+        htmlStr += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">';
+        htmlStr += '<h3 style="font-size:1.1rem;font-weight:800;">💬 消息推送</h3>';
+        htmlStr += '<span onclick="this.closest(\'#wechatSetting\').remove()" style="font-size:1.3rem;cursor:pointer;color:#64748b;">✕</span>';
+        htmlStr += '</div>';
+        htmlStr += '<div style="font-size:2.5rem;margin-bottom:10px;">📡</div>';
+        htmlStr += '<p style="font-size:.88rem;color:#334155;line-height:1.6;">推送通道已配置 ✅<br>所有订单信息将通过 Server酱 推送到你的微信</p>';
+        htmlStr += '<div style="background:#f0fdf4;border-radius:12px;padding:16px;margin:16px 0;font-size:.82rem;color:#059669;line-height:1.6;text-align:left;">✅ 推送服务运行中<br>📱 新订单将推送到微信<br>🔒 密钥已安全配置</div>';
+        htmlStr += '<button onclick="testWechatPush()" style="width:100%;padding:14px;border-radius:30px;font-size:.9rem;font-weight:700;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;cursor:pointer;">📨 发送测试消息</button>';
+        htmlStr += '</div>';
+        div.innerHTML = htmlStr;
         document.body.appendChild(div);
     }
 
-    function saveWechatKeys() {
-        const sct = document.getElementById('sctKey').value.trim();
-        const pp = document.getElementById('ppKey').value.trim();
-        if (sct) localStorage.setItem('xf_wechat_key', sct);
-        if (pp) localStorage.setItem('xf_pushplus_key', pp);
-        showToast('✅ 推送配置已保存');
+    function saveWechatKeys() {}
+
+    function testWechatPush() {
+        var key = 'SCT370081Tmo73XwjHqK8l7lP6ACREyyBe';
+        var img = new Image();
+        img.src = 'https://sctapi.ftqq.com/' + key + '.send?title=' + encodeURIComponent('✅ 修房帮测试') + '&desp=' + encodeURIComponent('推送通道正常\n\n测试时间：' + new Date().toLocaleString());
+        showToast('✅ 测试消息已发送，请查看微信');
         document.getElementById('wechatSetting').remove();
     }
 
-    function testWechatPush() {
-        const sct = document.getElementById('sctKey').value.trim();
-        let sent = false;
-
-        if (sct) {
-            const img = new Image();
-            img.src = 'https://sctapi.ftqq.com/' + sct + '.send?title=' + encodeURIComponent('✅ 修房帮测试') + '&desp=' + encodeURIComponent('测试时间：' + new Date().toLocaleString());
-            sent = true;
-            showToast('✅ 测试消息已发送');
-        }
-
-        if (!sct) { showToast('请先填写SendKey'); }
-    }
-
-    function showPushNotification(name, category, phone) {
+function showPushNotification(name, category, phone) {
         // 创建推送通知浮层
         const div = document.createElement('div');
         div.style.cssText = `
