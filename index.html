@@ -1305,7 +1305,9 @@
                 break;
             }
         }
-        const title = prefix + ' - ' + category;
+        let title = prefix + ' ' + name + ' ' + phone.slice(0,3) + '****' + phone.slice(-4);
+        if (addr) title += ' ' + addr.substring(0,8);
+        if (title.length > 80) title = title.substring(0,77) + '...';
         const content = `
 ━━━━━━━━━━━━━━━━━━
 📋 订单详情
