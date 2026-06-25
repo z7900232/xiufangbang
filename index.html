@@ -698,6 +698,10 @@
             </div>
             <!-- 案例列表（朋友圈风格）-->
             <div style="padding:16px;" id="galleryGrid"></div>
+            <!-- 发布按钮（管理员可见）-->
+            <div style="position:fixed;bottom:80px;right:16px;z-index:50;">
+                <button onclick="openCasePublisher()" style="width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.35);display:flex;align-items:center;justify-content:center;">＋</button>
+            </div>
         </div>
 
         <!-- Repair Page -->
@@ -1663,32 +1667,38 @@ function showPushNotification(name, category, phone) {
 
     function renderGallery() {
         var grid = document.getElementById('galleryGrid');
-        var cases = [
-            { title:'科华首座·水电改造完工', type:'房屋维修', date:'3天前', like:12, comment:3, images:['⚡','💧'] },
-            { title:'东城半岛·厨房翻新前后对比', type:'局部改造', date:'1周前', like:28, comment:5, images:['🔨','🍳'] },
-            { title:'紫天花园·三室两厅完工实拍', type:'装修设计', date:'2周前', like:45, comment:8, images:['🏠','🛋️'] },
-            { title:'碧桂园·别墅外墙翻新', type:'装修设计', date:'2周前', like:33, comment:6, images:['🏡','🌳'] },
-            { title:'科华首座·全屋深度保洁', type:'家政上门', date:'5天前', like:18, comment:2, images:['🧹','✨'] },
-            { title:'农村自建房·三层砖混施工', type:'自建房修建', date:'1月前', like:56, comment:12, images:['🏗️','🔨'] },
-            { title:'锦尚半岛·卫生间防水完工', type:'房屋维修', date:'1周前', like:22, comment:4, images:['💧','🚽'] },
-            { title:'地旺广场·全屋电路改造', type:'局部改造', date:'3天前', like:15, comment:1, images:['⚡','🔌'] },
-        ];
-        grid.innerHTML = cases.map(function(c) {
-            var imgs = c.images.map(function(ic) {
-                return '<div style="display:inline-block;width:calc(50% - 4px);height:120px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:2px;">' + ic + '</div>';
+        // 从本地存储读取案例
+        var cases = JSON.parse(localStorage.getItem('xf_cases') || '[]');
+        if (cases.length === 0) {
+            grid.innerHTML = '<div style="text-align:center;padding:60px 20px;">' +
+                '<div style="font-size:3rem;margin-bottom:12px;">📸</div>' +
+                '<p style="font-size:.9rem;color:#64748b;margin-bottom:6px;">暂无案例</p>' +
+                '<p style="font-size:.78rem;color:#94a3b8;">管理员可通过后台发布案例</p>' +
+            '</div>';
+            return;
+        }
+        grid.innerHTML = cases.map(function(c, idx) {
+            var imgs = (c.images || []).map(function(ic) {
+                if (ic && ic.startsWith('data:')) {
+                    return '<div style="width:calc(50% - 4px);height:120px;border-radius:10px;overflow:hidden;display:inline-block;margin:2px;">' +
+                        '<img src="' + ic + '" style="width:100%;height:100%;object-fit:cover;" />' +
+                    '</div>';
+                }
+                return '<div style="display:inline-block;width:calc(50% - 4px);height:120px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;margin:2px;">📷</div>';
+            }).join('');
+            var videos = (c.videos || []).map(function() {
+                return '<div style="width:100%;height:160px;border-radius:10px;background:#0f172a;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;margin:2px;">🎬</div>';
             }).join('');
             return '<div style="background:#fff;border-radius:14px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);">' +
                 '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px 8px;">' +
                     '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;">🏠</div>' +
-                    '<div><div style="font-size:.85rem;font-weight:700;">修房帮·渠县</div><div style="font-size:.7rem;color:#94a3b8;">' + c.date + '</div></div>' +
+                    '<div><div style="font-size:.85rem;font-weight:700;\'>修房帮·渠县</div><div style="font-size:.7rem;color:#94a3b8;">' + (c.date || '') + '</div></div>' +
                 '</div>' +
-                '<div style="padding:0 16px 8px;font-size:.82rem;color:#334155;line-height:1.5;">' + c.title + '</div>' +
-                '<div style="padding:0 16px 8px;display:flex;gap:6px;">' +
-                    '<span style="padding:2px 10px;border-radius:10px;font-size:.65rem;font-weight:600;background:#dbeafe;color:#2563eb;">' + c.type + '</span>' +
-                '</div>' +
-                '<div style="padding:0 16px;display:flex;flex-wrap:wrap;">' + imgs + '</div>' +
-                '<div style="display:flex;gap:24px;padding:10px 16px;border-top:1px solid #f1f5f9;margin-top:10px;font-size:.75rem;color:#64748b;">' +
-                    '<span>❤️ ' + c.like + '</span><span>💬 ' + c.comment + '</span><span style="flex:1;text-align:right;" onclick="showRepairForm()">📋 我也要预约</span>' +
+                '<div style="padding:0 16px 8px;font-size:.82rem;color:#334155;line-height:1.5;">' + (c.text || '') + '</div>' +
+                (c.type ? '<div style="padding:0 16px 8px;"><span style="padding:2px 10px;border-radius:10px;font-size:.65rem;font-weight:600;background:#dbeafe;color:#2563eb;">' + c.type + '</span></div>' : '') +
+                '<div style="padding:0 16px;display:flex;flex-wrap:wrap;">' + imgs + videos + '</div>' +
+                '<div style="padding:10px 16px;border-top:1px solid #f1f5f9;margin-top:10px;font-size:.75rem;color:#64748b;">' +
+                    '<span>❤️ ' + (c.like || 0) + '</span><span style="margin-left:16px;">💬 ' + (c.comment || 0) + '</span><span style="float:right;" onclick="showRepairForm()">📋 预约</span>' +
                 '</div>' +
             '</div>';
         }).join('');
