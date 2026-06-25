@@ -1126,7 +1126,18 @@
         }
 
         // 组装推送消息
-        const title = '🔔 新维修订单 - ' + category;
+        // 根据分类自动匹配标题前缀
+        const cleanTypes = ['日常保洁','深度清洁','家电清洗','开荒保洁','除螨消杀','保姆','月嫂'];
+        const repairTypes = ['水电维修','漏水补漏','墙面修补','瓷砖空鼓','门窗维修','打孔疏通','吊顶安装','灯具安装','防水施工'];
+        let prefix = '🔔 新订单';
+        if (cleanTypes.some(t => category.includes(t))) {
+            prefix = '🧹 新保洁订单';
+        } else if (repairTypes.some(t => category.includes(t))) {
+            prefix = '🔧 新维修订单';
+        } else if (category.includes('装修') || category.includes('整装') || category.includes('翻新') || category.includes('改造')) {
+            prefix = '🏠 新装修订单';
+        }
+        const title = prefix + ' - ' + category;
         const content = `
 👤 联系人：${name}
 📱 电话：${phone}
