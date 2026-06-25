@@ -1492,27 +1492,23 @@
 
     // ===== App Initialization =====
     function enterApp() {
-        if (!isLoggedIn()) {
-            showAuth('login');
-            return;
-        }
+        // 已登录直接进，未登录也先进（提交需求时再收集信息）
         document.getElementById('landingRoot').style.display = 'none';
         document.getElementById('appShell').classList.add('active');
         renderUserHome();
         renderTabbar();
+        if (isLoggedIn()) {
+            const pn = document.getElementById('profileName');
+            const pp = document.getElementById('profilePhone');
+            if (pn) pn.textContent = currentUser.name || '装修哥';
+            if (pp) pp.textContent = '📱 ' + (currentUser.phone || '15881864944') + ' · 已实名';
+        }
     }
 
     function logout() {
         if (confirm('确定退出登录？')) {
             localStorage.removeItem('xf_currentUser');
             currentUser = null;
-            document.getElementById('appShell').classList.remove('active');
-            document.getElementById('landingRoot').style.display = 'none';
-            // 重新进入应用并弹出登录
-            document.getElementById('appShell').classList.add('active');
-            renderUserHome();
-            renderTabbar();
-            setTimeout(() => showAuth('register'), 300);
             showToast('已退出登录');
         }
     }
@@ -1585,21 +1581,10 @@
     document.addEventListener('DOMContentLoaded', function() {
         // 尝试获取位置
         detectLocation();
-        // 如果已登录直接进应用
-        if (isLoggedIn()) {
-            document.getElementById('landingRoot').style.display = 'none';
-            document.getElementById('appShell').classList.add('active');
-            renderUserHome();
-            renderTabbar();
-        } else {
-            // 未登录跳转到登录
-            document.getElementById('landingRoot').style.display = 'none';
-            document.getElementById('appShell').classList.add('active');
-            renderUserHome();
-            renderTabbar();
-            // 延迟弹出登录框
-            setTimeout(() => showAuth('register'), 500);
-        }
+        document.getElementById('landingRoot').style.display = 'none';
+        document.getElementById('appShell').classList.add('active');
+        renderUserHome();
+        renderTabbar();
     });
 
     function scrollToSection(id) {
