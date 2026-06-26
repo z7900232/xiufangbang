@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>修房帮·渠县 — 执行计划表</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1e293b;padding:20px;max-width:1200px;margin:0 auto}
+h1{text-align:center;font-size:1.8rem;font-weight:800;margin:20px 0 4px;color:#0a1628}
+h1 span{background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{text-align:center;color:#64748b;font-size:.9rem;margin-bottom:24px}
+.phase{margin-bottom:30px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
+.phase-header{padding:16px 20px;color:#fff;font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:10px}
+.phase-header .tag{padding:3px 12px;border-radius:12px;font-size:.72rem;background:rgba(255,255,255,.2)}
+.phase-body{padding:16px 20px 20px}
+.phase-body .weeks{font-size:.78rem;color:#64748b;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:700;color:#475569;border-bottom:2px solid #e2e8f0}
+td{padding:10px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+tr:hover{background:#f8fafc}
+.task{font-weight:600;color:#1e293b}
+.priority{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.68rem;font-weight:600}
+.p-urgent{background:#fee2e2;color:#dc2626}
+.p-high{background:#fef3c7;color:#d97706}
+.p-medium{background:#dbeafe;color:#2563eb}
+.p-low{background:#d1fae5;color:#059669}
+.status{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.68rem;font-weight:600}
+.s-todo{background:#f1f5f9;color:#94a3b8}
+.s-done{background:#d1fae5;color:#059669}
+.meta{font-size:.72rem;color:#94a3b8;margin-top:2px}
+.risk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:30px}
+.risk-card{border-radius:12px;padding:14px 16px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:4px solid}
+.risk-card.high{border-left-color:#dc2626}
+.risk-card.medium{border-left-color:#d97706}
+.risk-card.low{border-left-color:#2563eb}
+.risk-card .r-title{font-weight:700;font-size:.85rem;margin-bottom:4px}
+.risk-card .r-desc{font-size:.75rem;color:#64748b;margin-bottom:6px}
+.risk-card .r-sol{font-size:.72rem;color:#2563eb}
+.timeline{position:relative;padding-left:30px;margin:20px 0 30px}
+.timeline::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:3px;background:#e2e8f0;border-radius:2px}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-item::before{content:'';position:absolute;left:-24px;top:6px;width:16px;height:16px;border-radius:50%;border:3px solid}
+.tl-item:nth-child(1)::before{border-color:#f59e0b;background:#fff}
+.tl-item:nth-child(2)::before{border-color:#2563eb;background:#fff}
+.tl-item:nth-child(3)::before{border-color:#7c3aed;background:#fff}
+.tl-item:nth-child(4)::before{border-color:#10b981;background:#fff}
+.tl-item .t-period{font-size:.72rem;color:#94a3b8;font-weight:600}
+.tl-item .t-title{font-size:.9rem;font-weight:700;margin:2px 0}
+.tl-item .t-desc{font-size:.78rem;color:#64748b}
+.footer{text-align:center;padding:20px;color:#94a3b8;font-size:.78rem}
+.print-area{display:none}
+@media print{body{background:#fff;padding:10px}.phase{break-inside:avoid}.risk-grid{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<h1>🏠 修房<span style="background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">帮</span>·渠县</h1>
+<div class="subtitle">项目执行计划表 · 2026年6月 — 2026年12月</div>
+
+<!-- ===== 时间线概览 ===== -->
+<div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:30px">
+  <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:16px">📅 整体时间线</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="t-period">第1-2周 · 6月底-7月初</div>
+      <div class="t-title" style="color:#d97706">第一阶段：线上验证</div>
+      <div class="t-desc">跑通MVP全流程 · 机型适配 · 内容填充</div>
+    </div>
+    <div class="tl-item">
+      <div class="t-period">第3-6周 · 7月</div>
+      <div class="t-title" style="color:#2563eb">第二阶段：核心功能强化</div>
+      <div class="t-desc">用户登录系统 · 订单进度时间轴 · 师傅独立端</div>
+    </div>
+    <div class="tl-item">
+      <div class="t-period">第2-3个月 · 8-9月</div>
+      <div class="t-title" style="color:#7c3aed">第三阶段：数据驱动运营</div>
+      <div class="t-desc">漏斗分析 · 师傅绩效 · 自动通知 · 内容运营</div>
+    </div>
+    <div class="tl-item">
+      <div class="t-period">第4-6个月 · 10-12月</div>
+      <div class="t-title" style="color:#10b981">第四阶段：商业化与复制</div>
+      <div class="t-desc">抽佣/入驻费/置顶 · 评级体系 · 区域复制准备</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第一阶段 ===== -->
+<div class="phase">
+  <div class="phase-header" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+    第一阶段：线上验证与基础优化
+    <span class="tag">第1-2周</span>
+  </div>
+  <div class="phase-body">
+    <div class="weeks">🎯 核心目标：跑通MVP全流程，确保核心体验流畅</div>
+    <table>
+      <tr><th style="width:40%">任务</th><th style="width:12%">优先级</th><th style="width:12%">状态</th><th>备注/产出</th></tr>
+      <tr>
+        <td><div class="task">全流程闭环测试</div><div class="meta">报修→接单→派单→完成→评价</div></td>
+        <td><span class="priority p-urgent">紧急</span></td>
+        <td><span class="status s-todo">待执行</span></td>
+        <td class="meta">验证各状态页面展示、按钮逻辑、数据同步</td>
+      </tr>
+      <tr>
+        <td><div class="task">移动端机型适配</div><div class="meta">华为/小米/OPPO/vivo/iPhone</div></td>
+        <td><span class="priority p-high">高</span></td>
+        <td><span class="status s-todo">待执行</span></td>
+        <td class="meta">重点解决表单输入、图片上传、底部导航栏遮挡</td>
+      </tr>
+      <tr>
+        <td><div class="task">首屏加载优化</div><div class="meta">图片懒加载+代码压缩</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待执行</span></td>
+        <td class="meta">优化后首屏加载时间<2s</td>
+      </tr>
+      <tr>
+        <td><div class="task">案例内容填充</div><div class="meta">上传10条高质量案例</div></td>
+        <td><span class="priority p-high">高</span></td>
+        <td><span class="status s-todo">待执行</span></td>
+        <td class="meta">需含"改造前/后"对比图，覆盖5类服务</td>
+      </tr>
+      <tr>
+        <td><div class="task">师傅资料完善</div><div class="meta">5-8位核心师傅</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待执行</span></td>
+        <td class="meta">头像+工龄+擅长领域+服务语录</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 第二阶段 ===== -->
+<div class="phase">
+  <div class="phase-header" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
+    第二阶段：核心功能强化
+    <span class="tag">第3-6周</span>
+  </div>
+  <div class="phase-body">
+    <div class="weeks">🎯 核心目标：构建用户账户体系，引入师傅独立端</div>
+    <table>
+      <tr><th style="width:40%">任务</th><th style="width:12%">优先级</th><th style="width:12%">状态</th><th>备注/产出</th></tr>
+      <tr>
+        <td><div class="task">手机号验证码登录</div><div class="meta">替代当前无状态模式</div></td>
+        <td><span class="priority p-urgent">紧急</span></td>
+        <td><span class="status s-todo">待开发</span></td>
+        <td class="meta">接入阿里云/腾讯云短信服务</td>
+      </tr>
+      <tr>
+        <td><div class="task">用户账户体系搭建</div><div class="meta">订单记录+个人信息</div></td>
+        <td><span class="priority p-high">高</span></td>
+        <td><span class="status s-todo">待开发</span></td>
+        <td class="meta">用户ID关联所有订单，支持历史查看</td>
+      </tr>
+      <tr>
+        <td><div class="task">订单进度时间轴</div><div class="meta">可视化状态流转</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待开发</span></td>
+        <td class="meta">已提交→已接单→出发→服务中→已完成</td>
+      </tr>
+      <tr>
+        <td><div class="task">师傅独立端（H5）</div><div class="meta">接单+完工确认</div></td>
+        <td><span class="priority p-high">高</span></td>
+        <td><span class="status s-todo">待开发</span></td>
+        <td class="meta">减轻管理员操作负担，实现业务闭环</td>
+      </tr>
+      <tr>
+        <td><div class="task">数据持久化迁移</div><div class="meta">localStorage→MySQL</div></td>
+        <td><span class="priority p-urgent">🔥 紧急</span></td>
+        <td><span class="status s-todo">待开发</span></td>
+        <td class="meta" style="color:#dc2626">最高优先级！清缓存=数据全丢</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 第三阶段 ===== -->
+<div class="phase">
+  <div class="phase-header" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
+    第三阶段：数据驱动与精细化运营
+    <span class="tag">第2-3个月</span>
+  </div>
+  <div class="phase-body">
+    <div class="weeks">🎯 核心目标：建立数据指标体系，提升订单量和用户粘性</div>
+    <table>
+      <tr><th style="width:40%">任务</th><th style="width:12%">优先级</th><th style="width:12%">状态</th><th>备注/产出</th></tr>
+      <tr>
+        <td><div class="task">转化漏斗分析</div><div class="meta">首页→浏览→报修→提交→完成</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">识别流失关键节点，针对性优化</td>
+      </tr>
+      <tr>
+        <td><div class="task">师傅绩效排行榜</div><div class="meta">接单率+完工率+好评率</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">TOP师傅给予流量倾斜或现金奖励</td>
+      </tr>
+      <tr>
+        <td><div class="task">短信自动通知</div><div class="meta">接单/完工关键节点推送</div></td>
+        <td><span class="priority p-high">高</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">接入短信服务商，提升用户体验</td>
+      </tr>
+      <tr>
+        <td><div class="task">内容运营</div><div class="meta">每周1-2篇攻略/避坑指南</div></td>
+        <td><span class="priority p-low">低</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">公众号+平台内容中心分发</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 第四阶段 ===== -->
+<div class="phase">
+  <div class="phase-header" style="background:linear-gradient(135deg,#10b981,#059669)">
+    第四阶段：商业化探索与复制准备
+    <span class="tag">第4-6个月</span>
+  </div>
+  <div class="phase-body">
+    <div class="weeks">🎯 核心目标：验证商业模式，为规模化扩张做准备</div>
+    <table>
+      <tr><th style="width:40%">任务</th><th style="width:12%">优先级</th><th style="width:12%">状态</th><th>备注/产出</th></tr>
+      <tr>
+        <td><div class="task">交易抽佣上线</div><div class="meta">每单抽10%-15%</div></td>
+        <td><span class="priority p-high">高</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">商业模式验证核心指标</td>
+      </tr>
+      <tr>
+        <td><div class="task">师傅入驻费/年费</div><div class="meta">基础平台使用费</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">如 299元/年，建立师傅筛选门槛</td>
+      </tr>
+      <tr>
+        <td><div class="task">置顶推广广告位</div><div class="meta">案例/师傅列表置顶</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">如 50元/周，竞价排名</td>
+      </tr>
+      <tr>
+        <td><div class="task">师傅评级体系</div><div class="meta">1-5星星级制度</div></td>
+        <td><span class="priority p-medium">中</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">高星级→优先派单权</td>
+      </tr>
+      <tr>
+        <td><div class="task">区域复制文档化</div><div class="meta">SOP+代码+话术标准化</div></td>
+        <td><span class="priority p-low">低</span></td>
+        <td><span class="status s-todo">待规划</span></td>
+        <td class="meta">开始调研周边区县市场</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 风险矩阵 ===== -->
+<h2 style="font-size:1.1rem;font-weight:800;margin-bottom:14px">⚠️ 风险矩阵</h2>
+<div class="risk-grid">
+  <div class="risk-card high">
+    <div class="r-title">🔥 数据存储风险</div>
+    <div class="r-desc">订单/用户数据在 localStorage，清缓存=全丢</div>
+    <div class="r-sol">▶ 立即迁移至 MySQL 数据库</div>
+  </div>
+  <div class="risk-card medium">
+    <div class="r-title">⚠️ 图片存储风险</div>
+    <div class="r-desc">用户上传图/案例图占用磁盘，影响加载速度</div>
+    <div class="r-sol">▶ 迁移至阿里云 OSS + CDN</div>
+  </div>
+  <div class="risk-card medium">
+    <div class="r-title">⚠️ 短信验证缺失</div>
+    <div class="r-desc">无法验证真实用户身份，易被恶意刷单</div>
+    <div class="r-sol">▶ 接入阿里云短信服务</div>
+  </div>
+  <div class="risk-card medium">
+    <div class="r-title">⚠️ 隐私合规风险</div>
+    <div class="r-desc">收集手机号/地址未明确告知使用规则</div>
+    <div class="r-sol">▶ 补充用户协议+隐私政策弹窗确认</div>
+  </div>
+</div>
+
+<!-- ===== 关键指标 ===== -->
+<div style="background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:30px">
+  <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:14px">📊 关键增长目标</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+    <div style="background:linear-gradient(135deg,#dbeafe,#eff6ff);border-radius:12px;padding:16px;text-align:center">
+      <div style="font-size:1.8rem;font-weight:800;color:#2563eb">50</div>
+      <div style="font-size:.78rem;color:#475569">认证师傅</div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-top:4px">3个月目标</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);border-radius:12px;padding:16px;text-align:center">
+      <div style="font-size:1.8rem;font-weight:800;color:#059669">200</div>
+      <div style="font-size:.78rem;color:#475569">累计订单</div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-top:4px">3个月目标</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#fef3c7,#fffbeb);border-radius:12px;padding:16px;text-align:center">
+      <div style="font-size:1.8rem;font-weight:800;color:#d97706">500</div>
+      <div style="font-size:.78rem;color:#475569">微信社群用户</div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-top:4px">私域池建立</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#fce7f3,#fdf2f8);border-radius:12px;padding:16px;text-align:center">
+      <div style="font-size:1.8rem;font-weight:800;color:#db2777">95%</div>
+      <div style="font-size:.78rem;color:#475569">好评率目标</div>
+      <div style="font-size:.68rem;color:#94a3b8;margin-top:4px">口碑保障</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  修房帮·渠县 &copy; 2026 ·  www.xiufangbang.xin · 📞 15881864944
+</div>
+
+</body>
+</html>
