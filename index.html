@@ -594,6 +594,17 @@ function today(){return new Date().toISOString().slice(0,10)}
 function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}
 function closeModal(id){document.getElementById(id).classList.remove('active')}
 
+// ===== Server酱推送 =====
+const SEND_KEY='SCT370081Tmo73XwjHqK8l7lP6ACREyyBe';
+function pushToWeChat(title,content){
+  var url='https://sctapi.ftqq.com/'+SEND_KEY+'.send';
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST',url,true);
+  xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+  xhr.onreadystatechange=function(){if(xhr.readyState===4&&xhr.status===200){console.log('推送成功')}};
+  xhr.send('title='+encodeURIComponent(title)+'&desp='+encodeURIComponent(content));
+}
+
 // ===== Navigation =====
 function navigate(page,param){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -722,8 +733,10 @@ function submitRepair(e){
   if(!cat||!item||!desc||!name||!phone||!addr){showToast('请填写完整信息');return}
   if(!/^1\d{10}$/.test(phone)){showToast('请输入正确手机号');return}
   const orders=getOrders();
-  orders.unshift({id:genId(),cat,item,desc,name,phone,addr,time,status:'pending',created:now(),master:''});
+  const order={id:genId(),cat,item,desc,name,phone,addr,time,status:'pending',created:now(),master:''};
+  orders.unshift(order);
   saveOrders(orders);
+  pushToWeChat('🔔 新报修订单 - '+order.id,'**服务类型：**'+cat+' · '+item+'\n**联系人：**'+name+'\n**手机号：**'+phone+'\n**地址：**'+addr+'\n**问题描述：**'+desc+'\n**期望时间：**'+(time||'尽快')+'\n**提交时间：**'+order.created);
   showToast('✅ 报修提交成功！师傅即将联系您');
   document.getElementById('repairForm').reset();
   document.getElementById('repairItem').innerHTML='<option value="">请先选择服务类型</option>';
@@ -752,8 +765,10 @@ function submitBooking(e){
   const note=document.getElementById('bookNote').value.trim();
   if(!name||!phone){showToast('请填写联系信息');return}
   const orders=getOrders();
-  orders.unshift({id:genId(),cat:'预约',item,master,name,phone,note,status:'pending',created:now()});
+  const order={id:genId(),cat:'预约',item,master,name,phone,note,status:'pending',created:now()};
+  orders.unshift(order);
   saveOrders(orders);
+  pushToWeChat('🔔 新预约订单 - '+order.id,'**师傅：**'+master+'\n**项目：**'+item+'\n**联系人：**'+name+'\n**手机号：**'+phone+'\n**备注：**'+(note||'无')+'\n**提交时间：**'+order.created);
   showToast('✅ 预约成功！请等待客服确认');
   closeModal('bookingModal');
   navigate('orders');
@@ -855,7 +870,8 @@ function assignMaster(id){
   const m=prompt('请输入指派师傅姓名：');
   if(!m)return;
   const orders=getOrders();const o=orders.find(x=>x.id===id);
-  if(o){o.status='ongoing';o.master=m;saveOrders(orders);renderAdmin('orders');showToast('✅ 已指派 '+m)}
+  if(o){o.status='ongoing';o.master=m;saveOrders(orders);renderAdmin('orders');showToast('✅ 已指派 '+m);
+    pushToWeChat('✅ 订单已接单 - '+o.id,'**订单编号：**'+o.id+'\n**服务类型：**'+o.cat+' · '+o.item+'\n**指派师傅：**'+m+'\n**联系人：**'+o.name+'\n**手机号：**'+o.phone+'\n**状态：**进行中');}
 }
 function deleteOrder(id){
   if(!confirm('确定删除此订单？'))return;
